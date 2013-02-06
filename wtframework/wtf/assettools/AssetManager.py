@@ -15,13 +15,19 @@ class AssetManager(object):
     '''
     
     _asset_path = None
+    
+    _ASSET_FOLDER_ = "assets"
 
     def __init__(self):
         '''
         Constructor
         '''
-        self._asset_path = ProjectUtils.get_project_root() + "/assets"
-        
+        root = ProjectUtils.get_project_root()
+        if root[-1] == '/' or root[-1] == '\\':
+            self._asset_path = ProjectUtils.get_project_root() + AssetManager._ASSET_FOLDER_
+        else:
+            self._asset_path = ProjectUtils.get_project_root() + "/" + AssetManager._ASSET_FOLDER_
+
     
     def get_asset_path(self, filename):
         "Get asset path."
