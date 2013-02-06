@@ -1,0 +1,23 @@
+# Mock Object framework.  Used for unit testing framework code.
+Mox>=0.5.3
+
+# PyLint - Requirement for some nosetest below.
+pylint>=0.26.0
+
+# Nose is used as top level test driver and reporting.
+nose>=1.2.1
+NoseXUnit>=0.3.3
+
+# DDT module for Data driven annotations.
+ddt>=0.2.0
+
+# PyYaml is used for processing config files.
+pyyaml>=3.10
+
+# Selenium WebDriver for driving browsers.
+selenium>=2.29.0
+
+
+# Restful lib for making REST requests.
+python-rest-client>=0.3
+

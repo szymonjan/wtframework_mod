@@ -1,0 +1,24 @@
+selenium:
+  # Set type to LOCAL for running locally, and to REMOTE, to run on a remote 
+  # webdriver.
+  type: LOCAL
+
+  # remote_url is required if type=REMOTE.  Set this to point at the Remote Webdriver 
+  # connection string.
+  remote_url: http://sauceacct:apikey@ondemand.saucelabs.com:80/wd/hub
+
+  # Browser can be the following options.
+  # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
+  # INTERNETEXPLORER, IPAD, IPHONE, OPERA
+  browser: FIREFOX
+
+  # Desired capabilities to pass to Selenium Grid.
+  desired_capabilities:
+    # Target browser version.
+    version: 16.0
+
+    # ANY, ANDROID, LINUX, MAC, UNIX, VISTA, WIN7, WIN8, WINDOWS, XP
+    platform: MAC
+
+    # Name you'd like to label your sessions. (useful for labeling on sauce)
+    name: Selenium Webdriver on Sauce
