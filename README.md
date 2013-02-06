@@ -1,6 +1,6 @@
 WTF - Web Test Framework
 ======
-https://github.com/wiredrive/WD-WTF
+https://github.com/wiredrive/wtframework
 
 
 Wiredrive Web Test Framework (referred to as WTF for short) provides a 
@@ -31,12 +31,16 @@ Now the directory structure and your python path is setup so nosetests can run t
 you write in the WTF framework.
 
 
+Configuring Eclipse Dev Environment
+
+
 Running your tests
 ==================
 
 Run your tests using nosetests.
 
 	./runtests.py
+
 
 
 WTF Framework Features
