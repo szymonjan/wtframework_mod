@@ -4,7 +4,7 @@ Created on Dec 24, 2012
 @author: "David Lai"
 '''
 from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
-from wtframework.wtf.web.WebDriverProvider import WebDriverProvider
+from wtframework.wtf.web.WebDriverProvider import WebDriverManager
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import datetime
 import sys
@@ -29,7 +29,7 @@ class WDBaseTest(unittest.TestCase):
         super(WDBaseTest, self).__init__(methodName)
         
         if webdriver_provider == None:
-            self._webdriver_provider = WebDriverProvider.get_instance()
+            self._webdriver_provider = WebDriverManager.get_instance()
         else:
             self._webdriver_provider = webdriver_provider
 

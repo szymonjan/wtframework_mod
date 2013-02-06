@@ -6,7 +6,7 @@ Created on Dec 17, 2012
 from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
 
 
-class WebDriverProvider(object):
+class WebDriverManager(object):
     '''
     Provides Singleton instance of Selenium WebDriver based on 
     config settings.
@@ -47,13 +47,13 @@ class WebDriverProvider(object):
         new instance of the decorated class and calls its `__init__` method.
         On all subsequent calls, the already created instance is returned.
         
-        @return: Singleton instance of WebDriverProvider.
-        @rtype: WebDriverProvider
+        @return: Singleton instance of WebDriverManager.
+        @rtype: WebDriverManager
         """
-        if WebDriverProvider._singleton_instance == None:
-            WebDriverProvider._singleton_instance = WebDriverProvider()
+        if WebDriverManager._singleton_instance == None:
+            WebDriverManager._singleton_instance = WebDriverManager()
 
-        return WebDriverProvider._singleton_instance
+        return WebDriverManager._singleton_instance
 
 
     @staticmethod
@@ -65,11 +65,11 @@ class WebDriverProvider(object):
         try:
             try:
                 # If statement is to prevent instantiating a new webdriver in order to close it.
-                if WebDriverProvider._singleton_instance.webdriver != None:
-                    WebDriverProvider._singleton_instance.get_driver().close()
+                if WebDriverManager._singleton_instance.webdriver != None:
+                    WebDriverManager._singleton_instance.get_driver().close()
             except:
                 pass
-            WebDriverProvider._singleton_instance = None
+            WebDriverManager._singleton_instance = None
         except AttributeError:
             pass
 
@@ -93,3 +93,7 @@ class WebDriverProvider(object):
         @rtype: bool
         '''
         return self.webdriver != None
+
+
+# Global Instance of WebDriver Manager
+WTF_WEBDRIVER_MANAGER = WebDriverManager.get_instance()

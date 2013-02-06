@@ -7,7 +7,7 @@ from mox import Mox
 from selenium.webdriver import phantomjs
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
-from wtframework.wtf.web.WebDriverProvider import WebDriverProvider
+from wtframework.wtf.web.WebDriverProvider import WebDriverManager
 import unittest
 
 
@@ -22,7 +22,7 @@ class TestWebDriverProvider(unittest.TestCase):
 
     def tearDown(self):
         # reset our singleton providers.
-        WebDriverProvider.clear_instance()
+        WebDriverManager.clear_instance()
         self._mocker = None
 
 
@@ -34,9 +34,9 @@ class TestWebDriverProvider(unittest.TestCase):
         webdriverfactory_mock.create_webdriver().AndReturn(None)
         self._mocker.ReplayAll()
         
-        wdp1 = WebDriverProvider.get_instance()
-        wdp2 = WebDriverProvider.get_instance()
-        self.assertTrue(isinstance(wdp1, WebDriverProvider), 'Returned class does not match expected')
+        wdp1 = WebDriverManager.get_instance()
+        wdp2 = WebDriverManager.get_instance()
+        self.assertTrue(isinstance(wdp1, WebDriverManager), 'Returned class does not match expected')
         self.assertEqual(id(wdp1), id(wdp2), 'Returned instnace is not the same.')
 
     def test_getDriver_ReturnsSingletonSeleniumWebdriver(self):
@@ -52,7 +52,7 @@ class TestWebDriverProvider(unittest.TestCase):
         webdriverfactory_mock.create_webdriver().AndReturn(webdriver_mock)
         self._mocker.ReplayAll()
 
-        webdriver_provider = WebDriverProvider(webdriverfactory_mock)
+        webdriver_provider = WebDriverManager(webdriverfactory_mock)
 
         # Perform singleton tests
         driver1 = webdriver_provider.get_driver()

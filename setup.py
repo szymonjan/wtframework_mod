@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.0.2',
+    version='0.0.3',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework.wtf.wdtestobjects',
@@ -12,7 +12,8 @@ setup(
               'wtframework.wtf.web',
               'wtframework.wtf',
               'wtframework',
-              'wtframework.wtf._example_files_',
+              'wtframework.wtf._devtools_',
+              'wtframework.wtf._devtools_.filetemplates',
               ],
     scripts=['bin/wtf_init.py'],
     url='https://github.com/wiredrive/wtframework',

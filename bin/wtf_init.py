@@ -5,9 +5,9 @@ Created on Feb 4, 2013
 @author: "David Lai"
 '''
 from optparse import OptionParser
+from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
+    _root_folder_placeholder_, _runtests_py_
 import os.path
-from wtframework.wtf._example_files_ import _default_yaml_, _root_folder_placeholder_,\
-    _runtests_py_
 
 
 ################# UTILITY METHODS ######################
