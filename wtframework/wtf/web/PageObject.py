@@ -4,6 +4,7 @@ Created on Dec 21, 2012
 @author: "David Lai"
 '''
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
+from wtframework.wtf.web.PageFactory import PageFactory
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import abc
 
@@ -61,6 +62,15 @@ class PageObject(object):
         """
         return
 
+
+    @classmethod
+    def create_page(cls, webdriver, config_reader = WTF_CONFIG_READER):
+        """
+        Class method short cut to call PageFactory on itself.
+        @param webdriver: WebDriver to associate with this page.
+        @type webdriver: WebDriver
+        """
+        return PageFactory.create_page(webdriver, cls)
 
     @staticmethod
     def get_page_match_score(self, webdriver):

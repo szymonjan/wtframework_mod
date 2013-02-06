@@ -3,39 +3,49 @@ Created on Jan 28, 2013
 
 @author: "David Lai"
 '''
-from wtframework.wtf.web.PageObject import InvalidPageError
+
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 
 class PageFactory():
     "Page Factory class."
 
 
     @staticmethod
-    def create_page(webdriver, super_class):
+    def create_page(webdriver, page_obj_class, config_reader=WTF_CONFIG_READER):
+        #Import moved inside to avoid circular import 
+        from wtframework.wtf.web.PageObject import InvalidPageError
+        
         """
         Instantiate a page object from a given Interface or Abstract class.
         @param webdriver: Webdriver
         @type webdriver: WebDriver
         """
         # Walk through all classes of this sub class 
-        subclasses = PageFactory.__itersubclasses(super_class)
+        subclasses = PageFactory.__itersubclasses(page_obj_class)
 
         for pageClass in subclasses :
             try:
-                page = pageClass(webdriver)
+                page = pageClass(webdriver, config_reader)
                 return page;
             except InvalidPageError:
                 pass #This happens when the page fails check.
             except TypeError:
                 pass #this happens when it tries to instantiate the original abstract class.
+            except Exception as e:
+                #Unexpected exception.
+                raise e
 
         # Try the original class passed in if the subclasses didn't work.
         try:
-            page = super_class(webdriver)
+            page = page_obj_class(webdriver, config_reader)
             return page;
         except InvalidPageError:
             pass #This happens when the page fails check.
         except TypeError:
             pass #this happens when it tries to instantiate the original abstract class.
+        except Exception as e:
+            #Unexpected exception.
+            raise e
 
         # If no matching classes.
         raise NoMatchingPageError("There's, no matching classes to this page. URL:%s" % webdriver.current_url)

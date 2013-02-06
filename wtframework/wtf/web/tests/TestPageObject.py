@@ -1,4 +1,11 @@
 '''
+Created on Feb 6, 2013
+
+@author: "David Lai"
+'''
+from selenium import webdriver
+import abc
+'''
 Created on Dec 21, 2012
 
 @author: "David Lai"
@@ -16,6 +23,31 @@ class TestPageObject(unittest.TestCase):
     '''
     Unit test of the PageObject Class
     '''
+
+    driver = None
+    
+    def tearDown(self):
+        try:
+            self.driver.close()
+        except:
+            pass
+        
+
+    @unittest.skip("This test relies on a browser and internet connection.")
+    def test_createPage_createsPageFromFactory(self):
+        # Mock a webdriver that looks like it's viewing yahoo
+        mox = Mox()
+        config_reader = mox.CreateMock(ConfigReader)
+        config_reader.get_value("selenium.take_reference_screenshot").AndReturn(False)
+        mox.ReplayAll()
+
+        self.driver = webdriver.Firefox()
+        self.driver.get("http://www.google.com")
+        google = SearchPage.create_page(self.driver, config_reader)
+        self.assertTrue(type(google) == GoogleSearch)
+        self.driver.get("http://www.yahoo.com")
+        yahoo = SearchPage.create_page(self.driver, config_reader)
+        self.assertTrue(type(yahoo) == YahooSearch)
 
 
     def test_validatePage_GetsCalledDuringInit(self):
@@ -63,6 +95,8 @@ class TestPageObject(unittest.TestCase):
         driver.close()
 
 
+        
+
 
 class GoogleTestPageObj(PageObject):
     "test page"
@@ -78,6 +112,24 @@ class GoogleTestPageObj(PageObject):
     
     def enter_query(self, query):
         self.query_field().send_keys(query)
+
+
+
+class SearchPage(PageObject):
+    #abstract class.
+    __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
+
+class GoogleSearch(SearchPage):
+    
+    def _validate_page(self, webdriver):
+        if not "google.com" in webdriver.current_url:
+            raise InvalidPageError("Not google.")
+
+class YahooSearch(SearchPage):
+    
+    def _validate_page(self, webdriver):
+        if not "yahoo.com" in webdriver.current_url:
+            raise InvalidPageError("Not yahoo.")
 
 
 if __name__ == "__main__":
