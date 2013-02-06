@@ -1,3 +1,5 @@
+v0.0.6 Refactoring 2/6/2013
+    - Added .create_page() method to base PageObject.  Simple shortcut for calling PageFactory
 
 v0.0.5 Refactoring 2/6/2013
     - Changed some constants around.
