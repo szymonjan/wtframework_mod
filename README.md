@@ -77,6 +77,24 @@ and naming the mapped objects.
 Note: I have not implemented any sort of session support yet. So this will not work in 
 pages that require a session.
 
+You can now use this page object you created like this:
+
+	from wtframework.wtf.web.PageFactory import PageFactory
+	...
+	my_login_page = PageFactory.create_page(webdriver, LoginPage)
+	my_login_page.login(myusername, password)
+
+Alternatively, you can use the WebUtils to wait for the page to load.  This will allow 
+you to specify a timeout period to wait for this page to finish loading.
+
+	from wtframework.wtf.web.WebUtils import WebUtils
+	...
+	slow_loading_page = WebUtils.wait_until_page_loaded(webdriver, MyPage, 60)
+
+Note: This will use the PageObject's `_validate_page()` to check if the page is 
+matching the expected page.  It's good to not use URL validation in cases you expect 
+the page to take a long time to load, and instead verify on a list of expected 
+elements you want to have loaded.
 
 
 Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
