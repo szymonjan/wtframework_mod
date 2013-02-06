@@ -3,7 +3,7 @@ Created on Dec 21, 2012
 
 @author: "David Lai"
 '''
-from wtframework.wtf.config.ConfigReader import CONFIG_READER
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 
 class TimeOutManager(object):
     """
@@ -13,7 +13,7 @@ class TimeOutManager(object):
     
     def __init__(self):
         "Initializer"
-        self._config = CONFIG_READER
+        self._config = WTF_CONFIG_READER
 
     @property
     def BRIEF(self):

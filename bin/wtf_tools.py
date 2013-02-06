@@ -25,7 +25,8 @@ if __name__ == '__main__':
         exit(1)
         
     if args[0] == "generate-page":
-        print "Generating page object for url:", args[1]
+        url = args[1]
+        print "Generating page object for url:", url
     else:
         print "Invalid command.", usage, "\nFor help:\nwtf_tools.py --help\n"
 

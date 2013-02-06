@@ -108,4 +108,4 @@ class ConfigReaderAccessException(Exception):
 
 # Create a global constant for referencing this to avoid re-instantiating 
 # this object over and over.
-CONFIG_READER = ConfigReader()
+WTF_CONFIG_READER = ConfigReader()

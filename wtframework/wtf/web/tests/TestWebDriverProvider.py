@@ -7,7 +7,7 @@ from mox import Mox
 from selenium.webdriver import phantomjs
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
-from wtframework.wtf.web.WebDriverProvider import WebDriverManager
+from wtframework.wtf.web.WebDriverManager import WebDriverManager
 import unittest
 
 

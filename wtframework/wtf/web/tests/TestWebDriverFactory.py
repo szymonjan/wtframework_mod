@@ -5,7 +5,7 @@ Created on Dec 20, 2012
 '''
 from mox import Mox
 from wtframework.wtf.config.ConfigReader import ConfigReader,\
-    CONFIG_READER
+    WTF_CONFIG_READER
 from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
 import unittest
 import yaml
@@ -127,7 +127,7 @@ class MockConfigWithSauceLabs(object):
                 version: 16.0
                 platform: Windows 2008
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
-        """.format(CONFIG_READER.get_value("selenium.remote_url"))
+        """.format(WTF_CONFIG_READER.get_value("selenium.remote_url"))
         # TODO: Might be good to replace this with a local grid to avoid using up SauceLab automation hours.
         self.map = yaml.load(config)
 

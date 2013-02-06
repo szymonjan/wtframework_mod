@@ -4,7 +4,7 @@ Created on Dec 24, 2012
 @author: "David Lai"
 '''
 from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
-from wtframework.wtf.web.WebDriverProvider import WebDriverManager
+from wtframework.wtf.web.WebDriverManager import WebDriverManager
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import datetime
 import sys
@@ -12,7 +12,7 @@ import unittest
 import warnings
 
 
-class WDBaseTest(unittest.TestCase):
+class WTFBaseTest(unittest.TestCase):
     '''
     Test Cases can extend this test to additional unit test functionality such as 
     take screenshot on failure.
@@ -26,7 +26,7 @@ class WDBaseTest(unittest.TestCase):
     _screenshot_util = None
 
     def __init__(self, methodName='runTest', webdriver_provider=None, screenshot_util=None):
-        super(WDBaseTest, self).__init__(methodName)
+        super(WTFBaseTest, self).__init__(methodName)
         
         if webdriver_provider == None:
             self._webdriver_provider = WebDriverManager.get_instance()

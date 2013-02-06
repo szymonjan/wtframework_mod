@@ -3,7 +3,7 @@ Created on Dec 21, 2012
 
 @author: "David Lai"
 '''
-from wtframework.wtf.config.ConfigReader import CONFIG_READER
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import abc
 
@@ -25,7 +25,7 @@ class PageObject(object):
 
     _names_of_classes_we_already_took_screen_caps_of = {}
 
-    def __init__(self, webdriver, config_reader = CONFIG_READER):
+    def __init__(self, webdriver, config_reader = WTF_CONFIG_READER):
         '''
         Constructor
         @param webdriver: WebDriver

@@ -4,7 +4,7 @@ Created on Dec 20, 2012
 @author: "David Lai"
 '''
 from selenium import webdriver
-from wtframework.wtf.config.ConfigReader import CONFIG_READER
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 from wtframework.wtf.web.WDDesiredCapabilities import \
     WDDesiredCapabilities
 #import webdriverplus #Note: Pydev will display import error here, but this code should work.
@@ -57,7 +57,7 @@ class WebDriverFactory(object):
         if config_reader != None:
             self._config_reader = config_reader
         else:
-            self._config_reader = CONFIG_READER
+            self._config_reader = WTF_CONFIG_READER
 
         try:
             if self._config_reader.get_value(WebDriverFactory.SHUTDOWN_HOOK_CONFIG) == True:
