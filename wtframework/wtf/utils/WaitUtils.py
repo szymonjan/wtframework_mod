@@ -4,7 +4,7 @@ Created on Dec 28, 2012
 @author: "David Lai"
 '''
 from datetime import datetime, timedelta
-from wtframework.wtf.config.TimeOutManager import TIMEOUT_MANAGER
+from wtframework.wtf.config.TimeOutManager import WTF_TIMEOUT_MANAGER
 import time
 
 class WaitUtils():
@@ -13,7 +13,7 @@ class WaitUtils():
     '''
 
     @staticmethod
-    def wait_until(condition, timeout=TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False):
+    def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False):
         '''
         Waits until URL matches the expression.
         @param condition: Lambda expression to wait on.  Lambda expression 

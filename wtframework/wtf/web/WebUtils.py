@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from urllib2 import urlopen
-from wtframework.wtf.config.TimeOutManager import TIMEOUT_MANAGER
+from wtframework.wtf.config.TimeOutManager import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.web.PageFactory import PageFactory
 import inspect
 import time
@@ -20,7 +20,7 @@ class WebUtils(object):
     """
     
     @staticmethod
-    def wait_until_page_loaded(page_obj_class, webdriver, timeout=TIMEOUT_MANAGER.NORMAL, sleep=0.5):
+    def wait_until_page_loaded(page_obj_class, webdriver, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
         """
         Waits until the page is loaded.
         @return: Returns PageObject of type passed in.
@@ -46,13 +46,13 @@ class WebUtils(object):
 
     @staticmethod
     def wait_until_element_not_visible(webdriver, locator_lambda_expression, \
-                                       timeout=TIMEOUT_MANAGER.NORMAL, sleep=0.5):
+                                       timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
         "Wait for a WebElement to disappear."
         # Wait for loading progress indicator to go away.
         try:
             stoptime = datetime.now() + timedelta(seconds=timeout)
             while datetime.now() < stoptime:
-                element = WebDriverWait(webdriver, TIMEOUT_MANAGER.BRIEF).until(locator_lambda_expression)
+                element = WebDriverWait(webdriver, WTF_TIMEOUT_MANAGER.BRIEF).until(locator_lambda_expression)
                 if element.is_displayed():
                     time.sleep(sleep)
                 else:

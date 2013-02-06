@@ -40,4 +40,4 @@ class TimeOutManager(object):
 
 # Create a global constant for referencing this to avoid re-instantiating 
 # this object over and over.
-TIMEOUT_MANAGER = TimeOutManager()
+WTF_TIMEOUT_MANAGER = TimeOutManager()

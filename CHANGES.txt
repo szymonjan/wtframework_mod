@@ -1,1 +1,6 @@
+
+v0.0.5 Refactoring 2/6/2013
+    - Changed some constants around.
+    - WebDriverProvider is now WebDriverManager
+
 v0.1.1, 2013/2/3 -- Initial Release
