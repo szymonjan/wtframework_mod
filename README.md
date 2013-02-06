@@ -3,9 +3,9 @@ WTF - Web Test Framework
 https://github.com/wiredrive/wtframework
 
 
-Wiredrive Web Test Framework (referred to as WTF for short) provides a 
-structured testing framework for testing a Web Application using nose unit 
-test framework and Selenium Webdriver. 
+Wiredrive Test Framework (referred to as WTF for short) provides a structured testing 
+framework for testing a Web Applications in a maintainable manner.  It helps QA/SDET
+professionals quickly setup and develop acceptance level web tests.
 
 
 Install
@@ -60,12 +60,56 @@ WTF Framework Features
 
 PageObjects
 -----------
-#TODO
+WTF provides handy generators for quickly generating PageObjects.  The following 
+command will generate a PageObject given a name and URL. To use PageObject generator,
+type the following command.
+
+	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
+	
+This will do the following:
+1. Creates a new file named after your page object.
+2. Within the file, it'll create a new class that extends PageObject base class.
+3. It will generate a page validation method, which will validate the page by url.
+4. It will scan the target page location for non-hidden input tags, and create 
+object mappings for those inputs.  The 'name' attribute will be used for identifying 
+and naming the mapped objects.
+
+Note: I have not implemented any sort of session support yet. So this will not work in 
+pages that require a session.
+
+
+
+Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
+changes to the mappings and page verification routines.  As a good practice, it's good 
+to write methods to expose your transactional logic as a higher level method call 
+to avoid cluttering your high level tests and test flows with low level UI logic.
+
+See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageobject.html
+
 
 Configurable Tests
 ------------------
-#TODO
+Being able to run tests across different environments and settings is a powerful tool.
+WTF has a powerful tool for working with configurations called `CONFIG_READER`.  By 
+default, it'll look at the default.yaml file in the /configs directory.  But you may 
+specify using other config files by setting the `WTF_ENV` variable.  This is useful to 
+have different config files for your different test environments.  Then in your CI 
+system, you can just specify which config file to use.
 
+In your tests, you can pull the values you have stored in your config file using the 
+`CONFIG_READER` like this:
+
+	base_url = CONFIG_READER.get_value("baseurl")
+	webdriver.get( base_url + "/somelocation" )
+
+This allows you to make your test environment agnostic, runnable across multiple 
+configurations with just a switch of an environment variable.
+	
+
+License
+-------
+This framework is free and open source.  Licensed under GPLv3. See 'LICENSE.TXT' for 
+license details.
 
 Credits
 ------------
