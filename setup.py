@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.0.1',
+    version='0.0.2',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework.wtf.wdtestobjects',
@@ -15,9 +15,9 @@ setup(
               'wtframework.wtf._example_files_',
               ],
     scripts=['bin/wtf_init.py'],
-    url='https://github.com/dlai0001/WD-WTF',
+    url='https://github.com/wiredrive/wtframework',
     license='LICENSE.txt',
-    description='Wiredrive Web Test Framework',
+    description='WTF - Web Test Framework',
     long_description=open('README.md').read(),
     install_requires=[
         "Mox>=0.5.3",

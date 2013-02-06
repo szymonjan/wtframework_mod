@@ -1,4 +1,4 @@
-Wiredrive Web Test Framework
+WTF - Web Test Framework
 ======
 https://github.com/wiredrive/WD-WTF
 
@@ -13,7 +13,7 @@ Install
 
 Installation via PYPI
 
-	pip install wiredrive-wtf
+	pip install wtframework
 
 
 Setting up your project
@@ -53,4 +53,4 @@ Configurable Tests
 
 Credits
 ------------
-David Lai
+David Lai <david@wiredrive.com>
