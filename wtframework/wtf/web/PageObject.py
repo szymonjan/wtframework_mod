@@ -35,6 +35,7 @@ class PageObject(object):
 
         self.webdriver = webdriver
 
+        # Take reference screenshots if this option is enabled.
         if config_reader.get_value("selenium.take_reference_screenshot") == True:
             class_name = type(self).__name__
             if class_name in PageObject._names_of_classes_we_already_took_screen_caps_of:
@@ -62,7 +63,7 @@ class PageObject(object):
 
 
     @staticmethod
-    def get_page_match_score(self):
+    def get_page_match_score(self, webdriver):
         '''
         Override this to provide custom match scoring criteria.
         By default it'll return percent of matching elements based on 

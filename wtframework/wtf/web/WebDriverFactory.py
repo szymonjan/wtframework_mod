@@ -5,8 +5,7 @@ Created on Dec 20, 2012
 '''
 from selenium import webdriver
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
-from wtframework.wtf.web.WDDesiredCapabilities import \
-    WDDesiredCapabilities
+from wtframework.wtf.web.WTFDesiredCapabilities import WTFDesiredCapabilities
 #import webdriverplus #Note: Pydev will display import error here, but this code should work.
 
 
@@ -133,15 +132,15 @@ class WebDriverFactory(object):
         browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
         remote_url = self._config_reader.get_value(WebDriverFactory.REMOTE_URL_CONFIG)
 
-        browser_constant_dict = {self.HTMLUNIT:WDDesiredCapabilities.HTMLUNIT, \
-                                 self.HTMLUNITWITHJS:WDDesiredCapabilities.HTMLUNITWITHJS, \
-                                 self.ANDROID:WDDesiredCapabilities.ANDROID,\
-                                 self.CHROME:WDDesiredCapabilities.CHROME,\
-                                 self.FIREFOX:WDDesiredCapabilities.FIREFOX,\
-                                 self.INTERNETEXPLORER:WDDesiredCapabilities.INTERNETEXPLORER,\
-                                 self.IPAD:WDDesiredCapabilities.IPAD,\
-                                 self.IPHONE:WDDesiredCapabilities.IPHONE,\
-                                 self.OPERA:WDDesiredCapabilities.OPERA }
+        browser_constant_dict = {self.HTMLUNIT:WTFDesiredCapabilities.HTMLUNIT, \
+                                 self.HTMLUNITWITHJS:WTFDesiredCapabilities.HTMLUNITWITHJS, \
+                                 self.ANDROID:WTFDesiredCapabilities.ANDROID,\
+                                 self.CHROME:WTFDesiredCapabilities.CHROME,\
+                                 self.FIREFOX:WTFDesiredCapabilities.FIREFOX,\
+                                 self.INTERNETEXPLORER:WTFDesiredCapabilities.INTERNETEXPLORER,\
+                                 self.IPAD:WTFDesiredCapabilities.IPAD,\
+                                 self.IPHONE:WTFDesiredCapabilities.IPHONE,\
+                                 self.OPERA:WTFDesiredCapabilities.OPERA }
         # Currently not supporting safari due to issues with the safari webdriver.
         # "SAFARI":WDDesiredCapabilities.SAFARI}
         

@@ -19,7 +19,7 @@ class ConfigReader:
     DEFAULT_CONFIG_FILE = 'default'
     CONFIG_EXT = '.yaml'
 
-    ENV_VARS = "WD_ENV"
+    ENV_VARS = "WTF_ENV"
 
     _dataMaps = None #instance variable to store config data loaded.
     _singleton_instance = None #class variable to track singleton.

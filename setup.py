@@ -10,6 +10,7 @@ setup(
               'wtframework.wtf.email',
               'wtframework.wtf.utils',
               'wtframework.wtf.web',
+              'wtframework.wtf.assettools',
               'wtframework.wtf',
               'wtframework',
               'wtframework.wtf._devtools_',
