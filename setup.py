@@ -16,7 +16,7 @@ setup(
               'wtframework.wtf._devtools_',
               'wtframework.wtf._devtools_.filetemplates',
               ],
-    scripts=['bin/wtf_init.py'],
+    scripts=['bin/wtf_init.py', 'bin/wtf_tools.py'],
     url='https://github.com/wiredrive/wtframework',
     license='LICENSE.txt',
     description='WTF - Web Test Framework',

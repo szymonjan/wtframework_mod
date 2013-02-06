@@ -23,6 +23,10 @@ Run the following command to initialize an empty project structure for a WTF tes
 	
 	wtf_init.py YourProjectName
 
+Windows Note: .py files may not be executable, you may have to prefix these commands 
+with the python command. 
+	python wtf_init.py YourProject
+
 Next you'll need to setup your python path.
 
 	export PYTHONPATH=$PYTHONPATH:path/to/project/tests
@@ -52,7 +56,6 @@ Running your tests
 Run your tests using nosetests.
 
 	./runtests.py
-
 
 
 WTF Framework Features
