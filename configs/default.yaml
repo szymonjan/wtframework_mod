@@ -1,4 +1,18 @@
 
+#########################################################################
+# WTF Settings file.  Specify settings using yaml format.
+# ex:
+# login_settings: 
+#   login: testuser
+#   password: s3cure
+#
+# Then in your test code, you can refer to it using ConfigReader.
+# 
+# my_username = CONFIG_READER.get_value('login_settings.login')
+# my_password = CONFIG_READER.get_value('login_settings.password')
+# 
+#########################################################################
+
 # Settings for Selenium WebDriver used for browser testing.
 selenium:
   # Set type to LOCAL for running locally, and to REMOTE, to run on a remote 
@@ -18,8 +32,7 @@ selenium:
 
   # remote_url is required if type=REMOTE.  Set this to point at the Remote Webdriver 
   # connection string.
-  # Example using Sauce Labs
-  # remote_url: http://account:apikey@ondemand.saucelabs.com:80/wd/hub
+  #remote_url: http://url.to.seleniumgrid:4444/wd/hub
 
   # Browser can be the following options.
   # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
@@ -28,7 +41,7 @@ selenium:
 
   # Required if browser is set to CROME.  This should point to the chrome driver path 
   # relative to root '/'.
-  #chromedriver_path: /Users/username/projects/wd-wtf/webdrivers/mac/chromedriver
+  #chromedriver_path: /Users/username/path/to/chromedriver
 
   # Desired capabilities to pass to Selenium Grid.
   # Required if using selenium Grid.
@@ -40,7 +53,9 @@ selenium:
     platform: WINDOWS
     
     # Name you'd like to label your sessions. (useful for labeling on sauce)
-    name: WiredriveWTF_Test
+    name: YourTestProjectName
+
+
 
 
 # Default wait timeout settings. Timeout settings are specified in seconds.
@@ -55,4 +70,5 @@ timeout:
   long: 60
   # Timeout for something extremely long, which a user would normally get up and take a break.
   epic: 300
+
 
