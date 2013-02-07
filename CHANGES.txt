@@ -1,3 +1,7 @@
+v0.0.8 Changes to generator 2/6/2013
+	- Added 'generate-test' option for wtf_tools
+	- Added some documentation.
+
 v0.0.6 Refactoring 2/6/2013
     - Added .create_page() method to base PageObject.  Simple shortcut for calling PageFactory
 
