@@ -11,12 +11,17 @@ import urllib2
 def _process_input_tag(html):
     #find name property expression, used is varous input types.
     name_expr = "name=['\"]([^'\"]+)['\"]"
+    value_expr = "value=['\"]([^'\"]+)['\"]"
     
     # process text input
     if ("type=\"text\"" in html) or (not "type" in html):
-        name = re.search(name_expr, html, re.IGNORECASE).group(1)
-        obj = "input_{name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
-        return obj
+        try:
+            name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            name = _strip_non_chars_from_name(name)
+            obj = "{name}_text_input = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
+            return obj
+        except:
+            pass
     # process textarea inputs
     
     # process radio types
@@ -28,15 +33,20 @@ def _process_input_tag(html):
     #process submit types.
     if "type=\"submit\"" in html:
         try:
-            name = re.search(name_expr, html, re.IGNORECASE).group(1)
-            obj = "input_{name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
+            try:
+                name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            except:
+                name = re.search(value_expr, html, re.IGNORECASE).group(1)
+            name = _strip_non_chars_from_name(name)
+            obj = "{name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
             return obj
         except:
             pass
-        
-        
-    print "why here"
     
+
+def _strip_non_chars_from_name(name):
+    "remove non alpha chars from name."
+    return re.sub("[^a-zA-Z_]", "_", name).lower()
 
 def generate_page_object(page_name, url):
     "Generate page object from URL"
