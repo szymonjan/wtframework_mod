@@ -56,17 +56,17 @@ you write in the WTF framework.
 
 Configuring Eclipse/PyDev Environment
 -------------------------------------
-1. Download/Install Eclipse. http://www.eclipse.org/
-2. Install the PyDev plugin. http://pydev.org/
-3. Goto Eclipse -> Preferences (Or on windows, this Window -> Preferences )
-4. Goto PyDev -> Interpretor Python then open the Libraries tab.
-5. Add you python site-packages (where pip installs packages to)
-At this point your PyDev enviornment should be able to recognize your 
-installed packages.
-6. In Eclipse,  goto "File" and create a new PyDev project.
-7. Fill out the required fields and use your generated project structure as
-your Project folder.  This should create the PyDev project files necessary to
-allow you to work on this project as a PyDev project.
+1.	Download/Install Eclipse. http://www.eclipse.org/
+2.	Install the PyDev plugin. http://pydev.org/
+3.	Goto Eclipse -> Preferences (Or on windows, this Window -> Preferences )
+4.	Goto PyDev -> Interpretor Python then open the Libraries tab.
+5.	Add you python site-packages (where pip installs packages to)
+	At this point your PyDev enviornment should be able to recognize your 
+	installed packages.
+6.	In Eclipse,  goto "File" and create a new PyDev project.
+7.	Fill out the required fields and use your generated project structure as
+	your Project folder.  This should create the PyDev project files necessary to
+	allow you to work on this project as a PyDev project.
 
 
 Running your tests
@@ -89,12 +89,12 @@ type the following command.
 	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
 	
 This will do the following:
-1. Creates a new file named after your page object.
-2. Within the file, it'll create a new class that extends PageObject base class.
-3. It will generate a page validation method, which will validate the page by url.
-4. It will scan the target page location for non-hidden input tags, and create 
-object mappings for those inputs.  The 'name' attribute will be used for identifying 
-and naming the mapped objects.
+1.	Creates a new file named after your page object.
+2.	Within the file, it'll create a new class that extends PageObject base class.
+3.	It will generate a page validation method, which will validate the page by url.
+4.	It will scan the target page location for non-hidden input tags, and create 
+	object mappings for those inputs.  The 'name' attribute will be used for identifying 
+	and naming the mapped objects.
 
 Note: I have not implemented any sort of session support yet. So this will not work in 
 pages that require a session.
@@ -159,6 +159,11 @@ License
 -------
 This framework is free and open source.  Licensed under GPLv3. See 'LICENSE.TXT' for 
 license details.
+
+How to Contribute
+-----------------
+Feel free to pull the source code.  If you want to submit code, please send a pull 
+request against the development branch.
 
 Credits
 ------------
