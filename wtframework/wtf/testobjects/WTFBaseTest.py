@@ -10,6 +10,8 @@ import datetime
 import sys
 import unittest
 import warnings
+import re
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 
 
 class WTFBaseTest(unittest.TestCase):
@@ -82,7 +84,9 @@ class WTFBaseTest(unittest.TestCase):
                     raise
                 except self.failureException:
                     # Take Screenshot on test failure.
-                    self.__take_screenshot_if_webdriver_open__()
+                    if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
+                        self.__take_screenshot_if_webdriver_open__()
+
                     result.addFailure(self, sys.exc_info())
                 except _ExpectedFailure as e:
                     addExpectedFailure = getattr(result, 'addExpectedFailure', None)
@@ -104,7 +108,9 @@ class WTFBaseTest(unittest.TestCase):
                     self._addSkip(result, str(e))
                 except:
                     # Take screenshot on error.
-                    self.__take_screenshot_if_webdriver_open__()
+                    if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
+                        self.__take_screenshot_if_webdriver_open__()
+
                     result.addError(self, sys.exc_info())
                 else:
                     success = True
@@ -146,6 +152,7 @@ class WTFBaseTest(unittest.TestCase):
         try:
             if self._webdriver_provider.is_driver_available():
                 name = self.__generate_screenshot_filename__()
+                name = re.sub("[^a-zA-Z]", "", name)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
                 print "Screenshot taken:" + name
         except Exception as e:
