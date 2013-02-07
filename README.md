@@ -3,9 +3,11 @@ WTF - Web Test Framework
 https://github.com/wiredrive/wtframework
 
 
-Wiredrive Test Framework (referred to as WTF for short) provides a structured testing 
+Web Test Framework (referred to as WTF for short) provides a structured testing 
 framework for testing a Web Applications in a maintainable manner.  It helps QA/SDET
-professionals quickly setup and develop acceptance level web tests.
+professionals quickly setup and develop acceptance level web tests.  The aim of this 
+project is to provide a structured layered framework for web testing like how Django 
+and other modern MVC frameworks provide a structured way of developing web applications.
 
 
 Install
@@ -21,11 +23,11 @@ Setting up your project
 
 Run the following command to initialize an empty project structure for a WTF test.
 	
-	wtf_init.py YourProjectName
+	wtf_init.py YourProjectName --withexamples
 
 Windows Note: .py files may not be executable, you may have to prefix these commands 
 with the python command. 
-	python wtf_init.py YourProject
+	python wtf_init.py YourProject --withexamples
 
 Next you'll need to setup your python path.
 
@@ -126,6 +128,15 @@ In your tests, you can pull the values you have stored in your config file using
 This allows you to make your test environment agnostic, runnable across multiple 
 configurations with just a switch of an environment variable.
 	
+
+WTFBaseTest
+-----------
+WTF framework adds some added functionality like capturing screenshots to the base 
+Unit test.  In order to leverage this functionality, your tests should extend the 
+`WTFBaseTest` base class.  
+
+Misc
+====
 
 License
 -------
