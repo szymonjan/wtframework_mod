@@ -13,6 +13,10 @@ and other modern MVC frameworks provide a structured way of developing web appli
 Install
 =======
 
+Requirements
+*	Python 2.7 - http://www.python.org/download/
+*	PyPi (pip) - http://www.pip-installer.org/en/latest/
+
 Installation via PYPI
 
 	pip install wtframework
@@ -89,6 +93,7 @@ type the following command.
 	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
 	
 This will do the following:
+
 1.	Creates a new file named after your page object.
 2.	Within the file, it'll create a new class that extends PageObject base class.
 3.	It will generate a page validation method, which will validate the page by url.
