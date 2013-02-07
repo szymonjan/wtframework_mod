@@ -28,6 +28,23 @@ Run the following command to initialize an empty project structure for a WTF tes
 Windows Note: .py files may not be executable, you may have to prefix these commands 
 with the python command. 
 	python wtf_init.py YourProject --withexamples
+	
+This will create an the folders and packages of your project.  You'll see something like:
+
+	/YourProjectName
+		/assets - place non-code files used in your tests here.
+		/configs - location of config files.
+		/reference-screenshots - if enabled, reference screenshots are placed here.
+		/reports - test result XML files will go here when you run tests.
+		/screenshots - screenshots taken on test failures will go here.
+		/tests - top level package for your test code.
+			/flows - high level reuseable multipage flows.
+			/models - data models go here. (like DataBase ORM code)
+			/pages - Your page objects go here.
+			/support - reuseable support utility functions go here.
+			/testdata - custom code for working with test data.
+			/tests - Your high level tests will go here.
+	
 
 Next you'll need to setup your python path.
 
