@@ -7,7 +7,7 @@ Created on {date}
 @author: Your Name Here
 """
 import unittest
-from wtframework.wtf.wdtestobjects.WTFBaseTest import WTFBaseTest
+from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
 from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
 
 class {testname}(WTFBaseTest):
