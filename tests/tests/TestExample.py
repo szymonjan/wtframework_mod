@@ -5,7 +5,7 @@ Created on Feb 6, 2013
 @author: davidlai
 '''
 import unittest
-from wtframework.wtf.wdtestobjects.WTFBaseTest import WTFBaseTest
+from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
 from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
 from wtframework.wtf.web.PageFactory import PageFactory
 from tests.pages.GoogleSearchPage import GoogleSearchPage

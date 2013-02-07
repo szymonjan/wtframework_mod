@@ -8,7 +8,6 @@ from optparse import OptionParser
 from wtframework.wtf._devtools_ import page_object_tools, test_generation_tools
 import os
 from wtframework.wtf.utils.ProjectUtils import ProjectUtils
-from wtframework.wtf._devtools_.filetemplates import _test_template_
 
 
 def create_file(filepath, contents):
