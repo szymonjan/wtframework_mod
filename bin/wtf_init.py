@@ -6,7 +6,8 @@ Created on Feb 4, 2013
 '''
 from optparse import OptionParser
 from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
-    _root_folder_placeholder_, _runtests_py_
+    _root_folder_placeholder_, _runtests_py_, _TestExample_py_, _ISearchPage_py_,\
+    _GoogleSearchPage_py_, _YahooSearchPage_py_
 import os.path
 
 
@@ -71,19 +72,28 @@ if __name__ == '__main__':
     
     #create tests dir
     ensure_dir(project_dir + "/tests")
+    create_file(project_dir + "/tests/__init__.py", "'Top level tests folder.  Organize your items in the subfolders below.'")
     ensure_dir(project_dir + "/tests/flows")
+    create_file(project_dir + "/tests/flows/__init__.py", "'Put reusable multi-page flows here.'")
     ensure_dir(project_dir + "/tests/models")
+    create_file(project_dir + "/tests/models/__init__.py", "'Put models like database abstractions here.'")
     ensure_dir(project_dir + "/tests/pages")
+    create_file(project_dir + "/tests/pages/__init__.py", "'Put your PageObjects here.'")
     ensure_dir(project_dir + "/tests/support")
+    create_file(project_dir + "/tests/support/__init__.py", "Put various utility functions you want to reuse here.'")
     ensure_dir(project_dir + "/tests/testdata")
+    create_file(project_dir + "/tests/testdata/__init__.py", "'Put reuseable functions for generating and handling test data here.'")
     ensure_dir(project_dir + "/tests/tests")
+    create_file(project_dir + "/tests/tests/__init__.py", "'Put your high level tests here.'")
 
 
-    create_examples = False
     if options.examples == True:
-        #Create additional project files.
-        #TODO
-        pass
+        print "Generating example files."
+        create_file(project_dir + "/tests/tests/TestExample.py", _TestExample_py_.content)
+        create_file(project_dir + "/tests/pages/ISearchPage.py", _ISearchPage_py_.content)
+        create_file(project_dir + "/tests/pages/GoogleSearchPage.py", _GoogleSearchPage_py_.content)
+        create_file(project_dir + "/tests/pages/YahooSearchPage.py", _YahooSearchPage_py_.content)
+        
 
 
 

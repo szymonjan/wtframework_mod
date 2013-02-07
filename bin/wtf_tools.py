@@ -5,8 +5,9 @@ Created on Feb 4, 2013
 @author: "David Lai"
 '''
 from optparse import OptionParser
-from wtframework.wtf._devtools_ import page_object_tools
+from wtframework.wtf._devtools_ import page_object_tools, test_generation_tools
 import os
+from wtframework.wtf.utils.ProjectUtils import ProjectUtils
 
 
 def create_file(filepath, contents):
@@ -41,7 +42,16 @@ if __name__ == '__main__':
         url = args[2]
         print "Generating page object for url:", url
         file_content = page_object_tools.generate_page_object(pagename, url)
-        create_file(os.getcwd() + "/{pagename}.py".format(pagename=pagename), file_content)
+        create_file(ProjectUtils.get_project_root() \
+                    +"tests/pages/{pagename}.py".format(pagename=pagename), file_content)
+
+    elif args[0] == "generate-test":
+        test_name = args[1]
+        print "Generating generic test."
+        file_content = test_generation_tools.generate_empty_test(test_name)
+        create_file(ProjectUtils.get_project_root() \
+                    +"tests/tests/{test_name}.py".format(test_name=test_name),\
+                    file_content)
         
     else:
         print "Invalid command.", usage, "\nFor help:\nwtf_tools.py --help\n"
