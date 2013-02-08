@@ -80,6 +80,10 @@ Run your tests using nosetests.
 
 	./runtests.py
 
+This will execute the unit tests in the `tests/tests` folder.  The test results will be
+written to `reports/`, any screenshots taken during errors will be stored in the
+`screenshots/` folder. 
+
 
 WTF Framework Features
 ======================
@@ -90,7 +94,7 @@ WTF provides handy generators for quickly generating PageObjects.  The following
 command will generate a PageObject given a name and URL. To use PageObject generator,
 type the following command.
 
-	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
+	wtf_tools.py generate-page W3FormSamplePage http://www.w3schools.com/html/html_forms.asp
 	
 This will do the following:
 
