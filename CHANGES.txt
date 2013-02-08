@@ -1,3 +1,8 @@
+v0.0.10 Changes to generator 2/8/2013
+	- added '-c configfile' option to runtests.py for specifying config file.
+	- added more input type support for page object generator.
+	- minor bug fixes.
+
 v0.0.8 Changes to generator 2/6/2013
 	- Added 'generate-test' option for wtf_tools
 	- Added some documentation.
