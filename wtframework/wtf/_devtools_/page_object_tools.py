@@ -9,34 +9,106 @@ import re
 import urllib2
 
 def _process_input_tag(html):
+    html = html.lower()
+
     #find name property expression, used is varous input types.
     name_expr = "name=['\"]([^'\"]+)['\"]"
+    value_expr = "value=['\"]([^'\"]+)['\"]"
     
     # process text input
     if ("type=\"text\"" in html) or (not "type" in html):
-        name = re.search(name_expr, html, re.IGNORECASE).group(1)
-        obj = "input_{name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
-        return obj
-    # process textarea inputs
-    
-    # process radio types
-    # TODO
-    
-    # process checkbox types
-    # TODO
-    
-    #process submit types.
-    if "type=\"submit\"" in html:
         try:
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
-            obj = "input_{name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name)
+            display_name = _strip_non_chars_from_name(name)
+            obj = "{name}_text = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+            return obj
+        except:
+            pass
+
+    # process password input
+    if ("type=\"password\"" in html):
+        try:
+            name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            display_name = _strip_non_chars_from_name(name)
+            if display_name != "password": 
+                display_name += "_password"
+            obj = "{display_name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
             return obj
         except:
             pass
         
-        
-    print "why here"
+    # process textarea inputs
+    if ("<textarea" in html):
+        try:
+            name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            display_name = _strip_non_chars_from_name(name)
+            obj = "{name}_textarea = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+            
+            return obj
+        except:
+            pass
     
+    # process radio types
+    if ("type=\"radio\"" in html):
+        try:
+            name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            value = re.search(value_expr, html, re.IGNORECASE).group(1)
+            display_name = _strip_non_chars_from_name(name + "_" + value)
+            obj = "{display_name}_radio = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")".format(name=name, display_name=display_name, value=value)
+            
+            return obj
+        except:
+            pass
+
+    
+    # process checkbox types
+    if ("type=\"checkbox\"" in html):
+        try:
+            name = re.search(name_expr, html, re.IGNORECASE).group(1)
+            value = re.search(value_expr, html, re.IGNORECASE).group(1)
+            display_name = _strip_non_chars_from_name(name + "_" + value)
+            obj = "{display_name}_checkbox = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")".format(name=name, display_name=display_name, value=value)
+            
+            return obj
+        except:
+            pass
+    
+    #process submit types.
+    if "type=\"submit\"" in html:
+        try:
+            try:
+                name = re.search(name_expr, html, re.IGNORECASE).group(1)
+                display_name = _strip_non_chars_from_name(name)
+                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+                return obj
+            except:
+                value = re.search(value_expr, html, re.IGNORECASE).group(1)
+                display_name = _strip_non_chars_from_name(value)
+                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")".format(value=value, display_name=display_name)
+                return obj
+        except:
+            pass
+
+    #process button types.
+    if "type=\"button\"" in html:
+        try:
+            try:
+                name = re.search(name_expr, html, re.IGNORECASE).group(1)
+                display_name = _strip_non_chars_from_name(name)
+                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+                return obj
+            except:
+                value = re.search(value_expr, html, re.IGNORECASE).group(1)
+                display_name = _strip_non_chars_from_name(value)
+                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")".format(value=value, display_name=display_name)
+                return obj
+        except:
+            pass
+    
+
+def _strip_non_chars_from_name(name):
+    "remove non alpha chars from name."
+    return re.sub("[^a-zA-Z_]", "_", name).lower()
 
 def generate_page_object(page_name, url):
     "Generate page object from URL"
@@ -64,6 +136,7 @@ def generate_page_object(page_name, url):
     for input_tag_match in input_tag_iter:
         if not "hidden" in input_tag_match.group(0):
             try:
+                print "processing" + input_tag_match.group(0)
                 obj_map_entry = _process_input_tag(input_tag_match.group(0))
                 objectmap += "    " + obj_map_entry +"\n"
             except Exception as e:

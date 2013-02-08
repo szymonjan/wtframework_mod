@@ -34,16 +34,19 @@ class ConfigReader:
                 configs = re.split(",|;", _env_var_)
                 for config in reversed(configs):
                     self.__load_config_file(config)
-            elif os.environ[ConfigReader.ENV_VARS] == None:
+            elif not ConfigReader.ENV_VARS in os.environ:
                 raise Exception("No Config Specified, using defaults.")
             else:
                 # Read and load in all configs specified in reverse order
                 configs = re.split(",|;", str(os.environ[ConfigReader.ENV_VARS]))
                 for config in reversed(configs):
                     self.__load_config_file(config)
+
+                
         except Exception as e:
             #Fall back to default.yaml file when no config settings are specified.
-            print e
+            print "An error occurred while loading config file:", e
+            print "Falling back to 'default' config."
             self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
 
 
@@ -91,6 +94,7 @@ class ConfigReader:
                                             ConfigReader.CONFIG_LOCATION + 
                                             file_name + 
                                             ConfigReader.CONFIG_EXT)
+        print "locaing config file:", config_file_location
         config_yaml = open(config_file_location, 'r')
         dataMap = yaml.load(config_yaml)
         self._dataMaps.insert(0, dataMap)

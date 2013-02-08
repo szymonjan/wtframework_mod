@@ -13,6 +13,10 @@ and other modern MVC frameworks provide a structured way of developing web appli
 Install
 =======
 
+Requirements
+*	Python 2.7 - http://www.python.org/download/
+*	PyPi (pip) - http://www.pip-installer.org/en/latest/
+
 Installation via PYPI
 
 	pip install wtframework
@@ -74,7 +78,11 @@ Running your tests
 
 Run your tests using nosetests.
 
-	./runtests.py
+	./runtests.py [-c ConfigFile]
+
+This will execute the unit tests in the `tests/tests` folder.  The test results will be
+written to `reports/`, any screenshots taken during errors will be stored in the
+`screenshots/` folder.
 
 
 WTF Framework Features
@@ -86,9 +94,10 @@ WTF provides handy generators for quickly generating PageObjects.  The following
 command will generate a PageObject given a name and URL. To use PageObject generator,
 type the following command.
 
-	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
+	wtf_tools.py generate-page W3FormSamplePage http://www.w3schools.com/html/html_forms.asp
 	
 This will do the following:
+
 1.	Creates a new file named after your page object.
 2.	Within the file, it'll create a new class that extends PageObject base class.
 3.	It will generate a page validation method, which will validate the page by url.
@@ -130,20 +139,22 @@ See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageo
 Configurable Tests
 ------------------
 Being able to run tests across different environments and settings is a powerful tool.
-WTF has a powerful tool for working with configurations called `CONFIG_READER`.  By 
+WTF has a powerful tool for working with configurations called `WTF_CONFIG_READER`.  By 
 default, it'll look at the default.yaml file in the /configs directory.  But you may 
 specify using other config files by setting the `WTF_ENV` variable.  This is useful to 
 have different config files for your different test environments.  Then in your CI 
 system, you can just specify which config file to use.
 
 In your tests, you can pull the values you have stored in your config file using the 
-`CONFIG_READER` like this:
+`WTF_CONFIG_READER` like this:
 
-	base_url = CONFIG_READER.get_value("baseurl")
+	base_url = WTF_CONFIG_READER.get_value("baseurl")
 	webdriver.get( base_url + "/somelocation" )
 
 This allows you to make your test environment agnostic, runnable across multiple 
-configurations with just a switch of an environment variable.
+configurations with just a switch of an environment variable.  This is good for storing 
+environment settings and locations, account information (like DB login), connection 
+strings, etc... 
 	
 
 WTFBaseTest
@@ -162,8 +173,13 @@ license details.
 
 How to Contribute
 -----------------
-Feel free to pull the source code.  If you want to submit code, please send a pull 
-request against the development branch.
+You can fork this repository.  To get the unit tests not marked as skipped running, 
+you'll need to edit or supply your own config file with values for the selenium settings.
+
+Development on this project is currently done using NVIE branching model.  
+http://nvie.com/posts/a-successful-git-branching-model/
+
+To submit code changes, please submit pull requests against the development branch. 
 
 Credits
 ------------

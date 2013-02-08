@@ -4,12 +4,14 @@ Created on Dec 24, 2012
 @author: "David Lai"
 '''
 from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
-from wtframework.wtf.web.WebDriverManager import WebDriverManager
+from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import datetime
 import sys
 import unittest
 import warnings
+import re
+from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
 
 
 class WTFBaseTest(unittest.TestCase):
@@ -29,7 +31,7 @@ class WTFBaseTest(unittest.TestCase):
         super(WTFBaseTest, self).__init__(methodName)
         
         if webdriver_provider == None:
-            self._webdriver_provider = WebDriverManager.get_instance()
+            self._webdriver_provider = WTF_WEBDRIVER_MANAGER.get_instance()
         else:
             self._webdriver_provider = webdriver_provider
 
@@ -82,7 +84,9 @@ class WTFBaseTest(unittest.TestCase):
                     raise
                 except self.failureException:
                     # Take Screenshot on test failure.
-                    self.__take_screenshot_if_webdriver_open__()
+                    if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
+                        self.__take_screenshot_if_webdriver_open__()
+
                     result.addFailure(self, sys.exc_info())
                 except _ExpectedFailure as e:
                     addExpectedFailure = getattr(result, 'addExpectedFailure', None)
@@ -104,7 +108,9 @@ class WTFBaseTest(unittest.TestCase):
                     self._addSkip(result, str(e))
                 except:
                     # Take screenshot on error.
-                    self.__take_screenshot_if_webdriver_open__()
+                    if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
+                        self.__take_screenshot_if_webdriver_open__()
+
                     result.addError(self, sys.exc_info())
                 else:
                     success = True
@@ -136,6 +142,7 @@ class WTFBaseTest(unittest.TestCase):
         @rtype: str
         '''
         fname = str(self).replace("(", "").replace(")", "").replace(" ", "_")
+        fname = re.sub("[^a-zA-Z_]", "", fname)
         fmt='%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
     
@@ -143,10 +150,10 @@ class WTFBaseTest(unittest.TestCase):
         '''
         Take a screenshot if webdriver is open.
         '''
-        try:
-            if self._webdriver_provider.is_driver_available():
+        if self._webdriver_provider.is_driver_available():
+            try:
                 name = self.__generate_screenshot_filename__()
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
                 print "Screenshot taken:" + name
-        except Exception as e:
-            print "Unable to take screenshot. Reason: " + e.message + str(type(e))
+            except Exception as e:
+                print "Unable to take screenshot. Reason: " + e.message + str(type(e))
