@@ -78,11 +78,11 @@ Running your tests
 
 Run your tests using nosetests.
 
-	./runtests.py
+	./runtests.py [-c ConfigFile]
 
 This will execute the unit tests in the `tests/tests` folder.  The test results will be
 written to `reports/`, any screenshots taken during errors will be stored in the
-`screenshots/` folder. 
+`screenshots/` folder.
 
 
 WTF Framework Features
