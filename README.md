@@ -13,6 +13,10 @@ and other modern MVC frameworks provide a structured way of developing web appli
 Install
 =======
 
+Requirements
+*	Python 2.7 - http://www.python.org/download/
+*	PyPi (pip) - http://www.pip-installer.org/en/latest/
+
 Installation via PYPI
 
 	pip install wtframework
@@ -74,7 +78,11 @@ Running your tests
 
 Run your tests using nosetests.
 
-	./runtests.py
+	./runtests.py [-c ConfigFile]
+
+This will execute the unit tests in the `tests/tests` folder.  The test results will be
+written to `reports/`, any screenshots taken during errors will be stored in the
+`screenshots/` folder.
 
 
 WTF Framework Features
@@ -86,9 +94,10 @@ WTF provides handy generators for quickly generating PageObjects.  The following
 command will generate a PageObject given a name and URL. To use PageObject generator,
 type the following command.
 
-	wtf_tools generate-page NameOfPageObject http://your.site.com/page/location
+	wtf_tools.py generate-page W3FormSamplePage http://www.w3schools.com/html/html_forms.asp
 	
 This will do the following:
+
 1.	Creates a new file named after your page object.
 2.	Within the file, it'll create a new class that extends PageObject base class.
 3.	It will generate a page validation method, which will validate the page by url.
