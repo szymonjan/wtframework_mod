@@ -163,6 +163,12 @@ WTF framework adds some added functionality like capturing screenshots to the ba
 Unit test.  In order to leverage this functionality, your tests should extend the 
 `WTFBaseTest` base class.  
 
+WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your own 
+test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
+useful for creating your own base test with your own actions such as recording results 
+to Test Case Management upon test completion.
+
+
 Misc
 ====
 

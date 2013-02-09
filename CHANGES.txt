@@ -1,3 +1,7 @@
+v0.0.?? 
+	- Added TestWatcher feature for registering test watcher to your test cases.
+	- Refactored WTFBaseTest implementation to use TestWatcher
+
 v0.0.10 Changes to generator 2/8/2013
 	- added '-c configfile' option to runtests.py for specifying config file.
 	- added more input type support for page object generator.
