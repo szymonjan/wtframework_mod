@@ -38,6 +38,7 @@ This will create an the folders and packages of your project.  You'll see someth
 	/YourProjectName
 		/assets - place non-code files used in your tests here.
 		/configs - location of config files.
+		/data - data files (like CSV files) goes here.
 		/reference-screenshots - if enabled, reference screenshots are placed here.
 		/reports - test result XML files will go here when you run tests.
 		/screenshots - screenshots taken on test failures will go here.
@@ -53,6 +54,10 @@ This will create an the folders and packages of your project.  You'll see someth
 Next you'll need to setup your python path.
 
 	export PYTHONPATH=$PYTHONPATH:path/to/project/tests
+
+On windows:
+
+	set PYTHONPATH=%PYTHONPATH%;c:\path\to\project\tests
 	
 Now the directory structure and your python path is setup so nosetests can run tests 
 you write in the WTF framework.
