@@ -1,3 +1,6 @@
+v0.0.12 Minor bug fixes 2/12/2013
+    - Removed some bad imports that interfered with running webdriver off the grid.
+
 v0.0.11 Test Watchers and Data-Driven-Tests 2/12/2013
 	- Added TestWatcher feature for registering test watcher to your test cases.
 	- Refactored WTFBaseTest implementation to use TestWatcher
