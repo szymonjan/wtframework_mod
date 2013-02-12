@@ -5,7 +5,6 @@ Created on Feb 5, 2013
 '''
 from wtframework.wtf.utils.ProjectUtils import ProjectUtils
 import os
-from CodeWarrior.CodeWarrior_suite import target_file
 
 
 class DataManager(object):
