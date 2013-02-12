@@ -53,11 +53,11 @@ This will create an the folders and packages of your project.  You'll see someth
 
 Next you'll need to setup your python path.
 
-	export PYTHONPATH=$PYTHONPATH:path/to/project/tests
+	export PYTHONPATH=$PYTHONPATH:path/to/project/
 
 On windows:
 
-	set PYTHONPATH=%PYTHONPATH%;c:\path\to\project\tests
+	set PYTHONPATH=%PYTHONPATH%;c:\path\to\project\
 	
 Now the directory structure and your python path is setup so nosetests can run tests 
 you write in the WTF framework.
@@ -171,7 +171,8 @@ Unit test.  In order to leverage this functionality, your tests should extend th
 WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your own 
 test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
 useful for creating your own base test with your own actions such as recording results 
-to Test Case Management upon test completion.
+to Test Case Management upon test completion.  If you like to do without the added 
+functionality of WTFBaseTest, you can use `WatchedTestCase` and extend it.
 
 
 Data Driven Testing
