@@ -9,7 +9,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from urllib2 import urlopen
 from wtframework.wtf.config.TimeOutManager import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.web.PageFactory import PageFactory
-import inspect
 import time
 import urllib2
 
@@ -35,23 +34,18 @@ class WebUtils(object):
         while datetime.now() < end_time:
             # Check to see if we're at our target page.
             try:
-                if inspect.isabstract(page_obj_class):
-                    return PageFactory.create_page(webdriver, page_obj_class)
-                else:
-                    return page_obj_class(webdriver)
+                return PageFactory.create_page(webdriver, page_obj_class)
             except Exception as e:
                 last_exception = e
                 pass
-            
             # Check to see if we're at one of those labled 'Bad' pages.
             for bad_page_class in bad_page_classes:
                 try:
-                    if inspect.isabstract(page_obj_class):
-                        PageFactory.create_page(webdriver, bad_page_class)
-                    else:
-                        bad_page_class(webdriver)
+                    PageFactory.create_page(webdriver, bad_page_class)
                     #if the if/else statement succeeds, than we have an error.
                     raise BadPageEncounteredError("Encountered a bad page. " + bad_page_class.__name__)
+                except BadPageEncounteredError as e:
+                    raise e
                 except:
                     pass #We didn't hit a bad page class yet.
             #sleep till the next iteration.
