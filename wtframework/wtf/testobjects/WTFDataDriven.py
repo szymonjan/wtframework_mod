@@ -14,8 +14,6 @@ __version__ = '0.2.1wtf'
 
 MAGIC = '%values'  # this value cannot conflict with any real python attribute
 
-CSV_MAGIC = '%csv_values'  # this value cannot conflict with any real python attribute
-
 
 def data(*values):
     """
