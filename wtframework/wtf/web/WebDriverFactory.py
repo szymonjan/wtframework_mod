@@ -113,10 +113,10 @@ class WebDriverFactory(object):
         browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
 
         browser_type_dict = {\
-                             self.CHROME: lambda:webdriver.Chrome(self._config_reader.get_value(WebDriverFactory.CHROME_DRIVER_PATH)),\
-                             self.FIREFOX: lambda:webdriver.Firefox(),\
-                             self.INTERNETEXPLORER: lambda:webdriver.Ie(),\
-                             self.OPERA:lambda:webdriver.Opera()}
+                             WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get_value(WebDriverFactory.CHROME_DRIVER_PATH)),\
+                             WebDriverFactory.FIREFOX: lambda:webdriver.Firefox(),\
+                             WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
+                             WebDriverFactory.OPERA:lambda:webdriver.Opera()}
         # Currently not supporting HTML unit driver due to JS issues that prevent it from 
         # working with our site.
         # "HTMLUNIT": lambda: self.__create_html_unit_driver()}
@@ -133,15 +133,15 @@ class WebDriverFactory(object):
         browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
         remote_url = self._config_reader.get_value(WebDriverFactory.REMOTE_URL_CONFIG)
 
-        browser_constant_dict = {self.HTMLUNIT:WTFDesiredCapabilities.HTMLUNIT, \
-                                 self.HTMLUNITWITHJS:WTFDesiredCapabilities.HTMLUNITWITHJS, \
-                                 self.ANDROID:WTFDesiredCapabilities.ANDROID,\
-                                 self.CHROME:WTFDesiredCapabilities.CHROME,\
-                                 self.FIREFOX:WTFDesiredCapabilities.FIREFOX,\
-                                 self.INTERNETEXPLORER:WTFDesiredCapabilities.INTERNETEXPLORER,\
-                                 self.IPAD:WTFDesiredCapabilities.IPAD,\
-                                 self.IPHONE:WTFDesiredCapabilities.IPHONE,\
-                                 self.OPERA:WTFDesiredCapabilities.OPERA }
+        browser_constant_dict = {WebDriverFactory.HTMLUNIT:WTFDesiredCapabilities.HTMLUNIT, \
+                                 WebDriverFactory.HTMLUNITWITHJS:WTFDesiredCapabilities.HTMLUNITWITHJS, \
+                                 WebDriverFactory.ANDROID:WTFDesiredCapabilities.ANDROID,\
+                                 WebDriverFactory.CHROME:WTFDesiredCapabilities.CHROME,\
+                                 WebDriverFactory.FIREFOX:WTFDesiredCapabilities.FIREFOX,\
+                                 WebDriverFactory.INTERNETEXPLORER:WTFDesiredCapabilities.INTERNETEXPLORER,\
+                                 WebDriverFactory.IPAD:WTFDesiredCapabilities.IPAD,\
+                                 WebDriverFactory.IPHONE:WTFDesiredCapabilities.IPHONE,\
+                                 WebDriverFactory.OPERA:WTFDesiredCapabilities.OPERA }
         # Currently not supporting safari due to issues with the safari webdriver.
         # "SAFARI":WDDesiredCapabilities.SAFARI}
         
