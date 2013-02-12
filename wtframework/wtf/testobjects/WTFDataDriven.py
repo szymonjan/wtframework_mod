@@ -6,9 +6,9 @@ inserting HTML characters from the test.
 """
 
 from functools import wraps
-import re
 from wtframework.wtf.data.CsvReader import CsvReader
 from wtframework.wtf.data.DataManager import WTF_DATA_MANAGER
+import re
 
 __version__ = '0.2.1wtf'
 

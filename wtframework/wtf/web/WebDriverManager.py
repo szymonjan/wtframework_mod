@@ -18,9 +18,6 @@ class WebDriverManager(object):
 
 
     _singleton_instance = None #class variable to track singleton.
-    webdriver = None #instance of webdriver.
-    
-    _webdriver_factory = None
 
     _mox = None
 
@@ -33,6 +30,8 @@ class WebDriverManager(object):
         that need to mock out the webdriver. 
         @type webdriver_factory: WebDriverFactory
         '''
+        self.webdriver = None
+        
         if( webdriver_factory != None):
             self._webdriver_factory = webdriver_factory
         else:

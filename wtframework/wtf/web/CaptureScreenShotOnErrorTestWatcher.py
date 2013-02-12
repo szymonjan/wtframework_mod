@@ -15,10 +15,6 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     Catures screenshot on error if enabled.
     '''
 
-    capture_screenshot = False
-    
-    _webdriver_provider = None
-    _screenshot_util = None
 
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
@@ -26,7 +22,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         '''
         if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
             self.capture_screenshot = True
-
+        else:
+            self.capture_screenshot = False
         
         if webdriver_provider == None:
             self._webdriver_provider = WTF_WEBDRIVER_MANAGER

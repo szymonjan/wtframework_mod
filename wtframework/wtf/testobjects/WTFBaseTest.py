@@ -3,12 +3,12 @@ Created on Dec 24, 2012
 
 @author: "David Lai"
 '''
-from wtframework.wtf.testobjects.TestCase import TestCase
+from wtframework.wtf.testobjects.WatchedTestCase import WatchedTestCase
 from wtframework.wtf.web.CaptureScreenShotOnErrorTestWatcher import \
     CaptureScreenShotOnErrorTestWatcher
 
 
-class WTFBaseTest(TestCase):
+class WTFBaseTest(WatchedTestCase):
     '''
     Test Cases can extend this test to additional unit test functionality such as 
     take screenshot on failure.

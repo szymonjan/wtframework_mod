@@ -22,7 +22,6 @@ class PageObject(object):
     __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
 
     # Webdriver associated with this instance of the PageObject
-    webdriver = None
 
     _names_of_classes_we_already_took_screen_caps_of = {}
 

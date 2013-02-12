@@ -53,6 +53,7 @@ class WebDriverFactory(object):
         @param config_reader: Pass in a config reader if you want to stub this out.
         @type config_reader: ConfigReader
         '''
+
         if config_reader != None:
             self._config_reader = config_reader
         else:

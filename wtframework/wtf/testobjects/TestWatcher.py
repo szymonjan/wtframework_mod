@@ -22,8 +22,6 @@ class TestWatcher(object):
     certain conditions are not met.
     '''
     __metaclass__ = abc.ABCMeta
-    
-    
 
     def before_setup(self, test_case, test_result):
         """

@@ -8,15 +8,16 @@ import sys
 import unittest
 import warnings
 
-class TestCase(unittest.TestCase):
+class WatchedTestCase(unittest.TestCase):
     '''
     This test case extends the unittest.TestCase to add support for 
     registering TestWatchers for listening on TestEvents.
     '''
     
-    __wtf_test_watchers__ = []
-
-
+    def __init__(self, *args, **kwargs):
+        self.__wtf_test_watchers__ = []
+        super(WatchedTestCase, self).__init__(*args, **kwargs)
+    
     def register_test_watcher(self, watcher, position = -1):
         """
         Register a test watcher.
@@ -31,6 +32,11 @@ class TestCase(unittest.TestCase):
         """
         self.__wtf_test_watchers__.remove(watcher)
 
+    def get_log(self):
+        log = []
+        for watcher in self.__wtf_test_watchers__:
+            log = watcher.get_log() + log
+        return log
 
     def run(self, result=None):
         """
@@ -150,6 +156,10 @@ class TestCase(unittest.TestCase):
             if success:
                 result.addSuccess(self)
         finally:
+            # Remove test watchers.  For some strange reason these apply to all test 
+            # cases, not just the currently running one.  So we remove them here.
+            self.__wtf_test_watchers__ = []
+            
             result.stopTest(self)
             if orig_result is None:
                 stopTestRun = getattr(result, 'stopTestRun', None)
