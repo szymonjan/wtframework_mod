@@ -38,6 +38,7 @@ This will create an the folders and packages of your project.  You'll see someth
 	/YourProjectName
 		/assets - place non-code files used in your tests here.
 		/configs - location of config files.
+		/data - data files (like CSV files) goes here.
 		/reference-screenshots - if enabled, reference screenshots are placed here.
 		/reports - test result XML files will go here when you run tests.
 		/screenshots - screenshots taken on test failures will go here.
@@ -53,6 +54,10 @@ This will create an the folders and packages of your project.  You'll see someth
 Next you'll need to setup your python path.
 
 	export PYTHONPATH=$PYTHONPATH:path/to/project/tests
+
+On windows:
+
+	set PYTHONPATH=%PYTHONPATH%;c:\path\to\project\tests
 	
 Now the directory structure and your python path is setup so nosetests can run tests 
 you write in the WTF framework.
@@ -167,6 +172,38 @@ WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your 
 test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
 useful for creating your own base test with your own actions such as recording results 
 to Test Case Management upon test completion.
+
+
+Data Driven Testing
+-------------------
+WTF framework provides a easy way of doing Data-Driven-Tests using CSV files.  Data 
+files are stored in the `data/` folder, and can be easily accessed using the utility 
+class `WTF_DATA_MANAGER.get_data_file("nameOfCsvFile")`.  You can iterate a single test 
+over those CSV row values by using the `@ddt` and `@csvdata` decorators.
+
+You can have a csv file with first row the column headers like, `data/animals.csv'
+
+	Animal,Type,Size
+	Dog,Mammal,3.0
+	Cat,Mammal,1.5
+	Lizzard,Reptile,2.0
+
+Then in YourTest.py, you can reference these values as follows:
+
+	# Use @ddt decorator at the class level.
+	@ddt
+	class TestCsvDataDrivenTest(TestCase):
+    
+    	# Then use the @csvdata decorator to flag a test method data driven.
+    	@csvdata("testdata.csv", "testenv")
+	    def test_csv_datadriven(self, parameter_dic):
+	    	#Then in your test, you can use the parameter passed into your test
+	    	# as a dictionary with key corresponding to your CSV headers.
+	    	animal = parameter_dic['Animal']
+	    	type = parameter_dic['Type']
+	    	size = parameter_dict['Size']
+	    	...
+
 
 
 Misc

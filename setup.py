@@ -9,6 +9,7 @@ setup(
               'wtframework.wtf',
               'wtframework.wtf.assettools',
               'wtframework.wtf.config',
+              'wtframework.wtf.data',
               'wtframework.wtf.email',
               'wtframework.wtf.utils',
               'wtframework.wtf.testobjects',
