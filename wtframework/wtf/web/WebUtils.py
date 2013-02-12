@@ -47,11 +47,14 @@ class WebUtils(object):
             for bad_page_class in bad_page_classes:
                 try:
                     if inspect.isabstract(page_obj_class):
-                        return PageFactory.create_page(webdriver, bad_page_class)
+                        PageFactory.create_page(webdriver, bad_page_class)
                     else:
-                        return bad_page_class(webdriver)
+                        bad_page_class(webdriver)
+                    #if the if/else statement succeeds, than we have an error.
+                    raise BadPageEncounteredError("Encountered a bad page. " + bad_page_class.__name__)
                 except:
                     pass #We didn't hit a bad page class yet.
+            #sleep till the next iteration.
             time.sleep(sleep)
 
         print "Unable to construct page, last exception", last_exception
@@ -134,6 +137,9 @@ class WebUtils(object):
 
 class WebUtilOperationTimeoutError(Exception):
     "Timed out while waiting for a WebUtil action"
+    
+class BadPageEncounteredError(Exception):
+    "Raised when a bad page is encountered."
 
 class PageLoadTimeoutError(WebUtilOperationTimeoutError):
     "Timeout while waiting for page to load."
