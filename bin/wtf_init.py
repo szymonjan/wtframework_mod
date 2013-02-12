@@ -55,6 +55,9 @@ if __name__ == '__main__':
     
     #create asset folder
     ensure_dir(project_dir + "/assets")
+
+    #create asset folder
+    ensure_dir(project_dir + "/data")
     
     #create configs
     ensure_dir(project_dir + "/configs")

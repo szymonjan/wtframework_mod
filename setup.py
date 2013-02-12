@@ -2,13 +2,14 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.0.10',
+    version='0.0.11',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework',
               'wtframework.wtf',
               'wtframework.wtf.assettools',
               'wtframework.wtf.config',
+              'wtframework.wtf.data',
               'wtframework.wtf.email',
               'wtframework.wtf.utils',
               'wtframework.wtf.testobjects',

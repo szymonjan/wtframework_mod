@@ -22,12 +22,11 @@ class AssetManager(object):
         '''
         Constructor
         '''
-        root = ProjectUtils.get_project_root()
-        if root[-1] == '/' or root[-1] == '\\':
-            self._asset_path = ProjectUtils.get_project_root() + AssetManager._ASSET_FOLDER_
-        else:
-            self._asset_path = ProjectUtils.get_project_root() + "/" + AssetManager._ASSET_FOLDER_
 
+        self._asset_path = os.path.join(ProjectUtils.get_project_root() , AssetManager._ASSET_FOLDER_)
+
+        if not os.path.exists(self._asset_path):
+            raise RuntimeError("Missing assets folder.  Please check to make sure you have a /assets directory.")
     
     def get_asset_path(self, filename):
         "Get asset path."

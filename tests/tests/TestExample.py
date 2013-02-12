@@ -4,13 +4,14 @@ Created on Feb 6, 2013
 
 @author: davidlai
 '''
-import unittest
-from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
-from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
-from wtframework.wtf.web.PageFactory import PageFactory
 from tests.pages.GoogleSearchPage import GoogleSearchPage
 from tests.pages.ISearchPage import ISearchPage
 from tests.pages.YahooSearchPage import YahooSearchPage
+from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
+from wtframework.wtf.web.PageFactory import PageFactory
+from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
+import time
+import unittest
 
 # Extend the WTFBaseTest to get access to WTF added features like 
 # taking screenshot on test failure.
@@ -32,6 +33,7 @@ class Test(WTFBaseTest):
         
         # With your PageObject instantiated, you can call it's methods.
         google_page.search("hello world")
+        time.sleep(5)
         self.assertTrue(google_page.result_contains("hello world"))
 
 

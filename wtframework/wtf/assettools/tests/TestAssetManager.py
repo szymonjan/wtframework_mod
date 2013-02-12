@@ -16,6 +16,8 @@ class TestAssetManager(unittest.TestCase):
         self.assertTrue(os.path.exists(file_path), \
                         "Expecting 'a_test_file.txt to be under /assets folder.")
 
+    def test_get_asset_path_throws_error_if_file_not_exist(self):
+        self.assertRaises(Exception, AssetManager().get_asset_path, "i_do_not_exist_.text")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

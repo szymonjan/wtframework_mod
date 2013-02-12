@@ -9,8 +9,7 @@ from datetime import datetime
 class TimeDebug(object):
     "Object to keeps track of time and has utility methods to print it"
     
-    start_time = None
-    
+
     def start_timer(self):
         self.start_time = datetime.now()
 

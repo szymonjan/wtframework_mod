@@ -31,7 +31,11 @@ if __name__ == '__main__':
             print "Cannot find config: ", ProjectUtils.get_project_root() + \
                           ConfigReader.CONFIG_LOCATION + options.config +\
                           ConfigReader.CONFIG_EXT
-                          
+
+    # Set PYTHONPATH if not set.
+    if ProjectUtils.get_project_root() not in os.environ["PYTHONPATH"]:
+        os.putenv("PYTHONPATH", os.environ["PYTHONPATH"] + os.pathsep + ProjectUtils.get_project_root())
+
     os.system("nosetests tests/tests/ --with-nosexunit --core-target=reports")
 
 '''

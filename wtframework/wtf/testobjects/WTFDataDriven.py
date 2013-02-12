@@ -6,9 +6,11 @@ inserting HTML characters from the test.
 """
 
 from functools import wraps
+from wtframework.wtf.data.CsvReader import CsvReader
+from wtframework.wtf.data.DataManager import WTF_DATA_MANAGER
 import re
 
-__version__ = '0.2.1wd'
+__version__ = '0.2.1wtf'
 
 MAGIC = '%values'  # this value cannot conflict with any real python attribute
 
@@ -19,6 +21,27 @@ def data(*values):
 
     Should be added to methods of instances of ``unittest.TestCase``.
     """
+    def wrapper(func):
+        setattr(func, MAGIC, values)
+        return func
+    return wrapper
+
+
+def csvdata(csv_file, env_prefix=None):
+    """
+    Method decorator to use CSV data driven tests.
+
+    Should be added to methods of instances of ``unittest.TestCase``.
+    """
+    entry_list = []
+    try:
+        csv_file = CsvReader(WTF_DATA_MANAGER.get_data_path(csv_file, env_prefix))
+        while True:
+            entry_list.append(csv_file.next())
+    except StopIteration:
+        pass 
+    values = tuple(entry_list)
+    
     def wrapper(func):
         setattr(func, MAGIC, values)
         return func
@@ -59,4 +82,6 @@ def ddt(cls):
                 setattr(cls, formatted_test_name, feed_data(f, v))
                 i = i + 1
             delattr(cls, name)
+
     return cls
+

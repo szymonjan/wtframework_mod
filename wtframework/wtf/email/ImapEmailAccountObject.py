@@ -9,7 +9,6 @@ import imaplib
 
 class IMapEmailAccountObject(object):
 
-    _mail = None
 
     def __init__(self, server_address, username, password):
         """
