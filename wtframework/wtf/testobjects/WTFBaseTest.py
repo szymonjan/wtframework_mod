@@ -17,5 +17,5 @@ class WTFBaseTest(WatchedTestCase):
 
     def __init__(self, methodName='runTest', webdriver_provider=None, screenshot_util=None):
         super(WTFBaseTest, self).__init__(methodName)
-        self.register_test_watcher(CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
+        self._register_watcher(CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
     
