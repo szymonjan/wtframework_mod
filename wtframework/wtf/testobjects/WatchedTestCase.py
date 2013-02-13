@@ -18,7 +18,8 @@ class WatchedTestCase(unittest.TestCase):
         self.__wtf_test_watchers__ = []
         super(WatchedTestCase, self).__init__(*args, **kwargs)
     
-    def register_test_watcher(self, watcher, position = -1):
+    # '_' prefix is added to hide it form nosetest
+    def _register_watcher(self, watcher, position = -1):
         """
         Register a test watcher.
         @param watcher: A test watcher. 
@@ -26,7 +27,8 @@ class WatchedTestCase(unittest.TestCase):
         self.__wtf_test_watchers__.insert(position, watcher)
 
 
-    def unregister_test_watcher(self, watcher):
+    # '_' prefix is added to hide it form nosetest
+    def _unregister_watcher(self, watcher):
         """"
         Unregister a test watcher.
         """

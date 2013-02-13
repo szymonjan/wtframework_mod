@@ -13,7 +13,7 @@ class TestTestCase(WatchedTestCase):
     def __init__(self, *args, **kwargs):
         super(TestTestCase, self).__init__(*args, **kwargs)
         self.watcher = LoggerTestWatcher()
-        self.register_test_watcher(self.watcher)
+        self._register_watcher(self.watcher)
     
     def setUp(self):
         self.watcher.log.append("setUp")
