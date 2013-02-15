@@ -4,7 +4,6 @@ Created on Dec 21, 2012
 @author: "David Lai"
 '''
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
-from wtframework.wtf.web.PageFactory import PageFactory
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import abc
 
@@ -69,17 +68,18 @@ class PageObject(object):
         @param webdriver: WebDriver to associate with this page.
         @type webdriver: WebDriver
         """
-        return PageFactory.create_page(webdriver, cls)
+        # Note, the delayed import here is to avoid a circular import.
+        from wtframework.wtf.web.PageFactory import PageFactory
+        return PageFactory.create_page(webdriver, cls, config_reader=config_reader)
 
-    @staticmethod
-    def get_page_match_score(self, webdriver):
-        '''
-        Override this to provide custom match scoring criteria.
-        By default it'll return percent of matching elements based on 
-        properties defined.
-        
-        @param webdriver: WebDriver
-        '''
+
+    #Magic methods for enabling comparisons.
+    def __cmp__(self, other):
+        """
+        Override this to implement PageObject ranking.  This is used by PageObjectFactory
+        when it finds multiple pages that qualify to map to the current page.  The 
+        PageObjectFactory will check which page object is preferable.
+        """
         return 0
 
 
