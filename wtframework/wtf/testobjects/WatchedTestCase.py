@@ -42,9 +42,9 @@ class WatchedTestCase(unittest.TestCase):
 
     def run(self, result=None):
         """
-        Overriding the run() method to insert our screenshot handler.
+        Overriding the run() method to insert calls to our TestWatcher call-backs.
         
-        Most of this method is a copy of the TestCase.run() method source.
+        Most of this method is a copy of the unittest.TestCase.run() method source.
         """
         orig_result = result
         if result is None:
@@ -135,7 +135,7 @@ class WatchedTestCase(unittest.TestCase):
                     # Run our test watcher actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_test(self, result)
-                    
+
                     # Do tear down.
                     self.tearDown()
                 except KeyboardInterrupt:
