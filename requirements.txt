@@ -15,7 +15,7 @@ ddt>=0.2.0
 pyyaml>=3.10
 
 # Selenium WebDriver for driving browsers.
-selenium>=2.29.0
+selenium>=2.30.0
 
 
 # Restful lib for making REST requests.
