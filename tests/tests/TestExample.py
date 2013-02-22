@@ -42,6 +42,7 @@ class Test(WTFBaseTest):
         "Demonstrates creating PageObjects using Abstract Factory pattern."
         webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
         webdriver.get("http://www.google.com")
+
         
         # Notice I don't need specify GoogleSearchPage specifically, and
         # able to construct a ISearchPage of the correct type.
