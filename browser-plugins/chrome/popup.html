@@ -34,69 +34,6 @@ Click to begin scanning the page.
 </div>
 <br/><br/>
 
-<div>
-<label>Page name:</label>
-<input type="text" id="wtf-page-name-input"/>
-</div>
-<br/><br/>
-
-<div class="validate-page-by">
-<label>Validate Page By:</label><br/>
-
-<div>
-<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
-By Url:<input type="text" id="wtf-validate-by-url-text"/> 
-</div>
-
-<div>
-<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
-By Title:<input type="text" id="wtf-validate-by-url-text"/> 
-</div>
-
-
-
-</div><!-- End validate page By div -->
-<br/><br/>
-
-<div>
-<label>Choose elements to map:</label>
-
-
-</div>
-<br/><br/>
-  
-<hr/>
-<h4>PageObject Preview:</h4>
-<hr/>
-<div id="page-object-preview"><!-- PageObject preview Div -->
-<script type="syntaxhighlighter" class="brush: python;"><![CDATA[
-'''
-Created on Feb 6, 2013
-
-@author: You Name Here
-'''
-from wtframework.wtf.web.PageObject import PageObject, InvalidPageError
-from tests.pages.ISearchPage import ISearchPage
-
-
-
-# Extend PageObject to create a page object.  You can also use Mix-Ins 
-# to implement interfaces to use with PageFactory.
-class GoogleSearchPage(PageObject, ISearchPage):
-    '''
-    Example Page Object Using Google.
-    '''
-]]></script>
-
-
-</div> <!-- End of PageObject preview div -->
-
-<br/><br/>
-
-<hr/>
-<br/>
-<a id="download-link" href="#" download="hello.py">Download File</a>
-<br/><br/>
 
 
 </body>

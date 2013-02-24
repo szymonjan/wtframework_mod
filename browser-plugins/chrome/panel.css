@@ -1,0 +1,25 @@
+html, body {
+	width:550px;
+}
+
+
+#page-object-preview {
+	width:550px;
+}
+
+
+
+/* Error indicator display */
+.has-errors {
+	background-color: red;
+}
+
+.error-message {
+	display: none;
+}
+
+.has-errors .error-message {
+	display: block;
+	color: white;
+	font-weight: bold;
+}

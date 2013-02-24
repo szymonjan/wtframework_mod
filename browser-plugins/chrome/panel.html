@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<title>WTF PageObject Util</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="panel.css"/>
+<script src="jquery-1.9.1.min.js"></script>
+
+<!-- syntax highligher https://github.com/alexgorbatchev/SyntaxHighlighter -->
+<script type="text/javascript" src="XRegExp.js"></script>
+<script type="text/javascript" src="shCore.js"></script>
+<script type="text/javascript" src="shBrushPython.js"></script>
+<link type="text/css" rel="stylesheet" href="shCore.css"/>
+<link type="text/css" rel="Stylesheet" href="shThemeDefault.css" />
+
+<script src="panel.js"></script>
+
+
+</head>
+<body>
+  
+<div>
+<h2>
+<img class="brand" src="icon_048.png"/>
+WTF PageObject Util
+</h2>
+<hr/>
+</div>
+
+
+<div id="page-name-section">
+<label>Page name:</label>
+<input type="text" id="wtf-page-name-input"/ placeholder="MyPageObjectPage" pattern="^[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*$">
+<div class="error-message">Page name should follow Python class naming standards.</div>
+</div>
+<br/><br/>
+
+<div class="validate-page-by">
+<label>Validate Page By:</label><br/>
+
+<div id="url-checkbox-section" class="">
+<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
+By Url:<input type="text" id="wtf-validate-by-url-text"/>
+<div class="error-message">Url selection criteria does not match current url.</div> 
+</div>
+
+<div id="title-checkbox-section" class="">
+<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
+By Title:<input type="text" id="wtf-validate-by-url-text"/> 
+<div class="error-message">Title selection criteria does not match current title.</div>
+</div>
+
+
+
+</div><!-- End validate page By div -->
+<br/><br/>
+
+
+<div class="mapped-elements">
+<label>Mapped Web Elements:</label><br/>
+<div id="mapped-element-container">
+</div>
+<button id="map-new-element">Map New Element</button>
+</div><!-- End Mapped Elements div -->
+<br/><br/>
+
+  
+<hr/>
+<h4>PageObject Preview: <a id="download-link" href="#" download="hello.py">Download File</a></h4>
+<hr/>
+<div id="page-object-preview"><!-- PageObject preview Div -->
+
+
+
+</div> <!-- End of PageObject preview div -->
+
+<br/><br/>
+
+
+
+</body>
+</html>
