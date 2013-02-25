@@ -9,5 +9,12 @@
       "default_icon": "icon_128.png",
       "default_popup": "popup.html"
   },
+  "content_scripts": [ {
+	  "matches": ["http://*/*", "https://*/*"],
+      "js": ["jquery-1.9.1.min.js", "content.js"],
+      "all_frames": false,
+      "run_at": "document_end"
+  }],
+
   "manifest_version": 2
 }

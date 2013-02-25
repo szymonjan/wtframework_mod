@@ -23,3 +23,9 @@ html, body {
 	color: white;
 	font-weight: bold;
 }
+
+
+/* Page Object Preview */
+#page-object-preview {
+	overflow:scroll;
+}

@@ -40,14 +40,18 @@ WTF PageObject Util
 <label>Validate Page By:</label><br/>
 
 <div id="url-checkbox-section" class="">
-<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
+<input type="checkbox" id="wtf-validate-by-url-checkbox" checked="checked"/>
 By Url:<input type="text" id="wtf-validate-by-url-text"/>
+<input type="radio" id="validate-url-by-substring" name="validate-url-by" checked="checked"/>Using substring 
+<input type="radio" id="validate-url-by-regex" name="validate-url-by"/> Using RegEx
 <div class="error-message">Url selection criteria does not match current url.</div> 
 </div>
 
 <div id="title-checkbox-section" class="">
-<input type="checkbox" id="wtf-validate-by-url-checkbox"/>
-By Title:<input type="text" id="wtf-validate-by-url-text"/> 
+<input type="checkbox" id="wtf-validate-by-title-checkbox" />
+By Title:<input type="text" id="wtf-validate-by-title-text"/>
+<input type="radio" id="validate-title-by-substring" name="validate-title-by" checked="checked"/>Using substring 
+<input type="radio" id="validate-title-by-regex"name="validate-title-by"/> Using RegEx
 <div class="error-message">Title selection criteria does not match current title.</div>
 </div>
 
@@ -61,7 +65,8 @@ By Title:<input type="text" id="wtf-validate-by-url-text"/>
 <label>Mapped Web Elements:</label><br/>
 <div id="mapped-element-container">
 </div>
-<button id="map-new-element">Map New Element</button>
+<button id="map-new-element">Map New Element</button><br/>
+<sub>To map a new element, first click on this button, then click on the web element to map on the host page.</sub>
 </div><!-- End Mapped Elements div -->
 <br/><br/>
 
