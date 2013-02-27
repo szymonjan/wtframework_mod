@@ -1,11 +1,29 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 '''
 Created on Dec 20, 2012
 
 @author: "David Lai"
 '''
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
-from wtframework.wtf.web.WTFDesiredCapabilities import WTFDesiredCapabilities
+
+# commenting out the webdriver plus implementation as it does not work well.  Waiting for this to be fixed.
 #import webdriverplus #Note: Pydev will display import error here, but this code should work.
 
 
@@ -39,6 +57,7 @@ class WebDriverFactory(object):
     IPAD = "IPAD"
     IPHONE = "IPHONE"
     OPERA = "OPERA"
+    SAFARI = "SAFARI"
 
 
     # Instance Variables#
@@ -133,17 +152,16 @@ class WebDriverFactory(object):
         browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
         remote_url = self._config_reader.get_value(WebDriverFactory.REMOTE_URL_CONFIG)
 
-        browser_constant_dict = {WebDriverFactory.HTMLUNIT:WTFDesiredCapabilities.HTMLUNIT, \
-                                 WebDriverFactory.HTMLUNITWITHJS:WTFDesiredCapabilities.HTMLUNITWITHJS, \
-                                 WebDriverFactory.ANDROID:WTFDesiredCapabilities.ANDROID,\
-                                 WebDriverFactory.CHROME:WTFDesiredCapabilities.CHROME,\
-                                 WebDriverFactory.FIREFOX:WTFDesiredCapabilities.FIREFOX,\
-                                 WebDriverFactory.INTERNETEXPLORER:WTFDesiredCapabilities.INTERNETEXPLORER,\
-                                 WebDriverFactory.IPAD:WTFDesiredCapabilities.IPAD,\
-                                 WebDriverFactory.IPHONE:WTFDesiredCapabilities.IPHONE,\
-                                 WebDriverFactory.OPERA:WTFDesiredCapabilities.OPERA }
-        # Currently not supporting safari due to issues with the safari webdriver.
-        # "SAFARI":WDDesiredCapabilities.SAFARI}
+        browser_constant_dict = {WebDriverFactory.HTMLUNIT:DesiredCapabilities.HTMLUNIT, \
+                                 WebDriverFactory.HTMLUNITWITHJS:DesiredCapabilities.HTMLUNITWITHJS, \
+                                 WebDriverFactory.ANDROID:DesiredCapabilities.ANDROID,\
+                                 WebDriverFactory.CHROME:DesiredCapabilities.CHROME,\
+                                 WebDriverFactory.FIREFOX:DesiredCapabilities.FIREFOX,\
+                                 WebDriverFactory.INTERNETEXPLORER:DesiredCapabilities.INTERNETEXPLORER,\
+                                 WebDriverFactory.IPAD:DesiredCapabilities.IPAD,\
+                                 WebDriverFactory.IPHONE:DesiredCapabilities.IPHONE,\
+                                 WebDriverFactory.OPERA:DesiredCapabilities.OPERA ,\
+                                 WebDriverFactory.SAFARI:DesiredCapabilities.SAFARI}
         
         try:
             desired_capabilities = browser_constant_dict[browser_type]
