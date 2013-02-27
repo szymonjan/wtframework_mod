@@ -1,3 +1,9 @@
+v-----
+    - Added support for delayed test failure.  This allows you to perform an assert, 
+      but not fail the test until the end so you can test multiple items before the 
+      test fails.
+    - Initial release of the Chrome PageObject tool for WTF. 
+
 v0.0.12 Minor bug fixes 2/12/2013
     - Removed some bad imports that interfered with running webdriver off the grid.
 
@@ -13,8 +19,8 @@ v0.0.10 Changes to generator 2/8/2013
 	- minor bug fixes.
 
 v0.0.8 Changes to generator 2/6/2013
-	- Added 'generate-test' option for wtf_tools
-	- Added some documentation.
+    - Added 'generate-test' option for wtf_tools
+    - Added some documentation.
 
 v0.0.6 Refactoring 2/6/2013
     - Added .create_page() method to base PageObject.  Simple shortcut for calling PageFactory
