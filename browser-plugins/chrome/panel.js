@@ -1,3 +1,20 @@
+//This file is part of WTFramework. 
+//
+//    WTFramework is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    WTFramework is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
 // Store my tab id so I can use it to refocus on this window.
 var myTabId = null;
 
@@ -16,14 +33,19 @@ var useTitleValidation = false;
 var titleValidationType = "substring";
 var titleValidationFilter = currentTitle;
 
+//counter that increments so we identify each mapped element uniquely.
+var mappedElementCounter = 0;
 
 //parse out currentUrl of host page.
 var getParams = location.search.substr(location.search.indexOf("?")+1);
+
 
 currentTab = chrome.tabs.get(parseInt(getParams), function(tab) {
 	currentTab = tab;
 	currentUrl = urlValidationFilter = tab.url;
 	currentTitle = titleValidationFilter = tab.title;
+	
+	console.log("Url:" + currentUrl);
 	
 	$("#wtf-validate-by-url-text").val(tab.url);
 	$("#wtf-validate-by-title-text").val(tab.title);
@@ -31,7 +53,7 @@ currentTab = chrome.tabs.get(parseInt(getParams), function(tab) {
 	//Initial PageObj view.
 	refreshPageObjectPreview();
 });
-console.log("Url:" + currentUrl);
+
 
 chrome.extension.onMessage.addListener(
 		function(request, sender, sendResponse) {
@@ -53,11 +75,204 @@ chrome.extension.onMessage.addListener(
 				console.log("receive element mapping request");
 				console.log(request);
 				
+				//append mapped element to mapped-element-container
+				mappedElementCounter++;
+				var mappedElementControl = $(
+					"<div class=\"element-holder\">"+
+					"<input type=\"hidden\" class=\"props\" value=\"" + encodeURI(JSON.stringify(request))+"\"/>" + 
+					"<table>"+
+					"<thead><tr>"+
+					"<th>ObjectName</th><th>Find Element By</th><th>Find by criteria</th><th></th></tr>" +
+					"</tr></thead>"+
+					"<tr><td><input name=\"object-name\" type=\"text\"/></td>"+
+					"<td>"+
+					"<select name=\"find-by\">"+
+					"<option value=\"name\">Name</option>"+					
+					"<option value=\"id\">Id</option>"+
+					"<option value=\"css\">CSS Selector</option>"+
+					"<option value=\"xpath\">XPath</option>"+
+					"</select>"+
+					"</td>"+
+					"<td><input name=\"selection-string\" type=\"text\"/></td>"+
+					"<td><button class=\"delete-mapped-element\">Remove</button></td>"+
+					"</tr></table>"+
+					"<div class=\"error-message\">Current selector does not map to an element on this page.</div>"+
+					"</div>");
+				
+				//Set initial values for mapped element fields.
+				if (typeof(request.name) != "undefined" ) {
+					console.log("Switching to name verification");
+					mappedElementControl.find("select[name='find-by']").val("name");
+					var processedName = (request.name).toLowerCase().replace(/[^a-z]+/g,"_");
+					mappedElementControl.find("input[name='object-name']").val(processedName);
+					mappedElementControl.find("input[name='selection-string']").val(request.name);
+				} else if (typeof(request.id) != "undefined" ) {
+					console.log("Switching to id verification");
+					mappedElementControl.find("select[name='find-by']").val("id");
+					var processedName = (request.id).toLowerCase().replace(/[^a-z]+/g,"_");
+					mappedElementControl.find("input[name='object-name']").val(processedName);
+					mappedElementControl.find("input[name='selection-string']").val(request.id);
+				} else if (typeof(request.cssSelector) != "undefined" ) {
+					console.log("Switching to css verification");
+					mappedElementControl.find("select[name='find-by']").val("css");
+					var processedName = (request.text+ "_" + request.tag).toLowerCase().replace(/[^a-z]+/g,"_");
+					mappedElementControl.find("input[name='object-name']").val(processedName);
+					mappedElementControl.find("input[name='selection-string']").val(request.cssSelector);
+				} else if (typeof(request.xpath) != "undefined" ) {
+					console.log("Switching to xpath verification");
+					mappedElementControl.find("select[name='find-by']").val("xpath");
+					var processedName = (request.text+ "_" + request.tag).toLowerCase().replace(/[^a-z]+/g,"_");
+					mappedElementControl.find("input[name='object-name']").val(processedName);
+					mappedElementControl.find("input[name='selection-string']").val(request.xpath);
+				}
+
+				//add mapped element to our mapped-element-container area.
+				$("#mapped-element-container").append(mappedElementControl);
+
+				
+				mappedElementControl.find("button.delete-mapped-element").click(function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					//Remove the parent element holder div.
+					mappedElementControl.remove();
+					console.log("remove button clicked.");
+					
+					refreshPageObjectPreview();
+				});
+				//Add a listner to handle change event on the mapped element.
+				mappedElementControl.find("input[name='selection-string']").change(function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					console.log("Input has changed.");
+					rawProps = mappedElementControl.find("input.props").val();
+					props = JSON.parse(decodeURI(rawProps));
+					console.log(props);
+					
+					var filterTextInput = mappedElementControl.find("input[name='selection-string']").val();
+					
+					//Perform validation of find by criteria.
+					console.log("element validation type:" + mappedElementControl.find("select").val())
+					var queryBy;
+					switch(mappedElementControl.find("select").val()) {
+					case "name":
+						queryBy = "name";
+						break;
+					case "id":
+						queryBy = "id"
+						break;
+					case "css":
+						console.log("doing element css verification");
+						queryBy = "cssSelector";
+						break;
+					case "xpath":
+						console.log("doing element xpath verification");
+						queryBy = "xpath";
+						break;
+					}
+					var params = {wtframework: true, action: "checkElement", by:queryBy, query:filterTextInput};
+					console.log("Sending message to content script.");
+					console.log(params);
+					
+					chrome.tabs.sendMessage(currentTab.id, 
+							params, 
+							function(response) {
+								console.log(response.result);
+								
+								if (response.result == "OK") {
+									//validation in switch statements have passed.
+									mappedElementControl.removeClass("has-errors");
+									refreshPageObjectPreview();	
+								} else {
+									//validation in switch statements have passed.
+									mappedElementControl.addClass("has-errors");
+									mappedElementControl.find(".error-message").text(
+											"Current element selector does not match an element on this page."
+									);
+								}								
+							}
+					);//end chrome tab call.					
+				});//End of selection string change listener.
+				
+				mappedElementControl.find("select").change(function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					console.log("findby select has changed.");
+					rawProps = mappedElementControl.find("input.props").val();
+					props = JSON.parse(decodeURI(rawProps));
+					console.log(props);
+					
+					switch(mappedElementControl.find("select").val()) {
+					case "name":
+						console.log("Switching to name verification");
+						mappedElementControl.find("input[name='selection-string']").val(props.name);
+						break;
+					case "id":
+						console.log("Switching to id verification");
+						mappedElementControl.find("input[name='selection-string']").val(props.id);
+						break;
+					case "css":
+						console.log("Switching to css verification");
+						mappedElementControl.find("input[name='selection-string']").val(props.cssSelector);
+						break;
+					case "xpath":
+						console.log("Switching to xpath verification");
+						mappedElementControl.find("input[name='selection-string']").val(props.xpath);
+						break;
+					default:
+						console.log("Invalid selection.")
+					}
+					
+					refreshPageObjectPreview();
+				});
+				
+				mappedElementControl.find("input[name='object-name']").change(function(event){
+
+					var name_pattern = /^[a-zA-Z_][0-9a-zA-Z]*$/;
+					if(!name_pattern.test(mappedElementControl.find("input[name='object-name']").val())) {
+						mappedElementControl.find(".error-message").text(
+								"Invalid Python variable name."
+						);
+						mappedElementControl.addClass("has-errors");
+					} else {
+						mappedElementControl.removeClass("has-errors");
+						refreshPageObjectPreview();	
+					}					
+				});
+				
 				//Refocus on this window.
 				chrome.tabs.update(myTabId, {active:true}, function(tab) {});
-			}
+				refreshPageObjectPreview();
+
+			} //End of listener function.
 			
-});
+});//end of add listener code.
+
+function generateObjectMapEntry(mappingEntryDiv) {
+	var divElement = $(mappingEntryDiv);
+	var name = divElement.find("input[name='object-name']").val();
+	var queryStr = divElement.find("input[name='selection-string']").val();
+	
+	var findBy = null;
+	switch(divElement.find("select[name='find-by']").val()) {
+	case "name":
+		findBy = "find_element_by_name";
+		break;
+	case "id":
+		findBy = "find_element_by_id";
+		break;
+	case "css":
+		findBy = "find_element_by_css_selector";
+		break;
+	case "xpath":
+		findBy = "find_element_by_xpath";
+		break;
+	}
+	var objPyCode =
+		"    " + name + " = lambda self:self.webdriver." + findBy + "(\"" + queryStr + "\")";
+	console.log("obj pycode:\n" + objPyCode);
+	return  objPyCode;
+ 
+}
 
 // Generate source code for Page Object.
 function generatePageObjectCode() {
@@ -103,7 +318,11 @@ function generatePageObjectCode() {
 	code.push(
 "    ### Page Elements Section ###"
 	);
-	//TODO: insert mapped elements.
+	// Generate entries for mappings for each mapping element div inside mapped-element-container
+	var mappingDivs = $("#mapped-element-container").find("div.element-holder");
+	for(var i=0; i<mappingDivs.length; i++) {
+		code.push(generateObjectMapEntry(mappingDivs[i]));
+	}
 	
 	code.push(
 "    ### End Page Elements Section ###",
@@ -318,6 +537,8 @@ $(document).ready(function() {
 		});
 		chrome.tabs.update(currentTab.id, {active:true}, function(tab) {})
 	});
+	
+
 	
 	
 }); //End of on document ready block.

@@ -1,3 +1,18 @@
+//This file is part of WTFramework. 
+//
+//    WTFramework is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    WTFramework is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+
 //Just a variable I set so i can tell this page from other pages in the chrome debugger.
 const wtfContentScript = true;
 
@@ -8,6 +23,7 @@ var _wtfTabId = null;
 chrome.extension.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			console.log("I received a message");
+			console.log(request);
 			
 			// Return if message is not passed by WTFramework.
 			if (request.wtframework != true)
@@ -23,6 +39,57 @@ chrome.extension.onMessage.addListener(
 				
 				//Display user message to click on element to map.
 				alert("\n\nWTFramework\n\nClick on an element on this page to map it.");
+			}
+			
+			if (request.action == "checkElement") {
+				console.log("Check Element request received.");
+				
+				var checkOk = false;
+				var query = request.query;
+				try {
+					switch(request.by) {
+					case 'name':
+						console.log("Checking if element exist using name");
+						var element = document.evaluate( "//*[@name='" + query + "']" ,document, null, 
+								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
+						if (element != null) {
+							checkOk = true;
+						}
+						break;
+					case 'id':
+						console.log("Checking if element exist using id");
+						var element = document.evaluate( "//*[@id='" + query + "']" ,document, null, 
+								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
+						if (element != null) {
+							checkOk = true;
+						}
+						break;
+					case 'cssSelector':
+						console.log("Checking if element exist using cssSelector");
+						if( document.querySelector(query) != null) {
+							
+						}
+						break;
+					case 'xpath':
+						console.log("Checking if element exist using xpath");
+						var element = document.evaluate( query ,document, null, 
+								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
+						if (element != null) {
+							checkOk = true;
+						}
+						break;
+					}	
+				} catch (e) {
+					console.log("did not find element.");
+					console.log(e);
+				}
+				
+				
+				if (checkOk) {
+					sendResponse({result: "OK"});
+				} else {
+					sendResponse({result: "FAIL"});
+				}
 			}
 			
 			
@@ -42,6 +109,8 @@ document.onclick = function(clickEvent) {
 		var id = clickedElement.attr('id');
 		var xpath = clickedElement.getXPath();
 		var cssSelector = clickedElement.getCssPath();
+		var text = clickedElement.text();
+		var tag = clickedElement.prop("tagName");
 		
 		var messagePayload = {
 				wtframework:true,
@@ -49,7 +118,9 @@ document.onclick = function(clickEvent) {
 				name: name,
 				id: id,
 				xpath: xpath,
-				cssSelector:cssSelector
+				cssSelector:cssSelector,
+				text:text,
+				tag:tag
 		};
 
 		console.log(messagePayload)
