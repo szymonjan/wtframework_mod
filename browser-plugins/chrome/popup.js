@@ -1,74 +1,36 @@
-//init scripts
-SyntaxHighlighter.all();
-
-//Track our current url when we open the extension popup window.
-var currentUrl = "N/A";
-chrome.tabs.getSelected(null,function(tab) {
-	currentUrl = tab.url;
-});
-
-
-// Generate source code for Page Object.
-function generatePageObjectCode() {
-	var pageName = $("#wtf-page-name-input").val();
-
-	//generate text for our page object.
-	var code = [];
-	code.push(
-"'''",
-"Created on " + (new Date()).toString(),
-"",
-"@author:Your Name Here" ,
-"'''",
-"from wtframework.wtf.web.PageObject import PageObject, InvalidPageError",
-"from tests.pages.ISearchPage import ISearchPage",
-"",
-"",
-"class " + pageName + "(PageObject, ISearchPage):",
-"    '''",
-"    " + pageName,
-"    PageObject representing a page like:",
-"    " + currentUrl ,
-"    '''",
-"",
-"",
-"    def _validate_page(self, webdriver)",
-"    '''",
-"    Validates we are on the correct page.",
-"    '''",
-""
-	);
-	return code.join("\n");
-}
+//This file is part of WTFramework. 
+//
+//    WTFramework is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    WTFramework is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 
 
 //on document ready
 $(document).ready(function() {
 
+
 	
-	$("#wtf-page-name-input").change(function() {
-		console.log("page name changed");
-		var newCode = '<script type="syntaxhighlighter" class="brush: python;"><![CDATA[\n\n' 
-			+ generatePageObjectCode() + '\n\n]]></script>';
-		
-		$("#page-object-preview").empty();
-		$("#page-object-preview").html(newCode);
-		SyntaxHighlighter.highlight();
-	});
-
 	//Format the data URL right before the user clicks on the download link.
-	$("#download-link").click(function() {
+	$("#scan-page-button").click(function() {
+		chrome.tabs.getSelected(null,function(tab) {
+			//pass tab id to new window so new window can reference it.
+			chrome.windows.create({'url': 'panel.html?' + tab.id, 'type': 'detached_panel',
+				'width':580, 'height':800
+				}, function(window) {
+					console.log("url got from popup:" + tab.url)
+			   });
+		});
 
-		var code = generatePageObjectCode();
-		console.log(code);
-		var url = "data:text/plain," + encodeURIComponent(code);
-		$("#download-link").attr("href", url);
-		
-		
-		//chrome.tabs.create({url: url});
 	});
 	
 });
-
-
 
