@@ -1,6 +1,24 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 """
 I'm overriding the 'ddt' definitions as they are causing issues with the JUnit parser by 
 inserting HTML characters from the test.
+
+I'm also adding in a 'csvdata' method decorator for supporting csv data driven tests.
 
 @author: David Lai
 """

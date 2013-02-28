@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- 
+
+//This file is part of WTFramework. 
+//
+//    WTFramework is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    WTFramework is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+
+ -->
+<html>
+<head>
+<title>WTF PageObject Util</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="panel.css"/>
+<script src="jquery-1.9.1.min.js"></script>
+
+<!-- syntax highligher https://github.com/alexgorbatchev/SyntaxHighlighter -->
+<script type="text/javascript" src="XRegExp.js"></script>
+<script type="text/javascript" src="shCore.js"></script>
+<script type="text/javascript" src="shBrushPython.js"></script>
+<link type="text/css" rel="stylesheet" href="shCore.css"/>
+<link type="text/css" rel="Stylesheet" href="shThemeDefault.css" />
+
+<script src="panel.js"></script>
+
+
+</head>
+<body>
+  
+<div>
+<h2>
+<img class="brand" src="icon_048.png"/>
+WTF PageObject Util
+</h2>
+<hr/>
+</div>
+
+
+<div id="page-name-section">
+<label>Page name:</label>
+<input type="text" id="wtf-page-name-input"/ placeholder="MyPageObjectPage" pattern="^[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*$">
+<div class="error-message">Page name should follow Python class naming standards.</div>
+</div>
+<br/><br/>
+
+<div class="validate-page-by">
+<label>Validate Page By:</label><br/>
+
+<div id="url-checkbox-section" class="">
+<input type="checkbox" id="wtf-validate-by-url-checkbox" checked="checked"/>
+By Url:<input type="text" id="wtf-validate-by-url-text"/>
+<input type="radio" id="validate-url-by-substring" name="validate-url-by" checked="checked"/>Using substring 
+<input type="radio" id="validate-url-by-regex" name="validate-url-by"/> Using RegEx
+<div class="error-message">Url selection criteria does not match current url.</div> 
+</div>
+
+<div id="title-checkbox-section" class="">
+<input type="checkbox" id="wtf-validate-by-title-checkbox" />
+By Title:<input type="text" id="wtf-validate-by-title-text"/>
+<input type="radio" id="validate-title-by-substring" name="validate-title-by" checked="checked"/>Using substring 
+<input type="radio" id="validate-title-by-regex"name="validate-title-by"/> Using RegEx
+<div class="error-message">Title selection criteria does not match current title.</div>
+</div>
+
+
+
+</div><!-- End validate page By div -->
+<br/><br/>
+
+
+<div class="mapped-elements">
+<label>Mapped Web Elements:</label><br/>
+<div id="mapped-element-container">
+</div>
+<button id="map-new-element">Map New Element</button><br/>
+<sub>To map a new element, first click on this button, then click on the web element to map on the host page.</sub>
+</div><!-- End Mapped Elements div -->
+<br/><br/>
+
+  
+<hr/>
+<h4>PageObject Preview: <a id="download-link" href="#" download="hello.py">Download File</a></h4>
+<hr/>
+<div id="page-object-preview"><!-- PageObject preview Div -->
+
+
+
+</div> <!-- End of PageObject preview div -->
+
+<br/><br/>
+
+
+
+</body>
+</html>

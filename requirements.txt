@@ -1,3 +1,20 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
+
 # Mock Object framework.  Used for unit testing framework code.
 Mox>=0.5.3
 
@@ -8,16 +25,13 @@ pylint>=0.26.0
 nose>=1.2.1
 NoseXUnit>=0.3.3
 
-# DDT module for Data driven annotations.
+# DDT module for Data driven decorators. (we extend these for our ddt decorators)
 ddt>=0.2.0
 
 # PyYaml is used for processing config files.
 pyyaml>=3.10
 
 # Selenium WebDriver for driving browsers.
-selenium>=2.29.0
+selenium>=2.30.0
 
-
-# Restful lib for making REST requests.
-python-rest-client>=0.3
 

@@ -1,10 +1,25 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 '''
 Created on Dec 21, 2012
 
 @author: "David Lai"
 '''
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
-from wtframework.wtf.web.PageFactory import PageFactory
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 import abc
 
@@ -69,17 +84,18 @@ class PageObject(object):
         @param webdriver: WebDriver to associate with this page.
         @type webdriver: WebDriver
         """
-        return PageFactory.create_page(webdriver, cls)
+        # Note, the delayed import here is to avoid a circular import.
+        from wtframework.wtf.web.PageFactory import PageFactory
+        return PageFactory.create_page(webdriver, cls, config_reader=config_reader)
 
-    @staticmethod
-    def get_page_match_score(self, webdriver):
-        '''
-        Override this to provide custom match scoring criteria.
-        By default it'll return percent of matching elements based on 
-        properties defined.
-        
-        @param webdriver: WebDriver
-        '''
+
+    #Magic methods for enabling comparisons.
+    def __cmp__(self, other):
+        """
+        Override this to implement PageObject ranking.  This is used by PageObjectFactory
+        when it finds multiple pages that qualify to map to the current page.  The 
+        PageObjectFactory will check which page object is preferable.
+        """
         return 0
 
 

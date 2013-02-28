@@ -1,3 +1,19 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 '''
 Created on Feb 8, 2013
 
@@ -42,9 +58,9 @@ class WatchedTestCase(unittest.TestCase):
 
     def run(self, result=None):
         """
-        Overriding the run() method to insert our screenshot handler.
+        Overriding the run() method to insert calls to our TestWatcher call-backs.
         
-        Most of this method is a copy of the TestCase.run() method source.
+        Most of this method is a copy of the unittest.TestCase.run() method source.
         """
         orig_result = result
         if result is None:
@@ -135,7 +151,7 @@ class WatchedTestCase(unittest.TestCase):
                     # Run our test watcher actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_test(self, result)
-                    
+
                     # Do tear down.
                     self.tearDown()
                 except KeyboardInterrupt:

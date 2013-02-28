@@ -2,9 +2,6 @@ content = \
 '''
 """
 EXAMPLE TEST
-Created on Feb 6, 2013
-
-@author: davidlai
 """
 import unittest
 from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest

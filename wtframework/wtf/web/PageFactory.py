@@ -1,3 +1,19 @@
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 '''
 Created on Jan 28, 2013
 
@@ -5,10 +21,10 @@ Created on Jan 28, 2013
 '''
 
 from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
+from wtframework.wtf.web.PageObject import PageObject
 
 class PageFactory():
     "Page Factory class."
-
 
     @staticmethod
     def create_page(webdriver, page_obj_class, config_reader=WTF_CONFIG_READER):
@@ -17,16 +33,31 @@ class PageFactory():
         
         """
         Instantiate a page object from a given Interface or Abstract class.
+        
+        Instantiating a Page from PageObject class usage:
+            my_page_instance = PageFactory.create_page(webdriver, MyPageClass)
+        
+        Instantiating a Page from an Interface or base class
+            import pages.mysite.* 
+            my_page_instance = PageFactory.create_page(webdriver, MyPageAbstractBaseClass)
+        
+        Note: It'll only be able to detect pages that are imported.  To it's best to 
+        do an import of all pages implementing a base class or the interface inside the 
+        __init__.py of the package directory.  
+        
         @param webdriver: Webdriver
         @type webdriver: WebDriver
+        @param  page_obj_class: Class, AbstractBaseClass, or Interface to attempt to consturct.
         """
         # Walk through all classes of this sub class 
         subclasses = PageFactory.__itersubclasses(page_obj_class)
 
+        current_matched_page = None
         for pageClass in subclasses :
             try:
                 page = pageClass(webdriver, config_reader)
-                return page;
+                if current_matched_page == None or page > current_matched_page:
+                    current_matched_page = page
             except InvalidPageError:
                 pass #This happens when the page fails check.
             except TypeError:
@@ -38,7 +69,8 @@ class PageFactory():
         # Try the original class passed in if the subclasses didn't work.
         try:
             page = page_obj_class(webdriver, config_reader)
-            return page;
+            if current_matched_page == None or page > current_matched_page:
+                current_matched_page = page
         except InvalidPageError:
             pass #This happens when the page fails check.
         except TypeError:
@@ -48,7 +80,11 @@ class PageFactory():
             raise e
 
         # If no matching classes.
-        raise NoMatchingPageError("There's, no matching classes to this page. URL:%s" % webdriver.current_url)
+        if not isinstance(current_matched_page, PageObject):
+            raise NoMatchingPageError("There's, no matching classes to this page. URL:%s" \
+                                      % webdriver.current_url)
+        else:
+            return current_matched_page
 
     @staticmethod
     def __itersubclasses(cls, _seen=None):

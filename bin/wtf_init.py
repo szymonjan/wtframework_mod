@@ -1,4 +1,20 @@
 #!/usr/bin/env python
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 '''
 Created on Feb 4, 2013
 
@@ -7,7 +23,7 @@ Created on Feb 4, 2013
 from optparse import OptionParser
 from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
     _root_folder_placeholder_, _runtests_py_, _TestExample_py_, _ISearchPage_py_,\
-    _GoogleSearchPage_py_, _YahooSearchPage_py_
+    _GoogleSearchPage_py_, _YahooSearchPage_py_, _tests_pages_init_
 import os.path
 
 
@@ -96,7 +112,8 @@ if __name__ == '__main__':
         create_file(project_dir + "/tests/pages/ISearchPage.py", _ISearchPage_py_.content)
         create_file(project_dir + "/tests/pages/GoogleSearchPage.py", _GoogleSearchPage_py_.content)
         create_file(project_dir + "/tests/pages/YahooSearchPage.py", _YahooSearchPage_py_.content)
-        
+        with open(project_dir + "/tests/pages/__init__.py", "a") as init_file:
+            init_file.write(_tests_pages_init_.contents)
 
 
 
