@@ -78,6 +78,19 @@ Configuring Eclipse/PyDev Environment
 	allow you to work on this project as a PyDev project.
 
 
+Installing the WTF PageObject Utility Chrome Extension
+------------------------------------------------------
+1. Download or clone the source.  The extension source code is included under 
+   `/browser-plugins` directory.
+2. Open Chrome.
+3. Open the Chrome's Preferences menu, and select "Extensions"
+4. Enable the "Developer mode" checkbox.
+5. Click on the "Load unpack extension..." button.
+6. Then select the "chrome" folder under the 'wtframework/browser-plugins/' directory.
+7. At this point the plugin should be installed.  You can test out the plugin by going 
+   to another webpage, clicking on the `WTF` extension button in your chrome toolbar, 
+   this should open the WTF PageObject Utility window.
+
 Running your tests
 ==================
 
@@ -93,32 +106,40 @@ written to `reports/`, any screenshots taken during errors will be stored in the
 WTF Framework Features
 ======================
 
-PageObjects
------------
-WTF provides handy generators for quickly generating PageObjects.  The following 
-command will generate a PageObject given a name and URL. To use PageObject generator,
-type the following command.
+PageObjects & Chrome Extension
+------------------------------
+WTF provides handy chrome plugin to help you create page objects.  See Chrome plugin 
+installation instructions above.  To Create a page object, do the following:
 
-	wtf_tools.py generate-page W3FormSamplePage http://www.w3schools.com/html/html_forms.asp
-	
-This will do the following:
+1. Go to your target page.  Then click the WTF toolbar button, then select "Scan Page"
+2. A popup window will open.  You'll be presented with a form that'll include fields for 
+   naming your PageObject, setting the page verification method, and a button to map 
+   your page elements.  
+3. Fill in an appropriate name for your page object.
+4. Adjust the page verification characteristics.  You may want to change it from a string 
+   compare to a regular expression and replace variable parameters with wildcards.
+5. Map the elements you want to include. To map an element, first click on the button 
+   labled `Map New Element`.  You'll be taken back to your page window, dismiss the 
+   pop-up dialog, then click on the element you wish to map.  After clicking on the 
+   element, you'll notice a new entry will be created in your PageObject Utility window.
+   Fill in the fields and adjust the object identification properties.  If the 
+   identification properties in the fields do not match an element on the page, the fields
+   will turn red.  Fix these before moving on.
+6. A code preview will be displayed at the bottom part of this window.  Review what's 
+   there before downloading.
+7. Click on the "Download" link that's right above the Preview area.  This will allow you 
+   to download this file.  Save this file to your `YourProject/tests/pages` directory.
+8. Edit this file in a code editor and add whatever high level method calls you want to 
+   expose.  Then you'll have a fully functioning page object.
 
-1.	Creates a new file named after your page object.
-2.	Within the file, it'll create a new class that extends PageObject base class.
-3.	It will generate a page validation method, which will validate the page by url.
-4.	It will scan the target page location for non-hidden input tags, and create 
-	object mappings for those inputs.  The 'name' attribute will be used for identifying 
-	and naming the mapped objects.
-
-Note: I have not implemented any sort of session support yet. So this will not work in 
-pages that require a session.
 
 You can now use this page object you created like this:
 
 	from wtframework.wtf.web.PageFactory import PageFactory
+	from pages.YourPageObjectFile import YourPageObject
 	...
-	my_login_page = PageFactory.create_page(webdriver, LoginPage)
-	my_login_page.login(myusername, password)
+	your_page_object = PageFactory.create_page(webdriver, YourPageObject)
+	your_page_object.do_something(params)
 
 Alternatively, you can use the WebUtils to wait for the page to load.  This will allow 
 you to specify a timeout period to wait for this page to finish loading.
@@ -206,7 +227,6 @@ Then in YourTest.py, you can reference these values as follows:
 	    	...
 
 
-
 Misc
 ====
 
@@ -224,6 +244,9 @@ Development on this project is currently done using NVIE branching model.
 http://nvie.com/posts/a-successful-git-branching-model/
 
 To submit code changes, please submit pull requests against the development branch. 
+
+See here for other ways you can help.
+[https://github.com/wiredrive/wtframework/wiki/How-you-can-help.]
 
 Credits
 ------------

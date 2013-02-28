@@ -1,4 +1,4 @@
-v-----
+v0.1.0
     - Added support for delayed test failure.  This allows you to perform an assert, 
       but not fail the test until the end so you can test multiple items before the 
       test fails.
