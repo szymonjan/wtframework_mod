@@ -227,7 +227,7 @@ chrome.extension.onMessage.addListener(
 				
 				mappedElementControl.find("input[name='object-name']").change(function(event){
 
-					var name_pattern = /^[a-zA-Z_][0-9a-zA-Z]*$/;
+					var name_pattern = /^[a-zA-Z_][0-9a-zA-Z_]*$/;
 					if(!name_pattern.test(mappedElementControl.find("input[name='object-name']").val())) {
 						mappedElementControl.find(".error-message").text(
 								"Invalid Python variable name."
