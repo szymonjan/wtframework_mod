@@ -67,7 +67,7 @@ chrome.extension.onMessage.addListener(
 					case 'cssSelector':
 						console.log("Checking if element exist using cssSelector");
 						if( document.querySelector(query) != null) {
-							
+							checkOk = true;
 						}
 						break;
 					case 'xpath':
