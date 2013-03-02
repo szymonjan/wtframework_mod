@@ -334,7 +334,7 @@ function generatePageObjectCode() {
 	
 	//Validation code
 	code.push(
-"    def _validate_page(self, webdriver)",
+"    def _validate_page(self, webdriver):",
 "        '''",
 "        Validates we are on the correct page.",
 "        '''",
