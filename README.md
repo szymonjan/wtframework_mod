@@ -108,8 +108,20 @@ WTF Framework Features
 
 PageObjects & Chrome Extension
 ------------------------------
+PageObjects is a common strategy for Selenium Webdriver programmers to create self 
+contained PageObjects to encapsulate the low level UI details from their high level 
+tests.  This allows changes in pages to be maintained in their separate page objects 
+so tests that use the page, need not worry about the details.
+
 WTF provides handy chrome plugin to help you create page objects.  See Chrome plugin 
-installation instructions above.  To Create a page object, do the following:
+installation instructions above.  The chrome plugin will help you quickly generate the 
+boiler-plate code, some simple validate methods, and help with the tedious task of 
+mapping the WebElements on this page.
+
+![Image](../docs/images/WTF_panel_parts.png?raw=true)
+
+
+To Create a page object, do the following:
 
 1. Go to your target page.  Then click the WTF toolbar button, then select "Scan Page"
 2. A popup window will open.  You'll be presented with a form that'll include fields for 

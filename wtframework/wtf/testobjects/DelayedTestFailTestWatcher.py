@@ -37,7 +37,6 @@ class DelayedTestFailTestWatcher(TestWatcher):
         '''
         Constructor
         '''
-        print "Init"
         self.exception_list = []
 
 
@@ -52,12 +51,11 @@ class DelayedTestFailTestWatcher(TestWatcher):
         @return: None if succeeds.  Returns a reference the exception if failed.
         """
         try:
-            print "delayed failure function running."
+            #run assertion.
             function()
-            print "delayed failure function passed."
+
             return None
         except Exception as e:
-            print "delayed failure function failed."
 
             if not additional_debug_info:
                 self.exception_list.append(e)
@@ -66,11 +64,9 @@ class DelayedTestFailTestWatcher(TestWatcher):
             return e
 
     def on_test_pass(self, test_case, test_result):
-        print "on test passed", self.exception_list
         if len(self.exception_list) > 0:
             raise DelayedTestFailure(self.exception_list)
 
-    
 
 
 class DelayedTestFailure(AssertionError):
