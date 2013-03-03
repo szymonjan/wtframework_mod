@@ -118,7 +118,7 @@ installation instructions above.  The chrome plugin will help you quickly genera
 boiler-plate code, some simple validate methods, and help with the tedious task of 
 mapping the WebElements on this page.
 
-![Image](../docs/images/WTF_panel_parts.png?raw=true)
+![Image](/docs/images/WTF_panel_parts.png?raw=true)
 
 
 To Create a page object, do the following:
