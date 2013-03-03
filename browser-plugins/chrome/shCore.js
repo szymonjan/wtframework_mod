@@ -39,16 +39,16 @@ var sh = {
 		'title' : null,
 		
 		/** Enables or disables smart tabs. */
-		'smart-tabs' : true,
+		'smart-tabs' : false,
 		
 		/** Gets or sets tab size. */
 		'tab-size' : 4,
 		
 		/** Enables or disables gutter. */
-		'gutter' : true,
+		'gutter' : false,
 		
 		/** Enables or disables toolbar. */
-		'toolbar' : true,
+		'toolbar' : false,
 		
 		/** Enables quick code copy and paste from double click. */
 		'quick-code' : true,
@@ -57,7 +57,7 @@ var sh = {
 		'collapse' : false,
 		
 		/** Enables or disables automatic links. */
-		'auto-links' : true,
+		'auto-links' : false,
 		
 		/** Gets or sets light mode. Equavalent to turning off gutter and toolbar. */
 		'light' : false,
