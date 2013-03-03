@@ -1,3 +1,6 @@
+// The following code was taken from SyntaxHighlighter.
+// https://github.com/alexgorbatchev/SyntaxHighlighter
+
 //
 // Begin anonymous function. This is used to contain local scope variables without polutting global scope.
 //
