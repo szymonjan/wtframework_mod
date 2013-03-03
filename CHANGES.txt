@@ -1,3 +1,8 @@
+v0.1.1-0.1.4
+	- Bug fixes to Python generated code from plugin.
+	- Added ability to manually map an element in chrome plugin.
+	- Add screenshot to readme
+
 v0.1.0
     - Added support for delayed test failure.  This allows you to perform an assert, 
       but not fail the test until the end so you can test multiple items before the 
