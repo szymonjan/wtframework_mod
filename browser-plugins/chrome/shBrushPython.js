@@ -1,3 +1,5 @@
+// The following code was taken from SyntaxHighlighter.
+// https://github.com/alexgorbatchev/SyntaxHighlighter
 ;(function()
 {
 	// CommonJS

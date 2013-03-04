@@ -1,0 +1,7 @@
+WTFramework
+
+Please see the project Wiki for documentation.
+https://github.com/wiredrive/wtframework/wiki
+
+
+This folder is to hold images and attachments used by the wiki
