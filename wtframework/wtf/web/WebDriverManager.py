@@ -33,10 +33,6 @@ class WebDriverManager(object):
     '''
 
 
-    _singleton_instance = None #class variable to track singleton.
-
-    _mox = None
-
     def __init__(self, webdriver_factory=None):
         '''
         Initializer
@@ -52,41 +48,6 @@ class WebDriverManager(object):
             self._webdriver_factory = webdriver_factory
         else:
             self._webdriver_factory = WebDriverFactory()
-
-
-
-    @staticmethod
-    def get_instance():
-        """
-        Returns the singleton instance. Upon its first call, it creates a
-        new instance of the decorated class and calls its `__init__` method.
-        On all subsequent calls, the already created instance is returned.
-        
-        @return: Singleton instance of WebDriverManager.
-        @rtype: WebDriverManager
-        """
-        if WebDriverManager._singleton_instance == None:
-            WebDriverManager._singleton_instance = WebDriverManager()
-
-        return WebDriverManager._singleton_instance
-
-
-    @staticmethod
-    def clear_instance():
-        '''
-        Clear out the singleton instance.  This is useful for when you want to 
-        reset the config settings and have it re-read in the settings.
-        '''
-        try:
-            try:
-                # If statement is to prevent instantiating a new webdriver in order to close it.
-                if WebDriverManager._singleton_instance.webdriver != None:
-                    WebDriverManager._singleton_instance.get_driver().close()
-            except:
-                pass
-            WebDriverManager._singleton_instance = None
-        except AttributeError:
-            pass
 
 
 
@@ -111,4 +72,4 @@ class WebDriverManager(object):
 
 
 # Global Instance of WebDriver Manager
-WTF_WEBDRIVER_MANAGER = WebDriverManager.get_instance()
+WTF_WEBDRIVER_MANAGER = WebDriverManager()

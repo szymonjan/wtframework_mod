@@ -19,20 +19,19 @@ Created on Feb 6, 2013
 
 @author: "David Lai"
 '''
+from mox import Mox
 from selenium import webdriver
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.web.page import PageObject, InvalidPageError
 import abc
+import unittest
 '''
 Created on Dec 21, 2012
 
 @author: "David Lai"
 '''
-from mox import Mox
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-from wtframework.wtf.config.ConfigReader import ConfigReader
-from wtframework.wtf.web.PageObject import PageObject, \
-    InvalidPageError
-import unittest
 
 
 class TestPageObject(unittest.TestCase):
@@ -49,20 +48,21 @@ class TestPageObject(unittest.TestCase):
             pass
         
 
-    @unittest.skip("This test relies on a browser and internet connection.")
+    #@unittest.skip("This test relies on a browser and internet connection.")
     def test_createPage_createsPageFromFactory(self):
         # Mock a webdriver that looks like it's viewing yahoo
         mox = Mox()
         config_reader = mox.CreateMock(ConfigReader)
-        config_reader.get_value("selenium.take_reference_screenshot").AndReturn(False)
+        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
+        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
         mox.ReplayAll()
 
         self.driver = webdriver.Firefox()
         self.driver.get("http://www.google.com")
-        google = SearchPage.create_page(self.driver, config_reader)
+        google = SearchPage.create_page(self.driver, config_reader=config_reader)
         self.assertTrue(type(google) == GoogleSearch)
         self.driver.get("http://www.yahoo.com")
-        yahoo = SearchPage.create_page(self.driver, config_reader)
+        yahoo = SearchPage.create_page(self.driver, config_reader=config_reader)
         self.assertTrue(type(yahoo) == YahooSearch)
 
 
@@ -75,7 +75,7 @@ class TestPageObject(unittest.TestCase):
         # Mock a webdriver that looks like it's viewing yahoo
         mox = Mox()
         config_reader = mox.CreateMock(ConfigReader)
-        config_reader.get_value("selenium.take_reference_screenshot").AndReturn(False)
+        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
         driver = mox.CreateMock(WebDriver)
         driver.get("http://www.yahoo.com").AndReturn(None)
         driver.current_url = "http://www.yahoo.com"
@@ -92,7 +92,7 @@ class TestPageObject(unittest.TestCase):
 
         #Mock a WebDriver that looks like it's returning google.
         mox.ResetAll()
-        config_reader.get_value("selenium.take_reference_screenshot").AndReturn(False)
+        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
         driver.get("http://www.google.com").AndReturn(None)
         driver.current_url = "http://www.google.com"
         element = mox.CreateMock(WebElement)

@@ -14,23 +14,113 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Jan 28, 2013
 
-@author: "David Lai"
-'''
 
-from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
-from wtframework.wtf.web.PageObject import PageObject
+from wtframework.wtf.config import WTF_CONFIG_READER
+from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
+from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
+import abc
+
+
+class PageObject(object):
+    '''
+    Baseclass for PageObjects.
+    
+    Basic Usage:
+    1) define 'validate_page' method.  This method will check to make sure 
+       we are on the correct page.
+    2) define 'get_element_locators' method.  This will fetch a list of locators that'll 
+       be used to initialize elements.
+    '''
+    __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
+
+    # Webdriver associated with this instance of the PageObject
+
+    _names_of_classes_we_already_took_screen_caps_of = {}
+
+    def __init__(self, webdriver=WTF_WEBDRIVER_MANAGER.get_driver(), **kwargs):
+        '''
+        Constructor
+        @param webdriver: WebDriver
+        @type webdriver: WebDriver
+        '''
+        try:
+            config_reader=kwargs['config_reader']
+        except:
+            config_reader=WTF_CONFIG_READER
+
+        
+        self._validate_page(webdriver)
+        
+        # Assign webdriver to PageObject. 
+        # Each page object has an instance of "webdriver" referencing the webdriver 
+        # driving this page.
+        self.webdriver = webdriver
+
+        # Take reference screenshots if this option is enabled.
+        if config_reader.get("selenium.take_reference_screenshot", False) == True:
+            class_name = type(self).__name__
+            if class_name in PageObject._names_of_classes_we_already_took_screen_caps_of:
+                pass
+            else:
+                try:
+                    WebScreenShotUtil.take_reference_screenshot(webdriver, class_name)
+                    PageObject._names_of_classes_we_already_took_screen_caps_of[class_name] = True
+                except Exception as e:
+                    print e # Some WebDrivers such as head-less drivers does not take screenshots.
+        else:
+            pass
+
+
+    @abc.abstractmethod
+    def _validate_page(self, webdriver):
+        """
+        Perform checks to validate this page is the correct target page.
+        
+        @raise IncorrectPageException: Raised when we try to assign the wrong page 
+        to this page object.
+        """
+        return
+
+
+    @classmethod
+    def create_page(cls, webdriver=WTF_WEBDRIVER_MANAGER.get_driver(), **kwargs):
+        """
+        Class method short cut to call PageFactory on itself.
+        @param webdriver: WebDriver to associate with this page.
+        @type webdriver: WebDriver
+        """
+        if "config_reader" in kwargs:
+            print "PageObject using provided config"
+            config_reader = kwargs['config_reader']
+        else:
+            config_reader = WTF_CONFIG_READER
+        
+        # Note, the delayed import here is to avoid a circular import.
+        return PageFactory.create_page(cls, webdriver=webdriver, config_reader=config_reader)
+
+
+    #Magic methods for enabling comparisons.
+    def __cmp__(self, other):
+        """
+        Override this to implement PageObject ranking.  This is used by PageObjectFactory
+        when it finds multiple pages that qualify to map to the current page.  The 
+        PageObjectFactory will check which page object is preferable.
+        """
+        return 0
+
+
+class InvalidPageError(Exception):
+    '''Thrown when we have tried to instantiate the incorrect page to a PageObject.'''
+    pass
+
+
 
 class PageFactory():
-    "Page Factory class."
+    "Page Factory class for constructing PageObjects."
 
     @staticmethod
-    def create_page(webdriver, page_obj_class, config_reader=WTF_CONFIG_READER):
-        #Import moved inside to avoid circular import 
-        from wtframework.wtf.web.PageObject import InvalidPageError
-        
+    def create_page(page_obj_class, webdriver=WTF_WEBDRIVER_MANAGER.get_driver(), **kwargs):
         """
         Instantiate a page object from a given Interface or Abstract class.
         
@@ -49,13 +139,18 @@ class PageFactory():
         @type webdriver: WebDriver
         @param  page_obj_class: Class, AbstractBaseClass, or Interface to attempt to consturct.
         """
+        try:
+            config_reader=kwargs['config_reader']
+        except:
+            config_reader=WTF_CONFIG_READER
+        
         # Walk through all classes of this sub class 
         subclasses = PageFactory.__itersubclasses(page_obj_class)
 
         current_matched_page = None
         for pageClass in subclasses :
             try:
-                page = pageClass(webdriver, config_reader)
+                page = pageClass(webdriver=webdriver, config_reader=config_reader)
                 if current_matched_page == None or page > current_matched_page:
                     current_matched_page = page
             except InvalidPageError:

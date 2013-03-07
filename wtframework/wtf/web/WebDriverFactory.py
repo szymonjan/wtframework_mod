@@ -78,11 +78,11 @@ class WebDriverFactory(object):
         else:
             self._config_reader = WTF_CONFIG_READER
 
-        try:
-            if self._config_reader.get_value(WebDriverFactory.SHUTDOWN_HOOK_CONFIG) == True:
-                WebDriverFactory._use_shutdown_hook = True
-        except:
-            pass
+        if self._config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG, True) == True:
+            WebDriverFactory._use_shutdown_hook = True
+        else:
+            WebDriverFactory._use_shutdown_hook = False
+        
 
     @staticmethod
     def clean_up_webdrivers():
@@ -90,13 +90,14 @@ class WebDriverFactory(object):
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
+        print "Cleaning up webdrivers"
         try:
             if WebDriverFactory._use_shutdown_hook:
                 for webdriver in WebDriverFactory._webdrivers_created:
                     try:
                         webdriver.quit()
-                    except:
-                        pass
+                    except Exception as e:
+                        print e
         except:
             pass
 
