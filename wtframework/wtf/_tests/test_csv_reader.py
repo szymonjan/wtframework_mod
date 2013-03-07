@@ -14,22 +14,31 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Jan 31, 2013
 
-@author: "David Lai"
-'''
-from wtframework.wtf.utils.DataUtils import DataUtils
-import re
+from wtframework.wtf.data import CsvReader, WTF_DATA_MANAGER
 import unittest
 
 
-class Test(unittest.TestCase):
+class TestCsvReader(unittest.TestCase):
 
 
-    def test_generateTimeStampedString(self):
-        ts_string = DataUtils.generate_timestamped_string("TEST", 5)
-        self.assertTrue(len(re.findall(r'^\d{4}-\d{2}-\d{2}_\d{2}\.\d{2}\.\d{2}_TEST_.{5}$', ts_string)) == 1)
+    def test_csv_reader_reads_csv_file(self):
+        csvreader = CsvReader(WTF_DATA_MANAGER.get_data_path("testdata.csv", "testenv"))
+        first_row = csvreader.next()
+        self.assertEqual("Dog", first_row['Animal'])
+        self.assertEqual("3.0", first_row['Size'])
+
+        second_row = csvreader.next()
+        self.assertEqual("Cat", second_row['Animal'])
+        self.assertEqual("Mammal", second_row['Type'])
+
+        third_row = csvreader.next()
+        self.assertEqual("Reptile", third_row['Type'])
+        self.assertEqual("2.0", third_row['Size'])
+
+        self.assertRaises(StopIteration, csvreader.next)
+
+
 
 
 if __name__ == "__main__":

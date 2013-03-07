@@ -21,7 +21,7 @@ Created on Dec 20, 2012
 '''
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
+from wtframework.wtf.config import WTF_CONFIG_READER
 
 # commenting out the webdriver plus implementation as it does not work well.  Waiting for this to be fixed.
 #import webdriverplus #Note: Pydev will display import error here, but this code should work.
@@ -109,7 +109,7 @@ class WebDriverFactory(object):
 
             @return: WebDriver
         '''
-        driver_type = self._config_reader.get_value(WebDriverFactory.DRIVER_TYPE_CONFIG)
+        driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
 
         if driver_type == "REMOTE":
             # Create desired capabilities.
@@ -129,7 +129,7 @@ class WebDriverFactory(object):
         '''
         Reads the config value for browser type.
         '''
-        browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
+        browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
 
         browser_type_dict = {\
                              WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get_value(WebDriverFactory.CHROME_DRIVER_PATH)),\

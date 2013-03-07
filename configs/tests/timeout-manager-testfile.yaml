@@ -1,0 +1,15 @@
+## Values for testing timeout manager. ##
+
+
+# Default wait timeout settings. Timeout settings are specified in seconds.
+timeout:
+  # Timeout for quick things that would normally not need any sort of interstitial.
+  brief: 6
+  # Timeout for something short like a typical ajax response.
+  short: 11
+  # Timeout for something like loading a large page.
+  normal: 31
+  # Timeout for something considerably long, such waiting for something to process.
+  long: 61
+  # Timeout for something extremely long, which a user would normally get up and take a break.
+  epic: 301

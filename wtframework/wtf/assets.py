@@ -19,7 +19,7 @@ Created on Feb 5, 2013
 
 @author: davidlai
 '''
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
+from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 
 
@@ -56,5 +56,5 @@ class AssetNotFoundError(RuntimeError):
     "raised when asset cannot be located."
     pass
 
-
+## Create Default instance of AssetManager ##
 WTF_ASSET_MANAGER = AssetManager()

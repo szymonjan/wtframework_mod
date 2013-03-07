@@ -14,17 +14,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 31, 2012
-
-@author: "David Lai"
-'''
 
 import email
 import imaplib
 
 class IMapEmailAccountObject(object):
-
+    """
+    IMapEmailAccountObject is a class to assist in connecting to Imap email 
+    accounts for test verification.  It provides methods for searching through 
+    the inbox and retrieving content for verification.
+    """
 
     def __init__(self, server_address, username, password):
         """

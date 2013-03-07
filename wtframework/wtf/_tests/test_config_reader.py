@@ -19,45 +19,46 @@ Created on Dec 13, 2012
 
 @author: David Lai
 '''
-from wtframework.wtf.config.ConfigReader import ConfigReader
+from wtframework.wtf.config import ConfigReader
 import unittest
 
 
 class TestConfigReader(unittest.TestCase):
 
 
-    def test_getValue_ReturnsStringConfigValue(self):
+    def test_get_returns_string_config_value(self):
         '''
         Test config value returned is expected value
         '''
         config = ConfigReader("tests/TestConfigReaderData")
-        value = config.get_value("string_test")
+        value = config.get("string_test")
         self.assertEqual(value, "some value", "Value did not match expected.")
 
-    def test_getValueOrDefault(self):
-        "Test the get_value_or_default method returns value if available or the the default."
+    def test_get_with_default_value(self):
+        "Test the get method returns value if available or the the default."
         config = ConfigReader("tests/TestConfigReaderData")
-        self.assertEqual("some value", config.get_value_or_default("string_test", "default value"))
-        self.assertEqual("default value", config.get_value_or_default("i_dont_exist", "default value"))
+        self.assertEqual("some value", config.get("string_test", "default value"))
+        self.assertEqual("default value", config.get("i_dont_exist", "default value"))
 
-    def test_getValue_ReturnsHandlesMultiLevelKeys(self):
+    def test_get_handles_namespaced_keys(self):
         '''
         Test ConfigReader works with namespaced keys like, path.to.element
         '''
         config = ConfigReader("tests/TestConfigReaderData")
-        value = config.get_value("bill-to.given")
+        value = config.get("bill-to.given")
         self.assertEqual(value, "Chris", "Value did not match expected.")
 
-    def test_getValue_ReturnsHandlesArrays(self):
+
+    def test_get_handles_yaml_arrays(self):
         '''
         Test ConfigReader works with YAML arrays.
         '''
         config = ConfigReader("tests/TestConfigReaderData")
-        self.assertEqual("dogs", config.get_value("list_test")[0])
-        self.assertEqual("cats", config.get_value("list_test")[1])
-        self.assertEqual("badgers", config.get_value("list_test")[2])
+        self.assertEqual("dogs", config.get("list_test")[0])
+        self.assertEqual("cats", config.get("list_test")[1])
+        self.assertEqual("badgers", config.get("list_test")[2])
 
-    def test_getValue_WithMultipleConfigs(self):
+    def test_get_with_cascaded_config_files(self):
         '''
         Test Config reader loaded up with multiple configs loads 
         the config preferences in order.
@@ -65,11 +66,11 @@ class TestConfigReader(unittest.TestCase):
 
         config = ConfigReader("tests/TestConfig2;tests/TestConfig1")
         # should take config from config1
-        self.assertEqual("hello", config.get_value("setting_from_config1"))
+        self.assertEqual("hello", config.get("setting_from_config1"))
         # this will take the config from config2, which has precedence.
-        self.assertEqual("beautiful", config.get_value("overwrite_setting"))
+        self.assertEqual("beautiful", config.get("overwrite_setting"))
         # this will take the setting form config2.
-        self.assertEqual("hi", config.get_value("setting_from_config2"))
+        self.assertEqual("hi", config.get("setting_from_config2"))
 
 
 if __name__ == "__main__":

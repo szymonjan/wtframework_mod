@@ -16,16 +16,13 @@ content = \
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-"""
-Created on Feb 5, 2013
 
-@author: "David Lai"
-"""
-
-import os
 from optparse import OptionParser
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
-from wtframework.wtf.config.ConfigReader import ConfigReader
+from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.utils.project_utils import ProjectUtils
+import os
+
+
 
 if __name__ == '__main__':
 

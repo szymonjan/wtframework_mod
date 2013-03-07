@@ -20,7 +20,7 @@ Created on Dec 22, 2012
 @author: "David Lai"
 '''
 from selenium.webdriver import remote
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
+from wtframework.wtf.utils.project_utils import ProjectUtils
 import base64
 import os
 

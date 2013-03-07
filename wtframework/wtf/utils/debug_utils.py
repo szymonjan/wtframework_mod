@@ -14,3 +14,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+
+
+from datetime import datetime
+import inspect
+
+class TimeDebugger(object):
+    "Object to keeps track of time and has utility methods to print it"
+    
+
+    def start_timer(self):
+        self.start_time = datetime.now()
+
+    def print_time(self, message="Time is now: ", print_frame_info=True):
+        if print_frame_info:
+            frame_info = inspect.getouterframes(inspect.currentframe())[1]
+            print message, (datetime.now() - self.start_time), frame_info
+        else:
+            print message, (datetime.now() - self.start_time)
+        
+    def get_split(self):
+        return (datetime.now() - self.start_time)

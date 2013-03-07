@@ -14,17 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 8, 2013
 
-@author: davidlai
-'''
 from wtframework.wtf.testobjects.TestWatcher import TestWatcher
 from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
 from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
 import datetime
 import re
-from wtframework.wtf.config.ConfigReader import WTF_CONFIG_READER
+from wtframework.wtf.config import WTF_CONFIG_READER
 
 class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     '''
@@ -36,7 +32,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         '''
         Constructor
         '''
-        if WTF_CONFIG_READER.get_value_or_default("selenium.take_screenshot", True):
+        if WTF_CONFIG_READER.get("selenium.take_screenshot", True):
             self.capture_screenshot = True
         else:
             self.capture_screenshot = False
@@ -58,7 +54,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         @param test_case: Test case to pass in.
         @param test_case: wtframework.wtf.testobjects.TestCase
         """
-        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__()
+        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
     
     def on_test_error(self, test_case, test_result, exception):
         """
@@ -66,27 +62,27 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         @param test_case: Test case to pass in.
         @param test_case: wtframework.wtf.testobjects.TestCase
         """
-        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__()
+        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
 
 
-    def __generate_screenshot_filename__(self):
+    def __generate_screenshot_filename__(self, testcase):
         '''
         Get the class name and timestamp for generating filenames
         @return: File Name.
         @rtype: str
         '''
-        fname = str(self).replace("(", "").replace(")", "").replace(" ", "_")
+        fname = str(testcase).replace("(", "").replace(")", "").replace(" ", "_")
         fname = re.sub("[^a-zA-Z_]", "", fname)
         fmt='%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
     
-    def __take_screenshot_if_webdriver_open__(self):
+    def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
         Take a screenshot if webdriver is open.
         '''
         if self._webdriver_provider.is_driver_available():
             try:
-                name = self.__generate_screenshot_filename__()
+                name = self.__generate_screenshot_filename__(testcase)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
                 print "Screenshot taken:" + name
             except Exception as e:

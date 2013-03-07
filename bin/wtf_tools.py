@@ -16,15 +16,11 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-'''
-Created on Feb 4, 2013
 
-@author: "David Lai"
-'''
 from optparse import OptionParser
 from wtframework.wtf._devtools_ import page_object_tools, test_generation_tools
+from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
 
 
 def create_file(filepath, contents):

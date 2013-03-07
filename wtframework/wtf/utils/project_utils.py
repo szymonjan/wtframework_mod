@@ -14,31 +14,26 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 13, 2012
 
-@author: "David Lai"
-'''
-#from com import WDProjectRoot
+
 import os
 import re
 
 
-class ProjectUtils:
-    '''
-    Utility function for gathering information on this project.
-    '''
-
-    __root_folder = None
-
-    @staticmethod
-    def get_project_root():
+class ProjectUtils(object):
+    "Project Utilities"
+    
+    
+    __root_folder__ = None
+    
+    @classmethod
+    def get_project_root(cls):
         '''
         Return path of the project directory.
         '''
-        if(ProjectUtils.__root_folder != None):
-            return ProjectUtils.__root_folder
-
+        if(cls.__root_folder__ != None):
+            return cls.__root_folder__
+    
         path = os.getcwd()
         seperator_matches = re.finditer("/|\\\\", path)
         
@@ -49,8 +44,8 @@ class ProjectUtils:
         
         for path in paths_to_search:
             if os.path.isfile("{0}/.wtf_root_folder".format(path)):
-                ProjectUtils.__root_folder = path + "/"
-                return ProjectUtils.__root_folder
-
+                cls.__root_folder__ = path + "/"
+                return cls.__root_folder__
+    
         raise RuntimeError("Missing root project folder locator file '.wtf_root_folder'." \
                            + "Check to make sure this file is located in your project directory.")

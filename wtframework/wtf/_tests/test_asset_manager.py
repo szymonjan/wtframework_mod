@@ -15,34 +15,27 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 '''
-Created on Feb 11, 2013
+Created on Feb 5, 2013
 
 @author: davidlai
 '''
+from wtframework.wtf.assets import AssetManager
+import os
 import unittest
-from wtframework.wtf.data.CsvReader import CsvReader
-from wtframework.wtf.data.DataManager import WTF_DATA_MANAGER
 
 
-class Test(unittest.TestCase):
+class TestAssetManager(unittest.TestCase):
 
 
-    def test_csv_reader_reads_csv_file(self):
-        csvreader = CsvReader(WTF_DATA_MANAGER.get_data_path("testdata.csv", "testenv"))
-        first_row = csvreader.next()
-        self.assertEqual("Dog", first_row['Animal'])
-        self.assertEqual("3.0", first_row['Size'])
+    def test_asset_manager_returns_filepath(self):
+        "Test the correct file path is returned when given an asset file name."
+        file_path = AssetManager().get_asset_path("a_test_file.txt")
+        self.assertTrue(os.path.exists(file_path), \
+                        "Expecting 'a_test_file.txt to be under /assets folder.")
 
-        second_row = csvreader.next()
-        self.assertEqual("Cat", second_row['Animal'])
-        self.assertEqual("Mammal", second_row['Type'])
-
-        third_row = csvreader.next()
-        self.assertEqual("Reptile", third_row['Type'])
-        self.assertEqual("2.0", third_row['Size'])
-
-        self.assertRaises(StopIteration, csvreader.next)
-
+    def test_get_asset_path_throws_error_if_file_not_exist(self):
+        "Test we throw an error if the asset file is not found."
+        self.assertRaises(Exception, AssetManager().get_asset_path, "i_do_not_exist_.text")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

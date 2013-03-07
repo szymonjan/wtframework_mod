@@ -14,12 +14,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 13, 2012
 
-@author: david
-'''
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
+
+from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 import re
 import yaml
@@ -66,7 +63,11 @@ class ConfigReader:
             self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
 
 
-    def get_value(self,key):
+    class __NoDefaultSpecified__(object):
+        "No default specified to config reader."
+        pass
+
+    def get(self,key, default_value=__NoDefaultSpecified__):
         '''
         Gets the value from the yaml config based on the key.
         
@@ -75,6 +76,7 @@ class ConfigReader:
         
         @param key: Name of the config you wish to retrieve.  
         @type key: str
+        @param default_value: Value to return if the config setting does not exist. 
         '''
         for data_map in self._dataMaps:
             try:
@@ -90,20 +92,12 @@ class ConfigReader:
                     return value                
             except (AttributeError, TypeError, KeyError):
                 pass
+            
+        if default_value == self.__NoDefaultSpecified__:
+            raise KeyError("Key '{0}' does not exist".format(key))
+        else:
+            return default_value
 
-        raise KeyError("Key '{0}' does not exist".format(key))
-
-    def get_value_or_default(self,key, default):
-        '''
-        @param key: Name of the config you with to retrieve.
-        @type key: str
-        @param default: Default value to return if they key/value is not specified
-            in the config.
-        '''
-        try:
-            return self.get_value(key)
-        except KeyError:
-            return default
 
     def __load_config_file(self, file_name):
         config_file_location = os.path.join(ProjectUtils.get_project_root() +
@@ -117,7 +111,6 @@ class ConfigReader:
         config_yaml.close()
 
 
-
 class ConfigReaderAccessException(Exception):
     '''
     Exception Thrown that should be explicitly caught when trying to 
@@ -129,3 +122,42 @@ class ConfigReaderAccessException(Exception):
 # Create a global constant for referencing this to avoid re-instantiating 
 # this object over and over.
 WTF_CONFIG_READER = ConfigReader()
+
+
+
+class TimeOutManager(object):
+    """
+    Utility class for reading timeout values from config.
+    """
+    _config = None
+    
+    def __init__(self, config_reader = WTF_CONFIG_READER):
+        "Initializer"
+        self._config = config_reader
+
+    @property
+    def BRIEF(self):
+        return self._config.get("timeout.brief", 5)
+
+    @property
+    def SHORT(self):
+        return self._config.get("timeout.short", 10)
+
+
+    @property
+    def NORMAL(self):
+        return self._config.get("timeout.normal", 30)
+
+    @property
+    def LONG(self):
+        return self._config.get("timeout.long", 60)
+
+    @property
+    def EPIC(self):
+        return self._config.get("timeout.epic", 300)
+
+
+
+# Create a global constant for referencing this to avoid re-instantiating 
+# this object over and over.
+WTF_TIMEOUT_MANAGER = TimeOutManager()

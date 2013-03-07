@@ -22,8 +22,8 @@ Created on Feb 4, 2013
 '''
 from optparse import OptionParser
 from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
-    _root_folder_placeholder_, _runtests_py_, _TestExample_py_, _ISearchPage_py_,\
-    _GoogleSearchPage_py_, _YahooSearchPage_py_, _tests_pages_init_
+    _root_folder_placeholder_, _runtests_py_, _TestExample_py_, _search_page_py_,\
+    _google_search_page_py_, _YahooSearchPage_py_, _tests_pages_init_
 import os.path
 
 
@@ -109,8 +109,8 @@ if __name__ == '__main__':
     if options.examples == True:
         print "Generating example files."
         create_file(project_dir + "/tests/tests/TestExample.py", _TestExample_py_.content)
-        create_file(project_dir + "/tests/pages/ISearchPage.py", _ISearchPage_py_.content)
-        create_file(project_dir + "/tests/pages/GoogleSearchPage.py", _GoogleSearchPage_py_.content)
+        create_file(project_dir + "/tests/pages/search_page.py", _search_page_py_.content)
+        create_file(project_dir + "/tests/pages/google_search_page.py", _google_search_page_py_.content)
         create_file(project_dir + "/tests/pages/YahooSearchPage.py", _YahooSearchPage_py_.content)
         with open(project_dir + "/tests/pages/__init__.py", "a") as init_file:
             init_file.write(_tests_pages_init_.contents)
