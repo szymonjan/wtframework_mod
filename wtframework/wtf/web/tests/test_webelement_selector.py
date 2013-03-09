@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from selenium import webdriver
 '''
 Created on Feb 6, 2013
 
@@ -22,17 +23,10 @@ Created on Feb 6, 2013
 
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.webdriver.common.by import By
-from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
-from wtframework.wtf.web.WebElementSelector import WebElementSelector, \
+from wtframework.wtf.web.webelement import WebElementSelector, \
     BadSelectorError
 import unittest
 
-
-'''
-Created on Dec 21, 2012
-
-@author: "David Lai"
-'''
 
 
 class TestWebElementSelector(unittest.TestCase):
@@ -43,7 +37,7 @@ class TestWebElementSelector(unittest.TestCase):
     driver = None
     
     def setUp(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.get_driver()
+        self.driver = webdriver.Firefox()
     
     def tearDown(self):
         try:
@@ -52,7 +46,6 @@ class TestWebElementSelector(unittest.TestCase):
             pass
         
 
-    @unittest.skip("This test relies on a browser and internet connection.")
     def test_find_element_by_selectors_with_GoodSelectorFirst(self):
         self.driver.get("http://www.google.com")
         
@@ -61,7 +54,7 @@ class TestWebElementSelector(unittest.TestCase):
         self.assertIsNotNone(element)
         
 
-    @unittest.skip("This test relies on a browser and internet connection.")
+
     def test_find_element_by_selectors_with_GoodSelector2nd(self):
         self.driver.get("http://www.google.com")
         
@@ -70,7 +63,7 @@ class TestWebElementSelector(unittest.TestCase):
                                                                (By.NAME, "q"))
         self.assertIsNotNone(element)
 
-    @unittest.skip("This test relies on a browser and internet connection.")
+
     def test_find_element_by_selectors_with_BadSelectors(self):
         self.driver.get("http://www.google.com")
         
@@ -81,7 +74,7 @@ class TestWebElementSelector(unittest.TestCase):
                           (By.ID, "anotherNotSlectable") \
         )
 
-    @unittest.skip("This test relies on a browser and internet connection.")
+
     def test_find_element_by_selectors_with_IncorrectSelectorTypes(self):
         self.driver.get("http://www.google.com")
 

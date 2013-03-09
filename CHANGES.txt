@@ -1,3 +1,8 @@
+v0.2.0 Major refactor --/--/----
+    - Refactored module, classes, and variable naming in line with python standards.
+    - PageFactory now supports lists of classes.
+    - Added more unit tests.
+
 v0.1.1-0.1.4
 	- Bug fixes to Python generated code from plugin.
 	- Added ability to manually map an element in chrome plugin.

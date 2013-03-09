@@ -14,30 +14,31 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+'''
+Created on Feb 8, 2013
 
-from wtframework.wtf.data.DataManager import DataManager
-import os
+@author: davidlai
+'''
 import unittest
+from wtframework.wtf.testobjects.test_decorators import csvdata
+from ddt import ddt
+from wtframework.wtf.testobjects.testcase import WatchedTestCase
 
 
-class TestDataManager(unittest.TestCase):
+@ddt
+class TestCsvDataDrivenTest(WatchedTestCase):
 
+    expected_animals = ['Dog', 'Cat', 'Lizzard']
+    
+    
+    @csvdata("testdata.csv", "testenv")
+    def test_csv_datadriven(self, entry):
+        "Test a CSV data driven test runs tests for each data entry."
+        print "Saw entry:", entry
+        self.expected_animals.remove(entry['Animal'])
 
-    def test_data_manager_returns_filepath(self):
-        file_path = DataManager().get_data_path("testdata.csv", "testenv")
-        self.assertTrue(os.path.exists(file_path), \
-                        "Expecting 'testdata.csv' to be under /data/testenv folder.")
-
-    def test_data_manager_returns_filepath_without_env(self):
-        file_path = DataManager().get_data_path("testdata1.csv")
-        self.assertTrue(os.path.exists(file_path), \
-                        "Expecting 'testdata1.csv' to be under /data/ folder.")
-
-
-    def test_data_manager_throws_error_when_data_not_found(self):
-        self.assertRaises(RuntimeError, DataManager().get_data_path, "testnodata.csv", "testenv")
-        
-
+    def test_zzz_check_if_datadriven_test_all_ran(self):
+        self.assertEqual(0, len(self.expected_animals))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

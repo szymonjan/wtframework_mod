@@ -1,10 +1,7 @@
-'''
-Created on Feb 6, 2013
 
-@author: davidlai
-'''
-from wtframework.wtf.web.PageObject import PageObject, InvalidPageError
-from tests.pages.ISearchPage import ISearchPage
+
+from wtframework.wtf.web.page import PageObject, InvalidPageError
+from tests.pages.search_page import ISearchPage
 
 class YahooSearchPage(PageObject, ISearchPage):
     "Simple PageObject class"

@@ -1,11 +1,8 @@
 content=\
 '''
-"""
-Created on Feb 6, 2013
 
-@author: davidlai
-"""
 import abc
+
 
 class ISearchPage(object):
     """

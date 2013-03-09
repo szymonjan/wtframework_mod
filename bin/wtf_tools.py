@@ -56,7 +56,7 @@ if __name__ == '__main__':
         print "Generating page object for url:", url
         file_content = page_object_tools.generate_page_object(pagename, url)
         create_file(ProjectUtils.get_project_root() \
-                    +"tests/pages/{pagename}.py".format(pagename=pagename), file_content)
+                    +"tests/pages/{pagename}.py".format(pagename=pagename.lower()), file_content)
 
     elif args[0] == "generate-test":
         test_name = args[1]

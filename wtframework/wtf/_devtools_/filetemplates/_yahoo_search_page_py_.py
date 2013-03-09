@@ -1,11 +1,9 @@
 content=\
 '''
-"""
-A Sample Page Object implementing an interface.
-Created on Feb 6, 2013
-"""
-from wtframework.wtf.web.PageObject import PageObject, InvalidPageError
-from tests.pages.ISearchPage import ISearchPage
+
+
+from wtframework.wtf.web.page import PageObject, InvalidPageError
+from tests.pages.search_page import ISearchPage
 
 class YahooSearchPage(PageObject, ISearchPage):
     "Simple PageObject class"
@@ -40,6 +38,6 @@ class YahooSearchPage(PageObject, ISearchPage):
     def result_contains(self, text_to_check):
         "Simple check to see if the word occurs in the page."
         return text_to_check in self.webdriver.page_source
- 
+        
  '''
         

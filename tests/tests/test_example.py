@@ -15,18 +15,13 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-'''
-EXAMPLE TEST
-Created on Feb 6, 2013
 
-@author: davidlai
-'''
-from tests.pages.GoogleSearchPage import GoogleSearchPage
-from tests.pages.ISearchPage import ISearchPage
-from tests.pages.YahooSearchPage import YahooSearchPage
-from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
-from wtframework.wtf.web.PageFactory import PageFactory
-from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
+from tests.pages.search_page import ISearchPage
+from tests.pages.www_google_com import GoogleSearchPage
+from tests.pages.www_yahoo_com import YahooSearchPage
+from wtframework.wtf.testobjects.basetests import WTFBaseTest
+from wtframework.wtf.web.page import PageFactory
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import time
 import unittest
 
@@ -46,7 +41,7 @@ class Test(WTFBaseTest):
         webdriver.get("http://www.google.com")
         
         # Use the PageFactory class to instantiate your page.
-        google_page = PageFactory.create_page(webdriver, GoogleSearchPage)
+        google_page = PageFactory.create_page(GoogleSearchPage, webdriver)
         
         # With your PageObject instantiated, you can call it's methods.
         google_page.search("hello world")
@@ -63,11 +58,11 @@ class Test(WTFBaseTest):
         
         # Notice I don't need specify GoogleSearchPage specifically, and
         # able to construct a ISearchPage of the correct type.
-        search_page = PageFactory.create_page(webdriver, ISearchPage)
+        search_page = PageFactory.create_page(ISearchPage, webdriver)
         self.assertEqual(GoogleSearchPage, type(search_page))
         
         webdriver.get("http://www.yahoo.com")
-        search_page = PageFactory.create_page(webdriver, ISearchPage)
+        search_page = PageFactory.create_page(ISearchPage, webdriver)
         self.assertEqual(YahooSearchPage, type(search_page))
 
 

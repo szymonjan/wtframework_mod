@@ -48,7 +48,7 @@ class TestPageObject(unittest.TestCase):
             pass
         
 
-    #@unittest.skip("This test relies on a browser and internet connection.")
+
     def test_createPage_createsPageFromFactory(self):
         # Mock a webdriver that looks like it's viewing yahoo
         mox = Mox()

@@ -22,12 +22,11 @@ Created on Dec 17, 2012
 from mox import Mox
 from selenium.webdriver import phantomjs
 from selenium.webdriver.remote.webelement import WebElement
-from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
-from wtframework.wtf.web.WebDriverManager import WebDriverManager
+from wtframework.wtf.web.webdriver import WebDriverFactory, WebDriverManager
 import unittest
 
 
-class TestWebDriverProvider(unittest.TestCase):
+class TestWebDriverManager(unittest.TestCase):
 
     _mocker = None
 
@@ -38,22 +37,10 @@ class TestWebDriverProvider(unittest.TestCase):
 
     def tearDown(self):
         # reset our singleton providers.
-        WebDriverManager.clear_instance()
         self._mocker = None
 
 
-    def test_getInstance_ReturnsSingleton(self):
-        '''
-        Test we return a singleton instance of the webdriver provider.
-        '''
-        webdriverfactory_mock = self._mocker.CreateMock(WebDriverFactory)
-        webdriverfactory_mock.create_webdriver().AndReturn(None)
-        self._mocker.ReplayAll()
-        
-        wdp1 = WebDriverManager.get_instance()
-        wdp2 = WebDriverManager.get_instance()
-        self.assertTrue(isinstance(wdp1, WebDriverManager), 'Returned class does not match expected')
-        self.assertEqual(id(wdp1), id(wdp2), 'Returned instnace is not the same.')
+    
 
     def test_getDriver_ReturnsSingletonSeleniumWebdriver(self):
         '''

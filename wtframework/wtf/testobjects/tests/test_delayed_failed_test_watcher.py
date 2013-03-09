@@ -20,7 +20,7 @@ Created on Feb 13, 2013
 @author: "David Lai"
 '''
 import unittest
-from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
+from wtframework.wtf.testobjects.basetests import WTFBaseTest
 
 # Using WTFBaseTest since it already consumes this test Watcher.
 class Test(WTFBaseTest):

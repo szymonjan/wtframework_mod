@@ -20,9 +20,8 @@ Created on Dec 20, 2012
 @author: "David Lai"
 '''
 from mox import Mox
-from wtframework.wtf.config.ConfigReader import ConfigReader,\
-    WTF_CONFIG_READER
-from wtframework.wtf.web.WebDriverFactory import WebDriverFactory
+from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
+from wtframework.wtf.web.webdriver import WebDriverFactory
 import unittest
 import yaml
 
@@ -53,14 +52,15 @@ class TestWebDriverFactory(unittest.TestCase):
             pass
         self._driver = None
 
-    @unittest.skip("This test fails on CI")
+
+    @unittest.skip("This we do not have support for HTML unit yet.")
     def test_createWebDriver_WithHtmlUnitDriver(self):
         "Simple unit test to check if instantiating an HTMLUnit driver works."
         config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get_value(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
-        config_reader.get_value(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("HTMLUNIT")
-        config_reader.get_value_or_default("selenium.server", \
+        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
+        config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
+        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("HTMLUNIT")
+        config_reader.get_or_default("selenium.server", \
                                                  WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)\
                                                  .InAnyOrder()\
                                                  .AndReturn(WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)
@@ -73,7 +73,7 @@ class TestWebDriverFactory(unittest.TestCase):
         self._driver.find_element_by_name("q") #Google's famous 'q' element.
 
 
-    @unittest.skip("Tests using real browser skipped by default")
+
     def test_createWebDriver_WithLocalBrowser(self):
         '''
         This will test this by opening firefox and trying to fetch Google with it.
@@ -82,9 +82,9 @@ class TestWebDriverFactory(unittest.TestCase):
         When making changes to WebDriverFactory, please run this test manually.
         '''
         config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get_value(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
-        config_reader.get_value(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
+        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
+        config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
+        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
         self._mocker.ReplayAll()
         
         driver_factory = WebDriverFactory(config_reader)
@@ -92,7 +92,8 @@ class TestWebDriverFactory(unittest.TestCase):
         driver.get("http://www.google.com")
         driver.find_element_by_name('q') #google's famous q element.
 
-
+    # This relies on having access to a grid.  Set your selenium config in the config file, 
+    # then comment out the skiptest decorator to run this test.
     @unittest.skip("Tests using external grid skipped by default.")
     def test_createWebDriver_WithGrid(self):
         '''
@@ -143,13 +144,13 @@ class MockConfigWithSauceLabs(object):
                 version: 16.0
                 platform: Windows 2008
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
-        """.format(WTF_CONFIG_READER.get_value("selenium.remote_url"))
+        """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
         # TODO: Might be good to replace this with a local grid to avoid using up SauceLab automation hours.
         self.map = yaml.load(config)
 
 
 
-    def get_value(self,key):
+    def get(self,key):
         '''
         Gets the value from the yaml config based on the key.
         

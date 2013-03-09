@@ -14,17 +14,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 20, 2012
 
-@author: "David Lai"
-'''
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from wtframework.wtf.config import WTF_CONFIG_READER
 
-# commenting out the webdriver plus implementation as it does not work well.  Waiting for this to be fixed.
-#import webdriverplus #Note: Pydev will display import error here, but this code should work.
 
 
 class WebDriverFactory(object):
@@ -206,3 +200,61 @@ try:
     atexit.register(WebDriverFactory.clean_up_webdrivers)
 except:
     pass
+
+
+
+
+class WebDriverManager(object):
+    '''
+    Provides Singleton instance of Selenium WebDriver based on 
+    config settings.
+    
+    Reason we don't make this a Utility class that provides a singleton 
+    of the WebDriver itself is so we can allow that pice to be mocked 
+    out to assist in unit testing framework classes that may use this. 
+    '''
+
+
+    def __init__(self, webdriver_factory=None):
+        '''
+        Initializer
+        
+        @param webdriver_factory: Optional webdriver factory to use to 
+        create instances of webdriver.  This is useful for unit tests 
+        that need to mock out the webdriver. 
+        @type webdriver_factory: WebDriverFactory
+        '''
+        self.webdriver = None
+        
+        if( webdriver_factory != None):
+            self._webdriver_factory = webdriver_factory
+        else:
+            self._webdriver_factory = WebDriverFactory()
+
+
+
+    def get_driver(self):
+        '''
+        Get an instance of Selenium WebDriver.
+        @return: Selenium WebDriver instance.
+        @rtype: WebDriver
+        '''
+        if self.webdriver == None:
+            self.webdriver = self._webdriver_factory.create_webdriver()
+
+        return self.webdriver
+
+
+    def is_driver_available(self):
+        '''
+        Check if a webdriver instance is created.
+        @rtype: bool
+        '''
+        return self.webdriver != None
+
+
+# Global Instance of WebDriver Manager
+WTF_WEBDRIVER_MANAGER = WebDriverManager()
+
+
+

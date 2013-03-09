@@ -14,14 +14,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
+from selenium.webdriver.support.wait import WebDriverWait
+import time
 '''
 Created on Feb 11, 2013
 
 @author: "David Lai"
 '''
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementNotSelectableException
-
+from selenium.common.exceptions import ElementNotSelectableException,\
+    TimeoutException
+from datetime import datetime, timedelta
 
 
 class WebElementSelector():
@@ -67,6 +71,46 @@ class WebElementSelector():
                     return True
         
         return False
+    
+
+class WebElementUtils():    
+    """
+    Utility methods for working with web pages and web elements.
+    """
+
+    
+
+    @staticmethod
+    def wait_until_element_not_visible(webdriver, locator_lambda_expression, \
+                                       timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
+        "Wait for a WebElement to disappear."
+        # Wait for loading progress indicator to go away.
+        try:
+            stoptime = datetime.now() + timedelta(seconds=timeout)
+            while datetime.now() < stoptime:
+                element = WebDriverWait(webdriver, WTF_TIMEOUT_MANAGER.BRIEF).until(locator_lambda_expression)
+                if element.is_displayed():
+                    time.sleep(sleep)
+                else:
+                    break
+        except TimeoutException:
+            pass
+
+    @staticmethod
+    def is_image_loaded(webdriver, webelement):
+        '''
+        Check if an image (in an image tag) is loaded.
+        Note: This call will not work against background images.  Only Images in <img> tags.
+        
+        @param webelement: WebDriver web element to validate.
+        @type webelement: WebElement
+        '''
+        script = "return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" " +\
+                 "&& arguments[0].naturalWidth > 0"
+        try:
+            return webdriver.execute_script(script, webelement)
+        except:
+            return False #Img Tag Element is not on page.
 
 class BadSelectorError(Exception):
     "Raised when a bad selector is passed into a WebElementSelector() method."

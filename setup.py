@@ -19,15 +19,12 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.1.4',
+    version='0.2.0',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework',
               'wtframework.wtf',
-              'wtframework.wtf.assettools',
-              'wtframework.wtf.config',
               'wtframework.wtf.data',
-              'wtframework.wtf.email',
               'wtframework.wtf.utils',
               'wtframework.wtf.testobjects',
               'wtframework.wtf.web',
@@ -44,6 +41,6 @@ setup(
         "NoseXUnit>=0.3.3",
         "ddt>=0.2.0",
         "pyyaml>=3.10",
-        "selenium>=2.30.0",
+        "selenium>=2.31.0",
     ],
 )

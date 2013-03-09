@@ -20,7 +20,7 @@ Created on Feb 13, 2013
 
 @author: "David Lai"
 '''
-from wtframework.wtf.testobjects.TestWatcher import TestWatcher
+from wtframework.wtf.testobjects.interfaces import TestWatcher
 
 
 class DelayedTestFailTestWatcher(TestWatcher):

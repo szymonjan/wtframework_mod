@@ -20,7 +20,7 @@ Created on Feb 8, 2013
 @author: davidlai
 '''
 import unittest
-from wtframework.wtf.testobjects.WatchedTestCase import WatchedTestCase
+from wtframework.wtf.testobjects.testcase import WatchedTestCase
 
 __wtf_test_logger_var = []
 

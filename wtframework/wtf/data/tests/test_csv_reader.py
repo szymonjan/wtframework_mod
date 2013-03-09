@@ -15,7 +15,7 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.data import CsvReader, WTF_DATA_MANAGER
+from wtframework.wtf.data.data_management import CsvReader, WTF_DATA_MANAGER
 import unittest
 
 

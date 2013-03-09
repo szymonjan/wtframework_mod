@@ -24,8 +24,7 @@ I'm also adding in a 'csvdata' method decorator for supporting csv data driven t
 """
 
 from functools import wraps
-from wtframework.wtf.data.CsvReader import CsvReader
-from wtframework.wtf.data.DataManager import WTF_DATA_MANAGER
+from wtframework.wtf.data.data_management import CsvReader, WTF_DATA_MANAGER
 import re
 
 __version__ = '0.2.1wtf'

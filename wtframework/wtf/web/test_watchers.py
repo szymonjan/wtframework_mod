@@ -15,9 +15,9 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.testobjects.TestWatcher import TestWatcher
-from wtframework.wtf.web.WebScreenshotUtil import WebScreenShotUtil
-from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
+from wtframework.wtf.testobjects.test_watchers import TestWatcher
+from wtframework.wtf.web.capture import WebScreenShotUtil
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import datetime
 import re
 from wtframework.wtf.config import WTF_CONFIG_READER

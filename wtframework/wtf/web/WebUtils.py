@@ -19,89 +19,13 @@ Created on Jan 2, 2013
 
 @author: "David Lai"
 '''
-from datetime import datetime, timedelta
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.wait import WebDriverWait
 from urllib2 import urlopen
-from wtframework.wtf.config.TimeOutManager import WTF_TIMEOUT_MANAGER
-from wtframework.wtf.web.PageFactory import PageFactory
-import time
 import urllib2
 
 
+
 class WebUtils(object):
-    """
-    Utility methods for working with web pages and web elements.
-    """
-    
-    @staticmethod
-    def wait_until_page_loaded(page_obj_class, 
-                               webdriver, 
-                               timeout=WTF_TIMEOUT_MANAGER.NORMAL, 
-                               sleep=0.5, 
-                               bad_page_classes=[]):
-        """
-        Waits until the page is loaded.
-        @return: Returns PageObject of type passed in.
-        @rtype: PageObject
-        """
-        end_time = datetime.now() + timedelta(seconds = timeout)
-        last_exception = None
-        while datetime.now() < end_time:
-            # Check to see if we're at our target page.
-            try:
-                return PageFactory.create_page(webdriver, page_obj_class)
-            except Exception as e:
-                last_exception = e
-                pass
-            # Check to see if we're at one of those labled 'Bad' pages.
-            for bad_page_class in bad_page_classes:
-                try:
-                    PageFactory.create_page(webdriver, bad_page_class)
-                    #if the if/else statement succeeds, than we have an error.
-                    raise BadPageEncounteredError("Encountered a bad page. " + bad_page_class.__name__)
-                except BadPageEncounteredError as e:
-                    raise e
-                except:
-                    pass #We didn't hit a bad page class yet.
-            #sleep till the next iteration.
-            time.sleep(sleep)
 
-        print "Unable to construct page, last exception", last_exception
-        raise PageLoadTimeoutError("Timedout while waiting for {page} to load. Url:{url}".\
-                              format(page=page_obj_class.__name__, url=webdriver.current_url))
-
-    @staticmethod
-    def wait_until_element_not_visible(webdriver, locator_lambda_expression, \
-                                       timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
-        "Wait for a WebElement to disappear."
-        # Wait for loading progress indicator to go away.
-        try:
-            stoptime = datetime.now() + timedelta(seconds=timeout)
-            while datetime.now() < stoptime:
-                element = WebDriverWait(webdriver, WTF_TIMEOUT_MANAGER.BRIEF).until(locator_lambda_expression)
-                if element.is_displayed():
-                    time.sleep(sleep)
-                else:
-                    break
-        except TimeoutException:
-            pass
-
-    @staticmethod
-    def is_image_loaded(webdriver, webelement):
-        '''
-        Check if an image (in an image tag) is loaded.
-        Note: This call will not work against background images.  Only Images in <img> tags.
-        
-        @param webelement: WebDriver web element to validate.
-        @type webelement: WebElement
-        '''
-        script = "return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" " +\
-                 "&& arguments[0].naturalWidth > 0"
-        try:
-            return webdriver.execute_script(script, webelement)
-        except:
-            return False #Img Tag Element is not on page.
 
     @staticmethod
     def check_url(url):
@@ -143,13 +67,3 @@ class WebUtils(object):
 
 
 
-##################################################################
-
-class WebUtilOperationTimeoutError(Exception):
-    "Timed out while waiting for a WebUtil action"
-    
-class BadPageEncounteredError(Exception):
-    "Raised when a bad page is encountered."
-
-class PageLoadTimeoutError(WebUtilOperationTimeoutError):
-    "Timeout while waiting for page to load."
