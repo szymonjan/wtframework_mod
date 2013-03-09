@@ -19,10 +19,9 @@ Created on Dec 24, 2012
 
 @author: "David Lai"
 '''
-from wtframework.wtf.testobjects.testcase import WatchedTestCase
-from wtframework.wtf.testobjects.test_watchers import DelayedTestFailTestWatcher
-from wtframework.wtf.web.test_watchers import \
+from wtframework.wtf.testobjects.test_watchers import DelayedTestFailTestWatcher, \
     CaptureScreenShotOnErrorTestWatcher
+from wtframework.wtf.testobjects.testcase import WatchedTestCase
 import inspect
 
 
