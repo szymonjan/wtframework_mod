@@ -21,6 +21,10 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class TestScreenCaptureOnFail(WTFBaseTest):
+    """"
+    These test cases are expected to fail.  They are here to test 
+    the screen capture on failure.
+    """
 
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
@@ -39,7 +43,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
         #Check your /screenshots folder for a screenshot.
 
     # Comment out decorator to manually test the screen capture.
-    #@unittest.expectedFailure
+    @unittest.expectedFailure
     def test_error(self):
         driver = WTF_WEBDRIVER_MANAGER.get_driver()
         driver.get('http://www.google.com')

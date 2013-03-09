@@ -22,7 +22,6 @@ from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 
 
-
 if __name__ == '__main__':
 
     usage = "usage: %prog [-options args]"

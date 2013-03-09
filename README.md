@@ -5,9 +5,11 @@ https://github.com/wiredrive/wtframework
 
 Web Test Framework (referred to as WTF for short) provides a structured testing 
 framework for testing a Web Applications in a maintainable manner.  It helps QA/SDET
-professionals quickly setup and develop acceptance level web tests.  The aim of this 
-project is to provide a structured layered framework for web testing like how Django 
-and other modern MVC frameworks provide a structured way of developing web applications.
+professionals quickly setup and develop acceptance level web tests which are configurable, 
+robust, and provide utilities helpful in testing and debugging web applications.  The aim 
+of this project is to build a common framework on top of Selenium to provide test 
+professionals the tools to build web tests like how Rails and Django makes it easy to 
+build web applications.
 
 
 Install
@@ -50,14 +52,6 @@ This will create an the folders and packages of your project.  You'll see someth
 			/testdata - custom code for working with test data.
 			/tests - Your high level tests will go here.
 	
-
-Next you'll need to setup your python path.
-
-	export PYTHONPATH=$PYTHONPATH:path/to/project/
-
-On windows:
-
-	set PYTHONPATH=%PYTHONPATH%;c:\path\to\project\
 	
 Now the directory structure and your python path is setup so nosetests can run tests 
 you write in the WTF framework.
@@ -76,6 +70,11 @@ Configuring Eclipse/PyDev Environment
 7.	Fill out the required fields and use your generated project structure as
 	your Project folder.  This should create the PyDev project files necessary to
 	allow you to work on this project as a PyDev project.
+8.  Open the project settings, then under "PyDev - PYTHONPATH" settings, add 
+    your project base directory as a source folder.  Then save.
+
+At this point, you should be able to right click, select "Run As" and execute your test 
+cases as PyUnit test case.
 
 
 Installing the WTF PageObject Utility Chrome Extension
@@ -147,24 +146,23 @@ To Create a page object, do the following:
 
 You can now use this page object you created like this:
 
-	from wtframework.wtf.web.PageFactory import PageFactory
-	from pages.YourPageObjectFile import YourPageObject
+	from wtframework.wtf.web.pages import PageFactory
+	from pages.homepage import HomePage
 	...
-	your_page_object = PageFactory.create_page(webdriver, YourPageObject)
-	your_page_object.do_something(params)
+	homepage = PageFactory.create_page(HomePage)
+	homepage.login(username, password) # you will need to implement this part.
 
 Alternatively, you can use the WebUtils to wait for the page to load.  This will allow 
-you to specify a timeout period to wait for this page to finish loading.
+you to specify a timeout period (in seconds) to wait for this page to finish loading.
 
-	from wtframework.wtf.web.WebUtils import WebUtils
+	from wtframework.wtf.web.pages import PageUtils
 	...
-	slow_loading_page = WebUtils.wait_until_page_loaded(webdriver, MyPage, 60)
+	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, 60)
 
 Note: This will use the PageObject's `_validate_page()` to check if the page is 
-matching the expected page.  It's good to not use URL validation in cases you expect 
-the page to take a long time to load, and instead verify on a list of expected 
-elements you want to have loaded.
-
+matching the expected page.  It's good to not use a web element in addition to URL or 
+title validation, that way the page validation does not happen until page content appears 
+on the screen.
 
 Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
 changes to the mappings and page verification routines.  As a good practice, it's good 
@@ -197,9 +195,9 @@ strings, etc...
 
 WTFBaseTest
 -----------
-WTF framework adds some added functionality like capturing screenshots to the base 
-Unit test.  In order to leverage this functionality, your tests should extend the 
-`WTFBaseTest` base class.  
+WTF framework adds some functionality to Python's unittest that are helpful for more end 
+to end level tests.  In order to leverage this functionality, your tests should extend 
+the `WTFBaseTest` base class.  
 
 WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your own 
 test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
@@ -222,14 +220,14 @@ You can have a csv file with first row the column headers like, `data/animals.cs
 	Cat,Mammal,1.5
 	Lizzard,Reptile,2.0
 
-Then in YourTest.py, you can reference these values as follows:
+Then in `your_data_driven_test.py`, you can reference these values as follows:
 
 	# Use @ddt decorator at the class level.
 	@ddt
 	class TestCsvDataDrivenTest(TestCase):
     
     	# Then use the @csvdata decorator to flag a test method data driven.
-    	@csvdata("testdata.csv", "testenv")
+    	@csvdata("testdata.csv")
 	    def test_csv_datadriven(self, parameter_dic):
 	    	#Then in your test, you can use the parameter passed into your test
 	    	# as a dictionary with key corresponding to your CSV headers.

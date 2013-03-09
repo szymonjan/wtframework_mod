@@ -35,14 +35,14 @@ if __name__ == '__main__':
 
     if options.config:
         # check if config exists.
-        if os.path.exists(ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
+        if os.path.exists(ProjectUtils.get_project_root() + \\
+                          ConfigReader.CONFIG_LOCATION + options.config +\\
                           ConfigReader.CONFIG_EXT):
             print "Setting config WTF_ENV to:", options.config
             os.putenv(ConfigReader.ENV_VARS, options.config)
         else:
-            print "Cannot find config: ", ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
+            print "Cannot find config: ", ProjectUtils.get_project_root() + \\
+                          ConfigReader.CONFIG_LOCATION + options.config +\\
                           ConfigReader.CONFIG_EXT
 
     # Set PYTHONPATH if not set.
