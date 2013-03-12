@@ -82,7 +82,7 @@ class TestWebDriverFactory(unittest.TestCase):
         When making changes to WebDriverFactory, please run this test manually.
         '''
         config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
+        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG, True).InAnyOrder().AndReturn(True)
         config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
         config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
         self._mocker.ReplayAll()
