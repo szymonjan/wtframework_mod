@@ -127,7 +127,8 @@ WTF_CONFIG_READER = ConfigReader()
 
 class TimeOutManager(object):
     """
-    Utility class for reading timeout values from config.
+    Utility class for getting default config values for various timeout 
+    periods.
     """
     _config = None
     
@@ -137,27 +138,46 @@ class TimeOutManager(object):
 
     @property
     def BRIEF(self):
+        "Useful for waiting/pausing for things that should happen near instant."
         return self._config.get("timeout.brief", 5)
 
     @property
     def SHORT(self):
+        """"
+        Useful for waiting/pausing for things that are just long enough for a
+        brief appearance of a loading indicator. 
+        """
         return self._config.get("timeout.short", 10)
 
 
     @property
     def NORMAL(self):
+        """
+        Useful for a normal considerable wait.  Such as waiting for a large page to 
+        fully load on screen.
+        """
         return self._config.get("timeout.normal", 30)
 
     @property
     def LONG(self):
+        """
+        Useful for things that take a long time.  Such as waiting for an moderate size 
+        download/upload to complete.
+        """
         return self._config.get("timeout.long", 60)
 
     @property
     def EPIC(self):
+        """
+        Useful for operations that take an extremly long amount of time.  For example, 
+        waiting for a large upload to complete.
+        """
         return self._config.get("timeout.epic", 300)
 
 
 
-# Create a global constant for referencing this to avoid re-instantiating 
-# this object over and over.
+# Default instance of TimeOut Manager for easy access.  You can use this as 
+# follows:
+#        PageUtils.wait_for_page_to_load(SlowPage, WTF_TIMEOUT_MANAGER.LONG)
+#
 WTF_TIMEOUT_MANAGER = TimeOutManager()

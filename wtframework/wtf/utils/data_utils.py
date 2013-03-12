@@ -14,11 +14,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Jan 31, 2013
-
-@author: "David Lai"
-'''
+"""
+The purpose of this module is to provide functions for generating data that 
+can be used in tests.
+"""
 from datetime import datetime
 import random
 import string

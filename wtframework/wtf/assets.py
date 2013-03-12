@@ -14,11 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 5, 2013
 
-@author: davidlai
-'''
 from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 
@@ -38,14 +34,24 @@ class AssetManager(object):
         '''
         Constructor
         '''
-
         self._asset_path = os.path.join(ProjectUtils.get_project_root() , AssetManager._ASSET_FOLDER_)
 
         if not os.path.exists(self._asset_path):
             raise RuntimeError("Missing assets folder.  Please check to make sure you have a /assets directory.")
     
     def get_asset_path(self, filename):
-        "Get asset path."
+        """
+        Get the full system path of a tiven asset if it exists.  Otherwise it throws 
+        an error.
+        
+        Usage:
+            WTF_ASSET_MANAGER.get_asset_path("my_asset.png")
+        
+        
+        @param filename: Name of file to find.
+        @type filename: str
+        @raise AssetNotFoundError: Thrown if asset is not found in /assets folder.
+        """
         if os.path.exists(self._asset_path + "/" + filename):
             return self._asset_path + "/" + filename
         else:

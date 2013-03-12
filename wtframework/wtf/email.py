@@ -23,6 +23,16 @@ class IMapEmailAccountObject(object):
     IMapEmailAccountObject is a class to assist in connecting to Imap email 
     accounts for test verification.  It provides methods for searching through 
     the inbox and retrieving content for verification.
+    
+    Usage Example:
+        #Instantiate a Email Account Obj.
+        email = IMapEmailAccountObject("mail.gmail.com", "yourlogin", "yourpassword")
+        #Verify received email with subject.
+        self.assertTrue( email.check_email_exists_by_subject("Your Subject Line")
+        # Get the UIDs of a messages that contain subject.
+        uid - email.find_emails_by_subject("My Subject Line")
+        #Fetch the contents of the email as a string.
+        message_contents = email.get_email_message(uid[0])
     """
 
     def __init__(self, server_address, username, password):

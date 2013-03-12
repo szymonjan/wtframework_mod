@@ -15,7 +15,9 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-
+"""
+The purpose of this class is to provide tools for helping debug WTF tests.
+"""
 from datetime import datetime
 import inspect
 
