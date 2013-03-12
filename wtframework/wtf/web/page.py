@@ -243,7 +243,8 @@ class PageFactory():
         ['type', ...'tuple', ...]
         """
         if not isinstance(cls, type):
-            raise TypeError('Argument (%s) passed to PageFactory does not appear to be a valid Class.' % cls)
+            raise TypeError('Argument (%s) passed to PageFactory does not appear to be a valid Class.' % cls, \
+                            "Check to make sure the first parameter is an PageObject class, interface, or mixin.")
         if _seen is None: _seen = set()
         try:
             subs = cls.__subclasses__()
