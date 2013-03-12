@@ -127,7 +127,7 @@ class WebDriverFactory(object):
         browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
 
         browser_type_dict = {\
-                             WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get_value(WebDriverFactory.CHROME_DRIVER_PATH)),\
+                             WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),\
                              WebDriverFactory.FIREFOX: lambda:webdriver.Firefox(),\
                              WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
                              WebDriverFactory.OPERA:lambda:webdriver.Opera()}
@@ -144,8 +144,8 @@ class WebDriverFactory(object):
         '''
         Reads the config value for browser type.
         '''
-        browser_type = self._config_reader.get_value(WebDriverFactory.BROWSER_TYPE_CONFIG)
-        remote_url = self._config_reader.get_value(WebDriverFactory.REMOTE_URL_CONFIG)
+        browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
+        remote_url = self._config_reader.get(WebDriverFactory.REMOTE_URL_CONFIG)
 
         browser_constant_dict = {WebDriverFactory.HTMLUNIT:DesiredCapabilities.HTMLUNIT, \
                                  WebDriverFactory.HTMLUNITWITHJS:DesiredCapabilities.HTMLUNITWITHJS, \
@@ -164,7 +164,7 @@ class WebDriverFactory(object):
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
 
         # Get additional desired properties from config file and add them in.
-        other_desired_capabilities = self._config_reader.get_value(WebDriverFactory.DESIRED_CAPABILITIES_CONFIG)
+        other_desired_capabilities = self._config_reader.get(WebDriverFactory.DESIRED_CAPABILITIES_CONFIG)
 
         for prop in other_desired_capabilities:
             value = other_desired_capabilities[prop]
