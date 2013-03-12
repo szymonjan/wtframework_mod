@@ -22,6 +22,7 @@ from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import time
+from wtframework.wtf.utils.debug_utils import print_debug
 
 
 class PageObject(object):
@@ -41,7 +42,7 @@ class PageObject(object):
     __names_of_classes_we_already_took_screen_caps_of__ = {}
 
 
-    def __init__(self, webdriver, **kwargs):
+    def __init__(self, webdriver, *args, **kwargs):
         '''
         Constructor
         @param webdriver: Instance of Selenium WebDriver
@@ -183,11 +184,14 @@ class PageFactory():
                 page = pageClass(webdriver, **kwargs)
                 if current_matched_page == None or page > current_matched_page:
                     current_matched_page = page
-            except InvalidPageError:
+            except InvalidPageError as e:
+                print_debug("InvalidPageError", e)
                 pass #This happens when the page fails check.
-            except TypeError:
+            except TypeError as e:
+                print_debug("TypeError", e)
                 pass #this happens when it tries to instantiate the original abstract class.
             except Exception as e:
+                print_debug("Exception", e)
                 #Unexpected exception.
                 raise e
 
@@ -203,8 +207,7 @@ class PageFactory():
         try:
             page = page_obj_class(webdriver, **kwargs)
             return page
-        except InvalidPageError as e:
-            print e
+        except InvalidPageError:
             pass #This happens when the page fails check.
         except TypeError:
             pass #this happens when it tries to instantiate the original abstract class.

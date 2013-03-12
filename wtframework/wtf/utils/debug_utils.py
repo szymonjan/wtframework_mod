@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from wtframework.wtf.config import WTF_CONFIG_READER
 
 """
 The purpose of this class is to provide tools for helping debug WTF tests.
@@ -37,3 +38,8 @@ class TimeDebugger(object):
         
     def get_split(self):
         return (datetime.now() - self.start_time)
+
+
+def print_debug(*args):
+    if WTF_CONFIG_READER.get("debug", False) == True:
+        print args
