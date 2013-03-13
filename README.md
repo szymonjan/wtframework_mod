@@ -2,17 +2,17 @@ WTF - Web Test Framework
 ======
 https://github.com/wiredrive/wtframework
 
+Selenium does a good job at providing APIs for automating the browser.  What the Web Test 
+Framework (referred to as WTF for short) is to take that base, and build on it to provide 
+a structured test framework for testing a Web Applications in a maintainable manner.  The 
+goal is to provide the project structures and tools to help QA/SDET professionals quickly 
+setup and develop acceptance level web tests which are configurable, robust, and easy to 
+use.  The ultimate goal is to build a common framework on top of Selenium to provide test 
+professionals the tools to build web tests as easily as how Rails and Django makes it easy
+to build web applications.
 
-Web Test Framework (referred to as WTF for short) provides a structured testing 
-framework for testing a Web Applications in a maintainable manner.  It helps QA/SDET
-professionals quickly setup and develop acceptance level web tests which are configurable, 
-robust, and provide utilities helpful in testing and debugging web applications.  The aim 
-of this project is to build a common framework on top of Selenium to provide test 
-professionals the tools to build web tests like how Rails and Django makes it easy to 
-build web applications.
 
-
-Install
+Installation
 =======
 
 Requirements
