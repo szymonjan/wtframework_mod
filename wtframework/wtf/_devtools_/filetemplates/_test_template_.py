@@ -6,14 +6,16 @@ Created on {date}
 
 @author: Your Name Here
 """
+from wtframework.wtf.testobjects.basetests import WTFBaseTest
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import unittest
-from wtframework.wtf.testobjects.WTFBaseTest import WTFBaseTest
-from wtframework.wtf.web.WebDriverManager import WTF_WEBDRIVER_MANAGER
 
 class {testname}(WTFBaseTest):
     """
     This tests this and that.
     """
+
+    def setUp(self):
 
     def test_something_does_something(self):
         "Tests something does something"

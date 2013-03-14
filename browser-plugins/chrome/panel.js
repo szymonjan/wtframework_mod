@@ -299,7 +299,7 @@ function generatePageObjectCode() {
 "",
 "@author:Your Name Here" ,
 "'''",
-"from wtframework.wtf.web.PageObject import PageObject, InvalidPageError"
+"from wtframework.wtf.web.pages import PageObject, InvalidPageError"
 	);
 	//import regular expression if used.
 	if (itemsUsingRegEx.length > 0) {
