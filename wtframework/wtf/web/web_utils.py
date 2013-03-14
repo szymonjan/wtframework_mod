@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Jan 2, 2013
-
-@author: "David Lai"
-'''
 from urllib2 import urlopen
 import urllib2
 
