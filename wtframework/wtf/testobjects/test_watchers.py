@@ -127,6 +127,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         '''
         fname = type(testcase).__name__ + "_" + testcase._testMethodName
         fname = re.sub("[^a-zA-Z_]+", "_", fname)
+        #Trim test case name incase it's too long.
+        fname = fname[:20]
         fmt='%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
     
