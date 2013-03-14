@@ -4,7 +4,7 @@ content = \
 Created on {date}
 
 """
-from wtframework.wtf.web.PageObject import PageObject, InvalidPageError
+from wtframework.wtf.web.page import PageObject, InvalidPageError
 
 
 class {pagename}(PageObject):

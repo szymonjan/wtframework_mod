@@ -16,16 +16,13 @@ content = \
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-"""
-Created on Feb 5, 2013
 
-@author: "David Lai"
-"""
-
-import os
 from optparse import OptionParser
-from wtframework.wtf.utils.ProjectUtils import ProjectUtils
-from wtframework.wtf.config.ConfigReader import ConfigReader
+from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.utils.project_utils import ProjectUtils
+import os
+
+
 
 if __name__ == '__main__':
 
@@ -38,14 +35,14 @@ if __name__ == '__main__':
 
     if options.config:
         # check if config exists.
-        if os.path.exists(ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
+        if os.path.exists(ProjectUtils.get_project_root() + \\
+                          ConfigReader.CONFIG_LOCATION + options.config +\\
                           ConfigReader.CONFIG_EXT):
             print "Setting config WTF_ENV to:", options.config
             os.putenv(ConfigReader.ENV_VARS, options.config)
         else:
-            print "Cannot find config: ", ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
+            print "Cannot find config: ", ProjectUtils.get_project_root() + \\
+                          ConfigReader.CONFIG_LOCATION + options.config +\\
                           ConfigReader.CONFIG_EXT
 
     # Set PYTHONPATH if not set.

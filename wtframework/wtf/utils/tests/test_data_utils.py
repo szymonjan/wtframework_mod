@@ -14,4 +14,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-__VERSION__ = "0.2.0"
+
+from wtframework.wtf.utils.data_utils import generate_timestamped_string
+import re
+import unittest
+
+
+class TestDataUtils(unittest.TestCase):
+
+
+    def test_generateTimeStampedString(self):
+        ts_string = generate_timestamped_string("TEST", 5)
+        self.assertTrue(len(re.findall(r'^\d{4}-\d{2}-\d{2}_\d{2}\.\d{2}\.\d{2}_TEST_.{5}$', ts_string)) == 1)
+
+
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    unittest.main()
