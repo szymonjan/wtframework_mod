@@ -1,4 +1,4 @@
-# v0.2.0 Major refactor to bring naming in line with python standards. --/--/----
+# v0.2.0 Major refactor to bring naming in line with python standards. 3/14/2013
 - Refactored module, classes, and variable naming in line with python standards.
 - PageFactory now supports lists of classes.
 - Added more unit tests.
