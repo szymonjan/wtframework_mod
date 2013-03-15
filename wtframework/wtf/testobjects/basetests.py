@@ -40,7 +40,7 @@ class WTFBaseTest(WatchedTestCase):
         self._delayed_test_watcher = DelayedTestFailTestWatcher()
         self._register_watcher(self._delayed_test_watcher)
 
-    def assertWithDelayedFailure(self, assert_method, *params):
+    def assertWithDelayedFailure(self, assert_method):
         """
         Cause an assertion failure to be delayed till the end of the test.
         
@@ -56,12 +56,10 @@ class WTFBaseTest(WatchedTestCase):
         except:
             pass #oh well, we couldn't get it.
         
-        assert_func = lambda: assert_method(*params)
-        generated_exception = self._delayed_test_watcher.delay_failure(assert_func, frame)
-        
+        generated_exception = self._delayed_test_watcher.delay_failure(assert_method, frame)
 
 
-        if not generated_exception != None:
+        if generated_exception:
             # Call our on_fail for our test watchers.  So we can trigger our screen 
             # capture at moment of failure.
             for test_watcher in self.__wtf_test_watchers__:

@@ -66,7 +66,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
 
     def on_test_pass(self, test_case, test_result):
         if len(self.exception_list) > 0:
-            raise DelayedTestFailure(self.exception_list)
+            raise DelayedTestFailure(*tuple(self.exception_list))
 
 
 
