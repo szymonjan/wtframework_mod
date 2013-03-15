@@ -8,8 +8,8 @@ contents = """
 #
 # Then in your test code, you can refer to it using ConfigReader.
 # 
-# my_username = CONFIG_READER.get_value('login_settings.login')
-# my_password = CONFIG_READER.get_value('login_settings.password')
+# my_username = WTF_CONFIG_READER.get('login_settings.login')
+# my_password = WTF_CONFIG_READER.get('login_settings.password')
 # 
 #########################################################################
 
