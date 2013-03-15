@@ -14,11 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 13, 2013
 
-@author: "David Lai"
-'''
 import unittest
 from wtframework.wtf.testobjects.basetests import WTFBaseTest
 

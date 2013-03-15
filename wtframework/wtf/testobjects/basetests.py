@@ -14,11 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 24, 2012
 
-@author: "David Lai"
-'''
 from wtframework.wtf.testobjects.test_watchers import DelayedTestFailTestWatcher, \
     CaptureScreenShotOnErrorTestWatcher
 from wtframework.wtf.testobjects.testcase import WatchedTestCase
@@ -40,7 +36,7 @@ class WTFBaseTest(WatchedTestCase):
         self._delayed_test_watcher = DelayedTestFailTestWatcher()
         self._register_watcher(self._delayed_test_watcher)
 
-    def assertWithDelayedFailure(self, assert_method):
+    def assertWithDelayedFailure(self, assert_method, *args, **kwargs):
         """
         Cause an assertion failure to be delayed till the end of the test.
         
@@ -56,7 +52,8 @@ class WTFBaseTest(WatchedTestCase):
         except:
             pass #oh well, we couldn't get it.
         
-        generated_exception = self._delayed_test_watcher.delay_failure(assert_method, frame)
+        assert_func = lambda: assert_method(*args, **kwargs)
+        generated_exception = self._delayed_test_watcher.delay_failure(assert_func, frame)
 
 
         if generated_exception:

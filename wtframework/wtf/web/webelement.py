@@ -14,18 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
-from selenium.webdriver.support.wait import WebDriverWait
-import time
-'''
-Created on Feb 11, 2013
-
-@author: "David Lai"
-'''
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementNotSelectableException,\
-    TimeoutException
 from datetime import datetime, timedelta
+from selenium.common.exceptions import ElementNotSelectableException, \
+    TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
+import time
 
 
 class WebElementSelector():
