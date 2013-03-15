@@ -66,13 +66,26 @@ class DelayedTestFailTestWatcher(TestWatcher):
 
     def on_test_pass(self, test_case, test_result):
         if len(self.exception_list) > 0:
-            raise DelayedTestFailure(self.exception_list)
+            raise DelayedTestFailure(*tuple(self.exception_list))
 
 
 
 class DelayedTestFailure(AssertionError):
     "Thrown at the end of a test if there are test failure."
-
+    
+    def __init__(self, *args, **kwargs):
+        super(DelayedTestFailure, self).__init__(*args, **kwargs)
+        self.exception_list = args
+    
+    #Overriding __str__ to make the error message easier to read.
+    def __str__(self, *args, **kwargs):
+        exception_string = ""
+        count = 0
+        for exception_entry in self.exception_list:
+            count += 1
+            exception_string += "\nError {0}: ".format(count) + exception_entry.__str__()
+        
+        return AssertionError.__str__(self, *args, **kwargs) + exception_string
 
 
 
@@ -127,6 +140,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         '''
         fname = type(testcase).__name__ + "_" + testcase._testMethodName
         fname = re.sub("[^a-zA-Z_]+", "_", fname)
+        #Trim test case name incase it's too long.
+        fname = fname[:20]
         fmt='%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
     
