@@ -1,0 +1,21 @@
+{
+  "name": "WTFramework PageObject Utility",
+  "version": "0.2.1",
+  "description": "Creates Selenium PageObjects compatible with the WTFramework. https://github.com/wiredrive/wtframework",
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
+  ],
+  "browser_action": {
+      "default_title": "Open PageObject panel",
+      "default_icon": "icon_128.png",
+      "default_popup": "popup.html"
+  },
+  "content_scripts": [ {
+	  "matches": ["http://*/*", "https://*/*"],
+      "js": ["jquery-1.9.1.min.js", "content.js"],
+      "all_frames": false,
+      "run_at": "document_end"
+  }],
+
+  "manifest_version": 2
+}
