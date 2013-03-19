@@ -30,9 +30,26 @@ def generate_timestamped_string(subject, number_of_random_chars=4):
     @param subject: String to use as subject.
     @type subject: str
     """
-    random_str = ''.join(random.choice(string.ascii_letters) \
-                         for _ in range(number_of_random_chars))
-    fmt = '%Y-%m-%d_%H.%M.%S_{subject}_{random_str}'
-    ts_string = datetime.now().strftime(fmt).\
-        format(subject=subject, random_str=random_str)
-    return ts_string
+    random_str = generate_random_string(number_of_random_chars)
+    timestamp = generate_timestamp()
+    return "{timestamp}_{subject}_{random_str}".format(timestamp=timestamp, 
+                                                       subject=subject,
+                                                        random_str=random_str)
+
+
+def generate_timestamp(date_format="%Y-%m-%d_%H.%M.%S"):
+    """
+    Returns timestamped string. '2012-03-15_14:42:23
+    @param format: A date/time format string.  If not specified, the default will be used.
+    """
+    return datetime.now().strftime(date_format);
+
+
+def generate_random_string(number_of_random_chars=8, character_set=string.ascii_letters):
+    """
+    Generate a series of random chracters.
+    @param number_of_random_chars: Number of characters long
+    @param character_set: Specify a character set.  Default is ASCII
+    """
+    return ''.join(random.choice(character_set) \
+            for _ in range(number_of_random_chars))
