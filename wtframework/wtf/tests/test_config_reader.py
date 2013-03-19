@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 13, 2012
-
-@author: David Lai
-'''
 from wtframework.wtf.config import ConfigReader
 import unittest
 
