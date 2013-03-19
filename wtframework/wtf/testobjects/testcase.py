@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 8, 2013
-
-@author: davidlai
-'''
 from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
 import sys
 import unittest

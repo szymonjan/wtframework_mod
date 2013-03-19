@@ -41,6 +41,7 @@ var getParams = location.search.substr(location.search.indexOf("?")+1);
 
 
 currentTab = chrome.tabs.get(parseInt(getParams), function(tab) {
+	
 	currentTab = tab;
 	currentUrl = urlValidationFilter = tab.url;
 	currentTitle = titleValidationFilter = tab.title;
@@ -54,6 +55,24 @@ currentTab = chrome.tabs.get(parseInt(getParams), function(tab) {
 	refreshPageObjectPreview();
 });
 
+function getQueryMethod(mappedElementControl) {
+
+	console.log("element validation type:" + mappedElementControl.find("select").val());
+
+	switch(mappedElementControl.find("select").val()) {
+	case "name":
+		return "name";
+	case "id":
+		return "id"
+	case "css":
+		console.log("doing element css verification");
+		return "cssSelector";
+		break;
+	case "xpath":
+		console.log("doing element xpath verification");
+		return "xpath";
+	}
+}
 
 
 //Add an mapped element to our mapped elements section.
@@ -77,6 +96,7 @@ function appendNewMappedElement(elementData) {
 		"</td>"+
 		"<td><input name=\"selection-string\" type=\"text\"/></td>"+
 		"<td><button class=\"delete-mapped-element\">Remove</button></td>"+
+		"<td><button class=\"check-element-button\">Check</button></td>"+ 
 		"</tr></table>"+
 		"<div class=\"error-message\">Current selector does not map to an element on this page.</div>"+
 		"</div>");
@@ -124,6 +144,32 @@ function appendNewMappedElement(elementData) {
 		
 		refreshPageObjectPreview();
 	});
+	
+	mappedElementControl.find("button.check-element-button").click(function(event){
+		event.preventDefault();
+		event.stopPropagation();
+		
+		rawProps = mappedElementControl.find("input.props").val();
+		props = JSON.parse(decodeURI(rawProps));
+		console.log(props);
+		
+		var filterTextInput = mappedElementControl.find("input[name='selection-string']").val();
+		
+		//Perform validation of find by criteria.
+		var queryBy = getQueryMethod(mappedElementControl);
+		
+		var params = {wtframework: true, action: "highlightElement", by:queryBy, query:filterTextInput};
+		console.log("Sending message to content script.");
+		console.log(params);
+		
+		chrome.tabs.sendMessage(currentTab.id, 
+				params, 
+				function(response) {}
+		);//end chrome tab call.
+		
+		console.log("checking element");
+	});
+	
 	//Add a listner to handle change event on the mapped element.
 	mappedElementControl.find("input[name='selection-string']").change(function(event){
 		event.preventDefault();
@@ -136,24 +182,7 @@ function appendNewMappedElement(elementData) {
 		var filterTextInput = mappedElementControl.find("input[name='selection-string']").val();
 		
 		//Perform validation of find by criteria.
-		console.log("element validation type:" + mappedElementControl.find("select").val())
-		var queryBy;
-		switch(mappedElementControl.find("select").val()) {
-		case "name":
-			queryBy = "name";
-			break;
-		case "id":
-			queryBy = "id"
-			break;
-		case "css":
-			console.log("doing element css verification");
-			queryBy = "cssSelector";
-			break;
-		case "xpath":
-			console.log("doing element xpath verification");
-			queryBy = "xpath";
-			break;
-		}
+		var queryBy = getQueryMethod(mappedElementControl);
 		var params = {wtframework: true, action: "checkElement", by:queryBy, query:filterTextInput};
 		console.log("Sending message to content script.");
 		console.log(params);
@@ -173,9 +202,9 @@ function appendNewMappedElement(elementData) {
 						mappedElementControl.find(".error-message").text(
 								"Current element selector does not match an element on this page."
 						);
-					}								
+					}
 				}
-		);//end chrome tab call.					
+		);//end chrome tab call.
 	});//End of selection string change listener.
 	
 	mappedElementControl.find("select").change(function(event){
