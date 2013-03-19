@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 5, 2013
-
-@author: davidlai
-'''
 from wtframework.wtf.assets import AssetManager
 import os
 import unittest
