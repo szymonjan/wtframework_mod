@@ -15,6 +15,8 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+#This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
+from __future__ import absolute_import 
 import email
 import imaplib
 
