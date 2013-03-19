@@ -1,3 +1,6 @@
+## v0.2.2 Bug fix. 3/18/2013
+- Fixed issues in name spacing in the 'email' module.
+
 ## v0.2.1 Minor tweaks. 3/15/2013
 - Improved the string output for delayed test failure to make it easier to read.
 - Fixed a minor bug with delayed test failure.
