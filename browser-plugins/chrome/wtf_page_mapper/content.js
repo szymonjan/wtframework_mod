@@ -127,6 +127,7 @@ document.onclick = function(clickEvent) {
 		var cssSelector = clickedElement.getCssPath();
 		var text = clickedElement.text();
 		var tag = clickedElement.prop("tagName");
+		var value = clickedElement.val();
 		
 		var messagePayload = {
 				wtframework:true,
@@ -136,7 +137,8 @@ document.onclick = function(clickEvent) {
 				xpath: xpath,
 				cssSelector:cssSelector,
 				text:text,
-				tag:tag
+				tag:tag,
+				value:value
 		};
 
 		console.log(messagePayload)

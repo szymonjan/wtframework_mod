@@ -74,6 +74,10 @@ function getQueryMethod(mappedElementControl) {
 	}
 }
 
+function processElementName(elementName) {
+	return (elementName).toLowerCase().replace(/[^a-z]+/g,"_");
+}
+
 
 //Add an mapped element to our mapped elements section.
 function appendNewMappedElement(elementData) {
@@ -106,25 +110,35 @@ function appendNewMappedElement(elementData) {
 		if (typeof(elementData.name) != "undefined" ) {
 			console.log("Switching to name verification");
 			mappedElementControl.find("select[name='find-by']").val("name");
-			var processedName = (elementData.name).toLowerCase().replace(/[^a-z]+/g,"_");
+			var processedName = processElementName(elementData.name);
 			mappedElementControl.find("input[name='object-name']").val(processedName);
 			mappedElementControl.find("input[name='selection-string']").val(elementData.name);
 		} else if (typeof(elementData.id) != "undefined" ) {
 			console.log("Switching to id verification");
 			mappedElementControl.find("select[name='find-by']").val("id");
-			var processedName = (elementData.id).toLowerCase().replace(/[^a-z]+/g,"_");
+			var processedName = processElementName(elementData.id);
 			mappedElementControl.find("input[name='object-name']").val(processedName);
 			mappedElementControl.find("input[name='selection-string']").val(elementData.id);
 		} else if (typeof(elementData.cssSelector) != "undefined" ) {
 			console.log("Switching to css verification");
 			mappedElementControl.find("select[name='find-by']").val("css");
-			var processedName = (request.text+ "_" + elementData.tag).toLowerCase().replace(/[^a-z]+/g,"_");
+			var processedName;
+			if (elementData.text != 'undefined') {
+				processedName = processElementName(elementData.text+ "_" + elementData.tag);	
+			} else {
+				processedName = processElementName(elementData.value+ "_" + elementData.tag);
+			}
 			mappedElementControl.find("input[name='object-name']").val(processedName);
 			mappedElementControl.find("input[name='selection-string']").val(elementData.cssSelector);
 		} else if (typeof(elementData.xpath) != "undefined" ) {
 			console.log("Switching to xpath verification");
 			mappedElementControl.find("select[name='find-by']").val("xpath");
-			var processedName = (elementData.text+ "_" + request.tag).toLowerCase().replace(/[^a-z]+/g,"_");
+			var processedName;
+			if (elementData.text != 'undefined') {
+				processedName = processElementName(elementData.text+ "_" + elementData.tag);	
+			} else {
+				processedName = processElementName(elementData.value+ "_" + elementData.tag);
+			}
 			mappedElementControl.find("input[name='object-name']").val(processedName);
 			mappedElementControl.find("input[name='selection-string']").val(elementData.xpath);
 		}
