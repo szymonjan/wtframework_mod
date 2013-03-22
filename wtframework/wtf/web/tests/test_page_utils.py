@@ -6,7 +6,8 @@ Created on Mar 8, 2013
 import unittest
 from wtframework.wtf.web import page
 from selenium import webdriver
-from wtframework.wtf.web.page import PageObject, InvalidPageError
+from wtframework.wtf.web.page import PageObject, InvalidPageError,\
+    PageLoadTimeoutError
 from datetime import datetime, timedelta
 import threading
 import time
@@ -53,6 +54,21 @@ class TestPageUtils(unittest.TestCase):
         self.assertTrue(isinstance(self.page_obj, GoogleSearch))
         # check that the instantiation happened later when the page was loaded.
         self.assertGreater(end_time - start_time, timedelta(seconds=10))
+
+   
+    def test_wait_for_page_loads_times_out_on_bad_page(self):
+        self.driver = webdriver.Firefox()
+        self.driver.get("http://www.yahoo.com")
+        self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, GoogleSearch, self.driver, 1)
+
+
+    def test_wait_for_page_loads_times_out_on_bad_page_list(self):
+        self.driver = webdriver.Firefox()
+        self.driver.get("http://www.yahoo.com")
+        self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, 
+                          [GoogleSearch], self.driver, 1)
+
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
