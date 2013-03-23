@@ -1,3 +1,10 @@
+## v0.2.3 - 3/22/2013
+- New Feature: chrome plugin has a "check" button to highlight target element on the page.
+- Fixed issue with using lists of classes for `wait_until_page_loaded()`.
+- Fixed issue in chrome plugin with getting element name of elements mapped initially 
+with CSS
+
+
 ## v0.2.2 Bug fix. 3/18/2013
 - Fixed issues in name spacing in the 'email' module.
 
