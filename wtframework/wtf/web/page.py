@@ -340,9 +340,23 @@ class PageUtils():
 
         print "Unable to construct page, last exception", last_exception
         raise PageLoadTimeoutError("Timedout while waiting for {page} to load. Url:{url}".\
-                              format(page=page_obj_class.__name__, url=webdriver.current_url))
-        
+                              format(page=PageUtils.__get_name_for_class__(page_obj_class), 
+                                     url=webdriver.current_url))
 
+
+    @staticmethod
+    def __get_name_for_class__(class_or_list):
+        if type(class_or_list) == list:
+            name = "["
+            for item in class_or_list:
+                name += PageUtils.__get_name_for_class__(item) + ","
+            name += "]"
+            return name
+        else:
+            try:
+                return class_or_list.__name__
+            except:
+                return str(class_or_list)
 
 
 class PageUtilOperationTimeoutError(Exception):

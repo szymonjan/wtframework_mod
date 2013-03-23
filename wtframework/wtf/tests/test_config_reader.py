@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 13, 2012
-
-@author: David Lai
-'''
 from wtframework.wtf.config import ConfigReader
 import unittest
 
@@ -71,6 +66,13 @@ class TestConfigReader(unittest.TestCase):
         self.assertEqual("beautiful", config.get("overwrite_setting"))
         # this will take the setting form config2.
         self.assertEqual("hi", config.get("setting_from_config2"))
+        
+
+    def test_get_with_missing_key_and_no_default(self):
+        "An error should be thrown if the key is missing and no default provided."
+        config = ConfigReader("tests/TestConfig2;tests/TestConfig1")
+        # should take config from config1
+        self.assertRaises(KeyError, config.get, "setting_that_doesnt_exist")
 
 
 if __name__ == "__main__":

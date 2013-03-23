@@ -41,8 +41,11 @@ chrome.extension.onMessage.addListener(
 				alert("\n\nWTFramework\n\nClick on an element on this page to map it.");
 			}
 			
-			if (request.action == "checkElement") {
-				console.log("Check Element request received.");
+						
+			if (request.action == "checkElement" || request.action == "highlightElement") {
+				console.log( request.action + " request received.");
+				
+				var blinkElement = request.action == "highlightElement";
 				
 				var checkOk = false;
 				var query = request.query;
@@ -54,6 +57,9 @@ chrome.extension.onMessage.addListener(
 								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
 						if (element != null) {
 							checkOk = true;
+							if(blinkElement) {
+								blinkIt($(element));
+							}
 						}
 						break;
 					case 'id':
@@ -62,12 +68,19 @@ chrome.extension.onMessage.addListener(
 								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
 						if (element != null) {
 							checkOk = true;
+							if(blinkElement) {
+								blinkIt($(element));
+							}
 						}
 						break;
 					case 'cssSelector':
 						console.log("Checking if element exist using cssSelector");
-						if( document.querySelector(query) != null) {
+						var element = document.querySelector(query);
+						if( element != null) {
 							checkOk = true;
+							if(blinkElement) {
+								blinkIt($(element));
+							}
 						}
 						break;
 					case 'xpath':
@@ -76,6 +89,9 @@ chrome.extension.onMessage.addListener(
 								XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
 						if (element != null) {
 							checkOk = true;
+							if(blinkElement) {
+								blinkIt($(element));
+							}
 						}
 						break;
 					}	
@@ -111,6 +127,7 @@ document.onclick = function(clickEvent) {
 		var cssSelector = clickedElement.getCssPath();
 		var text = clickedElement.text();
 		var tag = clickedElement.prop("tagName");
+		var value = clickedElement.val();
 		
 		var messagePayload = {
 				wtframework:true,
@@ -120,7 +137,8 @@ document.onclick = function(clickEvent) {
 				xpath: xpath,
 				cssSelector:cssSelector,
 				text:text,
-				tag:tag
+				tag:tag,
+				value:value
 		};
 
 		console.log(messagePayload)
@@ -177,3 +195,42 @@ jQuery.fn.extend({
         return xpath;
 	}
 });
+
+
+// Blink a target object.
+function blinkIt(target) {
+	var x = false;
+	console.log("target is" + target);
+	
+	var oldBorderColor = target.css('border-color');
+	var oldBorderStyle = target.css('border-style');
+	var oldBorderWidth = target.css('border-width');
+	
+	console.log("blinking element");
+    var blinker = setInterval(function() {
+    	if(!x) {
+    		console.log("setting border");
+        	target.css('border-color', 'red');
+        	target.css('border-style', 'solid');
+        	target.css('border-width', '5px');	
+    	}
+    	else {
+    		console.log("unsetting border");
+        	target.css('border-color', oldBorderColor);
+        	target.css('border-style', oldBorderStyle);
+        	target.css('border-width', oldBorderWidth);	
+    	}
+    	x = !x;
+    }, 150);
+    
+    
+    setTimeout(function(){
+    	window.clearInterval(blinker);
+    	console.log("unsetting border");
+    	target.css('border-color', oldBorderColor);
+    	target.css('border-style', oldBorderStyle);
+    	target.css('border-width', oldBorderWidth);
+    	},5000);
+
+};
+    

@@ -15,7 +15,8 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.utils.data_utils import generate_timestamped_string
+from wtframework.wtf.utils.data_utils import generate_timestamped_string, \
+    generate_timestamp, generate_random_string
 import re
 import unittest
 
@@ -26,6 +27,14 @@ class TestDataUtils(unittest.TestCase):
     def test_generateTimeStampedString(self):
         ts_string = generate_timestamped_string("TEST", 5)
         self.assertTrue(len(re.findall(r'^\d{4}-\d{2}-\d{2}_\d{2}\.\d{2}\.\d{2}_TEST_.{5}$', ts_string)) == 1)
+
+    def test_generate_timestamp(self):
+        ts_string = generate_timestamp()
+        self.assertTrue(len(re.findall(r'^\d{4}-\d{2}-\d{2}_\d{2}\.\d{2}\.\d{2}$', ts_string)) == 1)
+
+    def test_generate_randome_string(self):
+        random = generate_random_string(16);
+        self.assertEqual(16, len(random))
 
 
 if __name__ == "__main__":
