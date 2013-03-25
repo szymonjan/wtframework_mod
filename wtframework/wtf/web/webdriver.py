@@ -104,7 +104,7 @@ class WebDriverFactory(object):
 
             @return: WebDriver
         '''
-        driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
+        driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG, "LOCAL")
 
         if driver_type == "REMOTE":
             # Create desired capabilities.
@@ -124,7 +124,7 @@ class WebDriverFactory(object):
         '''
         Reads the config value for browser type.
         '''
-        browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
+        browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG, WebDriverFactory.FIREFOX)
 
         browser_type_dict = {\
                              WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),\
