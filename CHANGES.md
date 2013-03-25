@@ -1,3 +1,6 @@
+## v0.2.4 - 3/25/2013
+- Fix bug in 'do_until()' function.
+
 ## v0.2.3 - 3/22/2013
 - New Feature: chrome plugin has a "check" button to highlight target element on the page.
 - Fixed issue with using lists of classes for `wait_until_page_loaded()`.

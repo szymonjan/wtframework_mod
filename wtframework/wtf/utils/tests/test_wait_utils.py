@@ -15,7 +15,8 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
-from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError
+from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError,\
+    do_until
 import unittest
 
 
@@ -61,6 +62,18 @@ class TestWaitUtils(unittest.TestCase):
             raise e
 
 
+    def test_do_until_retries_until_action_successful(self):
+        self.__x = 0
+        do_until(lambda: self.__wait_condition())
+        self.assertEqual(2, self.__x)
+
+    def __wait_condition(self):
+        self.__x += 1
+        if self.__x < 2:
+            raise RuntimeError("error")
+
+    def test_do_until_raises_exeption_when_timeout(self):
+        self.assertRaises(OperationTimeoutError, do_until, lambda: 1/0, 1 )
 
 
 if __name__ == "__main__":

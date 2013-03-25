@@ -50,7 +50,8 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 
     raise OperationTimeoutError("Operation timed out.")
 
-def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER, sleep=0.5):
+
+def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
     '''
     Waits until the function call succeeds.
     @param function_call_or_lambda: Lambda expression to execute. 
