@@ -15,16 +15,9 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from selenium import webdriver
-'''
-Created on Feb 6, 2013
-
-@author: "David Lai"
-'''
-
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.webdriver.common.by import By
-from wtframework.wtf.web.webelement import WebElementSelector, \
-    BadSelectorError
+from wtframework.wtf.web.webelement import WebElementSelector, BadSelectorError
 import unittest
 
 

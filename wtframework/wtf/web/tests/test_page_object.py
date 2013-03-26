@@ -14,11 +14,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 6, 2013
-
-@author: "David Lai"
-'''
 from mox import Mox
 from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -27,11 +22,6 @@ from wtframework.wtf.config import ConfigReader
 from wtframework.wtf.web.page import PageObject, InvalidPageError
 import abc
 import unittest
-'''
-Created on Dec 21, 2012
-
-@author: "David Lai"
-'''
 
 
 class TestPageObject(unittest.TestCase):
