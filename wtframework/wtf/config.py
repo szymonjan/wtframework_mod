@@ -104,7 +104,7 @@ class ConfigReader:
                                             ConfigReader.CONFIG_LOCATION + 
                                             file_name + 
                                             ConfigReader.CONFIG_EXT)
-        print "locaing config file:", config_file_location
+        print "locating config file:", config_file_location
         config_yaml = open(config_file_location, 'r')
         dataMap = yaml.load(config_yaml)
         self._dataMaps.insert(0, dataMap)
