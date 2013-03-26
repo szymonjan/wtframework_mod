@@ -14,11 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 17, 2012
 
-@author: "David Lai"
-'''
 from mox import Mox
 from selenium.webdriver import phantomjs
 from selenium.webdriver.remote.webelement import WebElement

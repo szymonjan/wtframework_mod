@@ -104,7 +104,11 @@ class WebDriverFactory(object):
 
             @return: WebDriver
         '''
-        driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
+        try:
+            driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
+        except:
+            print WebDriverFactory.DRIVER_TYPE_CONFIG + " setting is missing from config. Using defaults"
+            driver_type = "LOCAL"
 
         if driver_type == "REMOTE":
             # Create desired capabilities.
@@ -124,7 +128,11 @@ class WebDriverFactory(object):
         '''
         Reads the config value for browser type.
         '''
-        browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
+        try:
+            browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
+        except KeyError:
+            print WebDriverFactory.BROWSER_TYPE_CONFIG + " missing is missing from config file. Using defaults"
+            browser_type = WebDriverFactory.FIREFOX
 
         browser_type_dict = {\
                              WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),\

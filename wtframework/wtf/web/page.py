@@ -18,11 +18,11 @@
 
 from datetime import datetime, timedelta
 from wtframework.wtf.config import WTF_CONFIG_READER, WTF_TIMEOUT_MANAGER
+from wtframework.wtf.utils.debug_utils import print_debug
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import time
-from wtframework.wtf.utils.debug_utils import print_debug
 
 
 class PageObject(object):
