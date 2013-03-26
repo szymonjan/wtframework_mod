@@ -1,3 +1,8 @@
+## v0.2.5 - 3/25/2013
+- Improve logging around webdriver factory.
+- By default use Firefox webdriver if no settings provided.
+- Fix typo in chrome plugin generated pageobject code.
+
 ## v0.2.4 - 3/25/2013
 - Fix bug in 'do_until()' function.
 
