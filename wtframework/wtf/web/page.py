@@ -316,6 +316,10 @@ class PageUtils():
         @return: Returns PageObject of type passed in.
         @rtype: PageObject
         """
+        #convert this param to list if not already.
+        if type(bad_page_classes) != list:
+            bad_page_classes = [bad_page_classes]
+        
         end_time = datetime.now() + timedelta(seconds = timeout)
         last_exception = None
         while datetime.now() < end_time:

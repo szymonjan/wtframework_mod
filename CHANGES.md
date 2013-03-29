@@ -1,3 +1,9 @@
+## v0.2.6 - 3/29/2013
+- Added utils for working with temp files.
+- Moved wiki screenshots out of this project.
+- Allow allow wait for page method to accept a single bad page class without passing it 
+  in a list.
+
 ## v0.2.5 - 3/25/2013
 - Improve logging around webdriver factory.
 - By default use Firefox webdriver if no settings provided.
