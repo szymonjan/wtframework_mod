@@ -44,9 +44,9 @@ class WebUtils(object):
         "Get the current base URL."
         current_url = webdriver.current_url
         try:
-            return re.findall("^[^/]+//[^/$]+", current_url)
+            return re.findall("^[^/]+//[^/$]+", current_url)[0]
         except:
-            raise RuntimeError("Unable to process url: {0}".format(current_url) )
+            raise RuntimeError("Unable to process base url: {0}".format(current_url) )
 
     @staticmethod
     def is_webdriver_mobile(webdriver):
