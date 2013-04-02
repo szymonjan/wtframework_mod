@@ -1,6 +1,6 @@
 {
   "name": "WTFramework PageObject Utility",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "permissions": [
     "tabs", "http://*/*", "https://*/*"
   ],

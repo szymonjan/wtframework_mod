@@ -1,3 +1,6 @@
+## v0.2.7 - 4/02/2013
+- Added a couple utility methods.
+
 ## v0.2.6 - 3/29/2013
 - Added utils for working with temp files.
 - Moved wiki screenshots out of this project.
