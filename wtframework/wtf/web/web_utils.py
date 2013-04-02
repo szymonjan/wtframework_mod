@@ -16,6 +16,7 @@
 ##########################################################################
 from urllib2 import urlopen
 import urllib2
+import re
 
 
 
@@ -39,6 +40,15 @@ class WebUtils(object):
             return False, e.code
 
     @staticmethod
+    def get_base_url(webdriver):
+        "Get the current base URL."
+        current_url = webdriver.current_url
+        try:
+            return re.findall("^[^/]+//[^/$]+", current_url)
+        except:
+            raise RuntimeError("Unable to process url: {0}".format(current_url) )
+
+    @staticmethod
     def is_webdriver_mobile(webdriver):
         "Check if a web driver if mobile."
         browser = webdriver.capabilities['browserName']
@@ -59,6 +69,4 @@ class WebUtils(object):
             return True
         else:
             return False
-
-
 
