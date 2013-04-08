@@ -1,3 +1,6 @@
+## v0.2.8 - 4/02/2013
+- Fixes to email search
+
 ## v0.2.7 - 4/02/2013
 - Added a couple utility methods.
 
