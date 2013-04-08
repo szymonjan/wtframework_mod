@@ -65,8 +65,7 @@ class IMapEmailAccountObject(object):
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
         
-        query_str = "(ALL SUBJECT '{0}')".format(subject)
-        resp,items = self._mail.search(None, query_str)
+        resp,items = self._mail.search(None, "SUBJECT", subject)
         if not resp == 'OK':
             raise RuntimeError("Error occurred while searching. Response Code:" + resp)
         else:
