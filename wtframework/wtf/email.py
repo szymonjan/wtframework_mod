@@ -16,9 +16,11 @@
 ##########################################################################
 
 #This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
-from __future__ import absolute_import 
+from __future__ import absolute_import
+from email.parser import HeaderParser
 import email
 import imaplib
+import re
 
 class IMapEmailAccountObject(object):
     """
@@ -65,40 +67,45 @@ class IMapEmailAccountObject(object):
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
         
-        resp,items = self._mail.search(None, "SUBJECT", subject)
-        if not resp == 'OK':
-            raise RuntimeError("Error occurred while searching. Response Code:" + resp)
-        else:
-            pass
+        try:
+            matches = self.__search_email_by_subject(subject)
+            if len(matches) <= 0:
+                return False
+            else:
+                return True
+        except Exception as e:
+            raise e
 
-        # Check if there are any results
-        results = items[0].split() #items[0] is an space separated list of email IDs.
-        if len(results) > 0:
-            return True
-        else:
-            return False
-
-    def find_emails_by_subject(self, subject):
+    def find_emails_by_subject(self, subject, limit=50):
         """
         Searches for Email by Subject.  Returns email's imap message IDs 
         as a list if matching subjects is found.
         
         @param subject: Subject to search for.
         @type subject: str
+        @param limit: Limit search to X number of matches, default 50
         @return: List of Integers representing imap message UIDs.
         @rtype: list
         """
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
         
-        query_str = "(ALL SUBJECT '{0}')".format(subject)
-        resp,items = self._mail.uid('search', None, query_str)
-        if not resp == 'OK':
-            raise RuntimeError("Error occurred while searching. Response Code:" + resp)
-        else:
-            pass
+        matches = []
+        parser = HeaderParser()
+        
+        matching_msg_nums = self.__search_email_by_subject(subject)
 
-        return items[0].split() #items[0] is an space separated list of email IDs.
+        for msg_num in matching_msg_nums[-limit:]:
+            _, msg_data = self._mail.fetch(msg_num, '(RFC822)')
+            raw_msg = msg_data[0][1]
+            msg_headers = parser.parsestr(raw_msg, True)
+            if msg_headers['subject'] == subject:
+                uid = re.search("UID\\D*(\\d+)\\D*", self._mail.fetch(msg_num, 'UID')[1][0]).group(1)
+                matches.append(uid)
+
+        return matches
+
+
 
     def get_email_message(self, message_uid, message_type="text/plain"):
         """
@@ -113,13 +120,20 @@ class IMapEmailAccountObject(object):
         msg = email.message_from_string(result[1][0][1])
 
         try:
-            #Try to handle as multiplart message first.
+            #Try to handle as multipart message first.
             for part in msg.walk():
                 if part.get_content_type() == message_type :
                     return part.get_payload()
         except:
             #handle as plain text email
             return msg.get_payload()
+
+
+
+    def __search_email_by_subject(self, subject):
+        "Get a list of message numbers"
+        _, data = self._mail.search(None, 'SUBJECT', subject)
+        return data[0].split()
 
     def __del__(self):
         "Destructor - disconnect from imap when we're done."
@@ -129,3 +143,4 @@ class IMapEmailAccountObject(object):
         except Exception as e:
             print e
         self._mail = None
+
