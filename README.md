@@ -208,7 +208,10 @@ To Create a page object, do the following:
 7. Click on the "Download" link that's right above the Preview area.  This will allow you 
    to download this file.  Save this file to your `YourProject/tests/pages` directory.
 8. Edit this file in a code editor and add whatever high level method calls you want to 
-   expose.  Then you'll have a fully functioning page object.
+   expose.  Then you'll have a fully functioning page object.  For example, if you have a 
+   login form, you might want to create a method called `login(username, password)`, and 
+   abstract away the act of logging to the high level tests.  Then leave the details of 
+   filling in and submitting the form inside the page object method body.
 
 
 You can now use this page object you created like this:
@@ -219,7 +222,7 @@ You can now use this page object you created like this:
 	homepage = PageFactory.create_page(HomePage)
 	homepage.login(username, password) # you will need to implement this part.
 
-Alternatively, you can use the WebUtils to wait for the page to load.  This will allow 
+Alternatively, you can use the PageUtils to wait for the page to load.  This will allow 
 you to specify a timeout period (in seconds) to wait for this page to finish loading.
 
 	from wtframework.wtf.web.pages import PageUtils
