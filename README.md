@@ -105,72 +105,6 @@ written to `reports/`, any screenshots taken during errors will be stored in the
 WTF Framework Features
 ======================
 
-PageObjects & Chrome Extension
-------------------------------
-PageObjects is a common strategy for Selenium Webdriver programmers to create self 
-contained PageObjects to encapsulate the low level UI details from their high level 
-tests.  This allows changes in pages to be maintained in their separate page objects 
-so tests that use the page, need not worry about the details.
-
-WTF provides handy chrome plugin to help you create page objects.  See Chrome plugin 
-installation instructions above.  The chrome plugin will help you quickly generate the 
-boiler-plate code, some simple validate methods, and help with the tedious task of 
-mapping the WebElements on this page.
-
-![Image](https://raw.github.com/wiredrive/wtframework/gh-pages/imgs/WTF_panel_parts.png)
-
-
-To Create a page object, do the following:
-
-1. Go to your target page.  Then click the WTF toolbar button, then select "Scan Page"
-2. A popup window will open.  You'll be presented with a form that'll include fields for 
-   naming your PageObject, setting the page verification method, and a button to map 
-   your page elements.  
-3. Fill in an appropriate name for your page object.
-4. Adjust the page verification characteristics.  You may want to change it from a string 
-   compare to a regular expression and replace variable parameters with wildcards.
-5. Map the elements you want to include. To map an element, first click on the button 
-   labled `Map New Element`.  You'll be taken back to your page window, dismiss the 
-   pop-up dialog, then click on the element you wish to map.  After clicking on the 
-   element, you'll notice a new entry will be created in your PageObject Utility window.
-   Fill in the fields and adjust the object identification properties.  If the 
-   identification properties in the fields do not match an element on the page, the fields
-   will turn red.  Fix these before moving on.
-6. A code preview will be displayed at the bottom part of this window.  Review what's 
-   there before downloading.
-7. Click on the "Download" link that's right above the Preview area.  This will allow you 
-   to download this file.  Save this file to your `YourProject/tests/pages` directory.
-8. Edit this file in a code editor and add whatever high level method calls you want to 
-   expose.  Then you'll have a fully functioning page object.
-
-
-You can now use this page object you created like this:
-
-	from wtframework.wtf.web.pages import PageFactory
-	from pages.homepage import HomePage
-	...
-	homepage = PageFactory.create_page(HomePage)
-	homepage.login(username, password) # you will need to implement this part.
-
-Alternatively, you can use the WebUtils to wait for the page to load.  This will allow 
-you to specify a timeout period (in seconds) to wait for this page to finish loading.
-
-	from wtframework.wtf.web.pages import PageUtils
-	...
-	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, 60)
-
-Note: This will use the PageObject's `_validate_page()` to check if the page is 
-matching the expected page.  It's good to not use a web element in addition to URL or 
-title validation, that way the page validation does not happen until page content appears 
-on the screen.
-
-Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
-changes to the mappings and page verification routines.  As a good practice, it's good 
-to write methods to expose your transactional logic as a higher level method call 
-to avoid cluttering your high level tests and test flows with low level UI logic.
-
-See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageobject.html
-
 
 Configurable Tests
 ------------------
@@ -235,6 +169,77 @@ Then in `your_data_driven_test.py`, you can reference these values as follows:
 	    	type = parameter_dic['Type']
 	    	size = parameter_dict['Size']
 	    	...
+
+
+
+PageObjects & Chrome Extension
+------------------------------
+PageObjects is a common strategy for Selenium Webdriver programmers to create self 
+contained PageObjects to encapsulate the low level UI details from their high level 
+tests.  This allows changes in pages to be maintained in their separate page objects 
+so tests that use the page, need not worry about the details.
+
+WTF provides handy chrome plugin to help you create page objects.  See Chrome plugin 
+installation instructions above.  The chrome plugin will help you quickly generate the 
+boiler-plate code, some simple validate methods, and help with the tedious task of 
+mapping the WebElements on this page.
+
+![Image](https://raw.github.com/wiredrive/wtframework/gh-pages/imgs/WTF_panel_parts.png)
+
+
+To Create a page object, do the following:
+
+1. Go to your target page.  Then click the WTF toolbar button, then select "Scan Page"
+2. A popup window will open.  You'll be presented with a form that'll include fields for 
+   naming your PageObject, setting the page verification method, and a button to map 
+   your page elements.  
+3. Fill in an appropriate name for your page object.
+4. Adjust the page verification characteristics.  You may want to change it from a string 
+   compare to a regular expression and replace variable parameters with wildcards.
+5. Map the elements you want to include. To map an element, first click on the button 
+   labled `Map New Element`.  You'll be taken back to your page window, dismiss the 
+   pop-up dialog, then click on the element you wish to map.  After clicking on the 
+   element, you'll notice a new entry will be created in your PageObject Utility window.
+   Fill in the fields and adjust the object identification properties.  If the 
+   identification properties in the fields do not match an element on the page, the fields
+   will turn red.  Fix these before moving on.
+6. A code preview will be displayed at the bottom part of this window.  Review what's 
+   there before downloading.
+7. Click on the "Download" link that's right above the Preview area.  This will allow you 
+   to download this file.  Save this file to your `YourProject/tests/pages` directory.
+8. Edit this file in a code editor and add whatever high level method calls you want to 
+   expose.  Then you'll have a fully functioning page object.  For example, if you have a 
+   login form, you might want to create a method called `login(username, password)`, and 
+   abstract away the act of logging to the high level tests.  Then leave the details of 
+   filling in and submitting the form inside the page object method body.
+
+
+You can now use this page object you created like this:
+
+	from wtframework.wtf.web.pages import PageFactory
+	from pages.homepage import HomePage
+	...
+	homepage = PageFactory.create_page(HomePage)
+	homepage.login(username, password) # you will need to implement this part.
+
+Alternatively, you can use the PageUtils to wait for the page to load.  This will allow 
+you to specify a timeout period (in seconds) to wait for this page to finish loading.
+
+	from wtframework.wtf.web.pages import PageUtils
+	...
+	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, timeout=60)
+
+Note: This will use the PageObject's `_validate_page()` to check if the page is 
+matching the expected page.  It's good to not use a web element in addition to URL or 
+title validation, that way the page validation does not happen until page content appears 
+on the screen.
+
+Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
+changes to the mappings and page verification routines.  As a good practice, it's good 
+to write methods to expose your transactional logic as a higher level method call 
+to avoid cluttering your high level tests and test flows with low level UI logic.
+
+See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageobject.html
 
 
 Misc

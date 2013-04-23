@@ -1,3 +1,6 @@
+## v0.2.9 - 4/22/2012
+- Minor changes to aid in debugging.
+
 ## v0.2.8 - 4/02/2013
 - Fixes to email search
 
