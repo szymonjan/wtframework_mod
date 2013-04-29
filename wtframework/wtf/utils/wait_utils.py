@@ -62,14 +62,16 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
     should return true when conditions is met.
     @type lambda_expr: lambda
     @param timeout: Timeout period in seconds.
-    @rtype: int
+    @type timeout: int
+    
+    @return: same type as lamba expression.
+    
     '''
     end_time = datetime.now() + timedelta(seconds = timeout)
     last_exception = None
     while datetime.now() < end_time:
         try:
-            lambda_expr()
-            return;
+            return lambda_expr()
         except Exception as e:
             last_exception = e
             time.sleep(sleep)
