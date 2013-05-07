@@ -22,6 +22,7 @@ from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
     _google_search_page_py_, _yahoo_search_page_py_, _tests_pages_init_, \
     _test_example_py_
 import os.path
+import wtframework
 
 
 ################# UTILITY METHODS ######################
@@ -102,6 +103,14 @@ if __name__ == '__main__':
     ensure_dir(project_dir + "/tests/tests")
     create_file(project_dir + "/tests/tests/__init__.py", "'Put your high level tests here.'")
 
+    create_file(project_dir + "/requirements.txt", """
+# Requirements.txt file
+# This file contains a list of packages to be installed by PIP
+# when setting up this project.
+
+# Wiredrive Test Framework - WTF
+wtframework=={version}
+    """.format(version=wtframework.__VERSION__))
 
     if options.examples == True:
         print "Generating example files."
