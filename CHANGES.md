@@ -1,3 +1,6 @@
+## v0.2.10 - 5/6/2012
+- Minor enhancements
+
 ## v0.2.9 - 4/22/2012
 - Minor changes to aid in debugging.
 
