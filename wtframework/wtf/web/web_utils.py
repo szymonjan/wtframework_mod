@@ -17,6 +17,7 @@
 from urllib2 import urlopen
 import urllib2
 import re
+from wtframework.wtf.web.page import PageFactory
 
 
 
@@ -41,7 +42,10 @@ class WebUtils(object):
 
     @staticmethod
     def get_base_url(webdriver):
-        "Get the current base URL."
+        """
+        Get the current base URL.
+        @param webdriver: Selenium webdriver.
+        """
         current_url = webdriver.current_url
         try:
             return re.findall("^[^/]+//[^/$]+", current_url)[0]
@@ -50,7 +54,10 @@ class WebUtils(object):
 
     @staticmethod
     def is_webdriver_mobile(webdriver):
-        "Check if a web driver if mobile."
+        """
+        Check if a web driver if mobile.
+        @param webdriver: Selenium webdriver.
+        """
         browser = webdriver.capabilities['browserName']
 
         if browser == u'iPhone' or \
@@ -61,7 +68,10 @@ class WebUtils(object):
 
     @staticmethod
     def is_webdriver_ios(webdriver):
-        "Check if a web driver if mobile."
+        """
+        Check if a web driver if mobile.
+        @param webdriver: Selenium webdriver.
+        """
         browser = webdriver.capabilities['browserName']
 
         if browser == u'iPhone' or \
@@ -69,4 +79,30 @@ class WebUtils(object):
             return True
         else:
             return False
+
+
+    @staticmethod
+    def switch_to_window(page_class, webdriver):
+        """
+        @param page_class: Page class to search for/instantiate.
+        @param webdriver: Selenium webdriver.
+        """
+        window_list = list(webdriver.window_handles)
+        original_window = webdriver.current_window_handle
+        for window_handle in window_list:
+            webdriver.switch_to_window(window_handle)
+            try:
+                return PageFactory.create_page(page_class, webdriver)
+            except:
+                pass
+        
+        webdriver.switch_to_window(original_window)
+        raise WindowNotFoundError("Window {0} not found.")
+    
+
+
+
+class WindowNotFoundError(RuntimeError):
+    "Raised when window is not found by web_utils script."
+
 
