@@ -22,8 +22,7 @@ Mox>=0.5.3
 pylint>=0.26.0
 
 # Nose is used as top level test driver and reporting.
-nose>=1.2.1
-NoseXUnit>=0.3.3
+nose>=1.3.0
 
 # DDT module for Data driven decorators. (we extend these for our ddt decorators)
 ddt>=0.2.0
