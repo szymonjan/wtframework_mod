@@ -37,8 +37,7 @@ setup(
     description='WTF - Web Test Framework',
     long_description=open('README.md').read(),
     install_requires=[
-        "nose>=1.2.1",
-        "NoseXUnit>=0.3.3",
+        "nose>=1.3.0",
         "ddt>=0.2.0",
         "pyyaml>=3.10",
         "selenium>=2.31.0",
