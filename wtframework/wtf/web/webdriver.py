@@ -51,6 +51,7 @@ class WebDriverFactory(object):
     IPAD = "IPAD"
     IPHONE = "IPHONE"
     OPERA = "OPERA"
+    PHANTOMJS = "PHANTOMJS"
     SAFARI = "SAFARI"
 
 
@@ -138,7 +139,8 @@ class WebDriverFactory(object):
                              WebDriverFactory.CHROME: lambda:webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),\
                              WebDriverFactory.FIREFOX: lambda:webdriver.Firefox(),\
                              WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
-                             WebDriverFactory.OPERA:lambda:webdriver.Opera()}
+                             WebDriverFactory.OPERA:lambda:webdriver.Opera(),
+                             WebDriverFactory.PHANTOMJS:lambda:webdriver.PhantomJS()}
         # Currently not supporting HTML unit driver due to JS issues that prevent it from 
         # working with our site.
         # "HTMLUNIT": lambda: self.__create_html_unit_driver()}

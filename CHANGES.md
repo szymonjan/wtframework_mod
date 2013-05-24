@@ -1,3 +1,7 @@
+## v0.2.11 - 5/24/2012
+- Added various utility functions.
+- Added --version to command line utils.
+
 ## v0.2.10 - 5/6/2012
 - Minor enhancements
 

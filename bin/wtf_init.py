@@ -45,16 +45,22 @@ def create_file(filepath, contents):
 
 ################# MAIN SETUP SCRIPT ######################
 if __name__ == '__main__':
-        
+
     usage = "usage: %prog NameOfProject [--withexamples]"
     parser = OptionParser(usage=usage)
     parser.add_option("--withexamples", action="store_true",
                       default=False, dest="examples",
                       help="Include example web test.")
+    parser.add_option("--version", action="store_true",
+                      default=False, dest="version_flag",
+                      help="Version info.")
 
     (options, args) = parser.parse_args()
-    print options
-    print args
+    
+    if(options.version_flag):
+        print wtframework.__VERSION__
+        exit()
+    
     if len(args) != 1:
         parser.error("wrong number of arguments")
     project_dir = os.getcwd() + "/" + args[0]
