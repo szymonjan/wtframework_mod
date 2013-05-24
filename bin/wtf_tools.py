@@ -21,6 +21,7 @@ from optparse import OptionParser
 from wtframework.wtf._devtools_ import page_object_tools, test_generation_tools
 from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
+import wtframework
 
 
 def create_file(filepath, contents):
@@ -38,10 +39,15 @@ if __name__ == '__main__':
         
     usage = "usage: %prog command arg1 arg2 ..."
     parser = OptionParser(usage=usage)
+    parser.add_option("--version", action="store_true",
+                      default=False, dest="version_flag",
+                      help="Version info.")
 
     (options, args) = parser.parse_args()
-    print options
-    print args
+
+    if(options.version_flag):
+        print wtframework.__VERSION__
+        exit()
 
     if len(args) < 2:
         print "Invalid command.", usage
