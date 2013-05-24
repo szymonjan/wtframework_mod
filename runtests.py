@@ -28,6 +28,8 @@ if __name__ == '__main__':
     parser = OptionParser(usage=usage)
     parser.add_option("-c", "--config", dest="config",
                   help="Config to use (without the .yaml suffix)", metavar="FILE")
+    parser.add_option("-r", "--results", dest="result_file",
+                  help="path to create result file.", metavar="FILE")
     (options, args) = parser.parse_args()
 
 
@@ -50,4 +52,11 @@ if __name__ == '__main__':
     except:
         os.putenv("PYTHONPATH", ProjectUtils.get_project_root())
 
-    os.system("nosetests tests/tests/ --with-nosexunit --core-target=reports")
+    if options.result_file:
+        result_path = options.result_file
+    else:
+        result_path = os.path.join("reports", "results.xml")
+    os.system("nosetests tests/tests/ --with-xunit --xunit-file={0}".format(result_path))
+
+
+
