@@ -1,3 +1,6 @@
+## v0.2.12 - 5/24/2012
+- Remove NoseXUnit dependency
+
 ## v0.2.11 - 5/24/2012
 - Added various utility functions.
 - Added --version to command line utils.
