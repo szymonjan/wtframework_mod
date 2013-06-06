@@ -1,14 +1,17 @@
-## v0.2.12 - 5/24/2012
+## v0.2.13 - 6/4/2013
+- Add raw search to imap emails.
+
+## v0.2.12 - 5/24/2013
 - Remove NoseXUnit dependency
 
-## v0.2.11 - 5/24/2012
+## v0.2.11 - 5/24/2013
 - Added various utility functions.
 - Added --version to command line utils.
 
-## v0.2.10 - 5/6/2012
+## v0.2.10 - 5/6/2013
 - Minor enhancements
 
-## v0.2.9 - 4/22/2012
+## v0.2.9 - 4/22/2013
 - Minor changes to aid in debugging.
 
 ## v0.2.8 - 4/02/2013
