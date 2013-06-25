@@ -18,14 +18,16 @@
 import unittest
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.email import IMapEmailAccountObject
+from unittest.case import SkipTest
 
 
 class TestImapEmail(unittest.TestCase):
 
-    expected_subject = WTF_CONFIG_READER.get("email.expected_subject")
-    expected_message = WTF_CONFIG_READER.get("email.expected_message")
-
+    
     def setUp(self):
+        self.expected_subject = WTF_CONFIG_READER.get("email.expected_subject")
+        self.expected_message = WTF_CONFIG_READER.get("email.expected_message")
+        
         email_config = WTF_CONFIG_READER.get("email")
         account_config = email_config['primary']
 
@@ -43,7 +45,7 @@ class TestImapEmail(unittest.TestCase):
     def tearDown(self):
         pass
 
-
+    @SkipTest #This test requires an imap email account
     def test_search_by_subject(self):
 
 
