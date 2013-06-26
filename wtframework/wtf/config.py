@@ -20,6 +20,7 @@ from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 import re
 import yaml
+from types import NoneType
 
 
 class ConfigReader:
@@ -33,6 +34,7 @@ class ConfigReader:
     CONFIG_EXT = '.yaml'
 
     ENV_VARS = "WTF_ENV"
+    ENV_PREFIX = "WTF_"
 
     _dataMaps = None #instance variable to store config data loaded.
     _singleton_instance = None #class variable to track singleton.
@@ -78,6 +80,11 @@ class ConfigReader:
         @type key: str
         @param default_value: Value to return if the config setting does not exist. 
         '''
+        # First attempt to get the var from OS enviornment.
+        if type(os.getenv(ConfigReader.ENV_PREFIX + key)) != NoneType:
+            return os.getenv(ConfigReader.ENV_PREFIX + key)
+
+        # Otherwise search through config files.
         for data_map in self._dataMaps:
             try:
                 if "." in key:

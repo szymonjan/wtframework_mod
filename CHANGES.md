@@ -1,3 +1,7 @@
+## v0.2.14-15 - 6/4/2013
+- Added CI builds to open source project
+- Added reading config variable from OS environment.  Name your variables, WTF_VARNAME
+
 ## v0.2.13 - 6/4/2013
 - Add raw search to imap emails.
 
