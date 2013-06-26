@@ -183,6 +183,13 @@ class WebDriverFactory(object):
             else:
                 desired_capabilities[prop] = str(value)
 
+        # Set the test name property if specified in the WTF_TESTNAME var.
+        try:
+            test_name = self._config_reader.get("TESTNAME")
+            desired_capabilities['name'] = test_name
+        except KeyError:
+            pass # No test name is specified, use the default.
+
         # Instantiate remote webdriver.
         return webdriver.Remote(
             desired_capabilities = desired_capabilities,
