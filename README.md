@@ -258,6 +258,9 @@ you'll need to edit or supply your own config file with values for the selenium 
 Development on this project is currently done using NVIE branching model.  
 http://nvie.com/posts/a-successful-git-branching-model/
 
+CI Scripts are running on Travis, 
+https://travis-ci.org/wiredrive/wtframework
+
 To submit code changes, please submit pull requests against the development branch. 
 
 See here for other ways you can help.
