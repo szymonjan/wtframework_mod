@@ -25,6 +25,12 @@ selenium:
   # after tests.
   shutdown_hook: true
 
+  # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
+  # instance each time.  If set to a number, this  would determine whether the browser 
+  # session should be discarded after a certain time peroid.  
+  # Default is 'true'
+  reusebrowser: true
+
   # Take screenshot of browser on error.
   take_screenshot: true
   # Take reference screenshot upon encountering a new page.

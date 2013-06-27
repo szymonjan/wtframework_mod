@@ -19,7 +19,7 @@ class {testname}(WTFBaseTest):
 
     def test_something_does_something(self):
         "Tests something does something"
-        webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
         
         # do some test stuff here.
         pass

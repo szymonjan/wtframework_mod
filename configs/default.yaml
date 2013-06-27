@@ -20,6 +20,12 @@ selenium:
   type: LOCAL
   #type: REMOTE
 
+  # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
+  # instance each time.  If set to a number, this  would determine whether the browser 
+  # session should be discarded after a certain time peroid.  
+  # Default is 'true'
+  reusebrowser: true
+
   # Terminate Selenium after all tests have run. Disabling this can be helpful
   # during debugging.  In operation you normally want to keep this to clean up 
   # after tests.

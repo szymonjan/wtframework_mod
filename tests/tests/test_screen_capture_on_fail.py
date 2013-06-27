@@ -29,7 +29,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
     def test_fail(self):
-        driver = WTF_WEBDRIVER_MANAGER.get_driver()
+        driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         self.fail()
         #Check your /screenshots folder for a screenshot.
@@ -37,7 +37,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
     def test_assert(self):
-        driver = WTF_WEBDRIVER_MANAGER.get_driver()
+        driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         self.assertEqual(1, 2)
         #Check your /screenshots folder for a screenshot.
@@ -45,7 +45,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
     def test_error(self):
-        driver = WTF_WEBDRIVER_MANAGER.get_driver()
+        driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         raise RuntimeError()
         #Check your /screenshots folder for a screenshot.

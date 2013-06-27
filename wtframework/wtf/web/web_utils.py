@@ -18,8 +18,10 @@ from urllib2 import urlopen
 import urllib2
 import re
 from wtframework.wtf.web.page import PageFactory
-
-
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
+import time
+from threading import Thread
+from datetime import datetime, timedelta
 
 class WebUtils(object):
 
@@ -100,6 +102,44 @@ class WebUtils(object):
         raise WindowNotFoundError("Window {0} not found.")
     
 
+class BrowserStandBy(object):
+    """
+    This class allows you to put a browser on stand by sending no-op commands to keep 
+    a selenium session from timing out.
+    """
+    
+    def __init__(self, webdriver, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
+        """
+        @param webdriver:Webdriver instance to keep alive. 
+        """
+        self.webdriver = webdriver
+        self._sleep_time = sleep
+        self._max_time = max_time
+        
+        
+    
+    def start(self):
+        """
+        Start standing by.  A periodic command like 'current_url' will be sent to the 
+        webdriver instance to prevent it from timing out.
+        """
+        self._end_time = datetime.now() + timedelta(seconds = self._max_time)
+        self._thread = Thread(target=lambda: self.__stand_by_loop())
+        self._keep_running = True
+        self._thread.start()
+        pass
+    
+    def stop(self):
+        "Stop BrowserStandBy from sending additional calls to webdriver."
+        self._keep_running = False
+        pass
+    
+    
+    def __stand_by_loop(self):
+        print self._keep_running
+        while datetime.now() < self._end_time and self._keep_running:
+            self.webdriver.current_url #Just performing current_url to keep this alive.
+            time.sleep(self._sleep_time)
 
 
 class WindowNotFoundError(RuntimeError):
