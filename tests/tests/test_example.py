@@ -52,7 +52,7 @@ class Test(WTFBaseTest):
 
     def test_example_using_abstract_interfaces(self):
         "Demonstrates creating PageObjects using Abstract Factory pattern."
-        webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
         webdriver.get("http://www.google.com")
 
         
