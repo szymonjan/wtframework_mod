@@ -1,7 +1,9 @@
-## v0.2.16 - 6/4/2013
+
+## v0.2.16-18 - 6/26/2013
 - Added support for using a fresh browser instance for each test
 - Added BrowserStandBy utility class
 - Use new_driver() instead of get_driver() for creating new drivers.
+- Avoid instantiation drivers in keyword args
 
 ## v0.2.14-15 - 6/20/2013
 - Added CI builds to open source project

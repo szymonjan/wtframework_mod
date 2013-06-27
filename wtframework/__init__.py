@@ -14,4 +14,4 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-__VERSION__ = '0.2.16'
+__VERSION__ = '0.2.18'
