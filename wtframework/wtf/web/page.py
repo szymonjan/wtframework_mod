@@ -93,12 +93,14 @@ class PageObject(object):
 
 
     @classmethod
-    def create_page(cls, webdriver=WTF_WEBDRIVER_MANAGER.get_driver(), **kwargs):
+    def create_page(cls, webdriver=None, **kwargs):
         """
         Class method short cut to call PageFactory on itself.
         @param webdriver: WebDriver to associate with this page.
         @type webdriver: WebDriver
         """
+        if not webdriver:
+            webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
         return PageFactory.create_page(cls, webdriver=webdriver, **kwargs)
 
 
@@ -127,8 +129,7 @@ class PageFactory():
 
     @staticmethod
     def create_page(page_object_class_or_interface, \
-                    webdriver=WTF_WEBDRIVER_MANAGER.get_driver(), \
-                    **kwargs):
+                    webdriver=None, **kwargs):
         """
         Instantiate a page object from a given Interface or Abstract class.
         
@@ -150,6 +151,9 @@ class PageFactory():
         @param webdriver: Selenium Webdriver to use to instantiate the page.
         @type webdriver: WebDriver
         """
+        
+        if not webdriver:
+            webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
         
         # will be used later when tracking best matched page.
         current_matched_page = None
@@ -303,7 +307,7 @@ class PageUtils():
     
     @staticmethod
     def wait_until_page_loaded(page_obj_class, 
-                               webdriver=WTF_WEBDRIVER_MANAGER.get_driver(),
+                               webdriver=None,
                                timeout=WTF_TIMEOUT_MANAGER.NORMAL, 
                                sleep=0.5, 
                                bad_page_classes=[], **kwargs):
@@ -318,6 +322,9 @@ class PageUtils():
         @return: Returns PageObject of type passed in.
         @rtype: PageObject
         """
+        if not webdriver:
+            webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
+        
         #convert this param to list if not already.
         if type(bad_page_classes) != list:
             bad_page_classes = [bad_page_classes]

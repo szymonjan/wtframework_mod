@@ -275,13 +275,7 @@ class WebDriverManager(object):
                 
         else:
             # Attempt to tear down any existing webdriver.
-            if self.webdriver is not None:
-                try:
-                    self.webdriver.quit()
-                except:
-                    pass
-                
-                self.webdriver = self._webdriver_factory.create_webdriver()
+            self.webdriver = self._webdriver_factory.create_webdriver()
 
 
         return self.webdriver
