@@ -20,6 +20,8 @@ from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError,\
 import unittest
 
 
+
+
 class TestWaitUtils(unittest.TestCase):
 
 
@@ -74,6 +76,9 @@ class TestWaitUtils(unittest.TestCase):
 
     def test_do_until_raises_exeption_when_timeout(self):
         self.assertRaises(OperationTimeoutError, do_until, lambda: 1/0, 1 )
+
+
+
 
 
 if __name__ == "__main__":

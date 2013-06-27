@@ -141,9 +141,7 @@ class WebDriverFactory(object):
                              WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
                              WebDriverFactory.OPERA:lambda:webdriver.Opera(),
                              WebDriverFactory.PHANTOMJS:lambda:webdriver.PhantomJS()}
-        # Currently not supporting HTML unit driver due to JS issues that prevent it from 
-        # working with our site.
-        # "HTMLUNIT": lambda: self.__create_html_unit_driver()}
+
         try:
             return browser_type_dict[browser_type]()
         except KeyError:
@@ -166,7 +164,8 @@ class WebDriverFactory(object):
                                  WebDriverFactory.IPAD:DesiredCapabilities.IPAD,\
                                  WebDriverFactory.IPHONE:DesiredCapabilities.IPHONE,\
                                  WebDriverFactory.OPERA:DesiredCapabilities.OPERA ,\
-                                 WebDriverFactory.SAFARI:DesiredCapabilities.SAFARI}
+                                 WebDriverFactory.SAFARI:DesiredCapabilities.SAFARI,
+                                 WebDriverFactory.PHANTOMJS:DesiredCapabilities.PHANTOMJS}
         
         try:
             desired_capabilities = browser_constant_dict[browser_type]
@@ -230,9 +229,10 @@ class WebDriverManager(object):
     of the WebDriver itself is so we can allow that pice to be mocked 
     out to assist in unit testing framework classes that may use this. 
     '''
+    REUSE_BROWSER = "selenium.reusebrowser"
 
 
-    def __init__(self, webdriver_factory=None):
+    def __init__(self, webdriver_factory=None, config=WTF_CONFIG_READER):
         '''
         Initializer
         
@@ -248,11 +248,48 @@ class WebDriverManager(object):
         else:
             self._webdriver_factory = WebDriverFactory()
 
+        self.__config = WTF_CONFIG_READER
+
+
+    def new_driver(self):
+        '''
+        Used at a start of a test to get a new instance of webdriver.  If the 
+        'resuebrowser' setting is true, it will use a recycled webdriver instance.
+        @return: Selenium WebDriver instance.
+        @rtype: WebDriver
+        '''
+        if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
+            if self.webdriver == None:
+                self.webdriver = self._webdriver_factory.create_webdriver()
+            else:
+                try:
+                    # Clear cookies and check if webdriver is still healthy.
+                    self.webdriver.delete_all_cookies()
+                    self.webdriver.get("about:blank") #check to see if webdriver is still responding
+                except:
+                    try:
+                        self.webdriver.quit()
+                    except:
+                        pass
+                    self.webdriver = self._webdriver_factory.create_webdriver()
+                
+        else:
+            # Attempt to tear down any existing webdriver.
+            if self.webdriver is not None:
+                try:
+                    self.webdriver.quit()
+                except:
+                    pass
+                
+                self.webdriver = self._webdriver_factory.create_webdriver()
+
+
+        return self.webdriver
 
 
     def get_driver(self):
         '''
-        Get an instance of Selenium WebDriver.
+        Get an already running instance of webdriver. If there is none, it will create one.
         @return: Selenium WebDriver instance.
         @rtype: WebDriver
         '''
@@ -262,12 +299,14 @@ class WebDriverManager(object):
         return self.webdriver
 
 
+
     def is_driver_available(self):
         '''
         Check if a webdriver instance is created.
         @rtype: bool
         '''
         return self.webdriver != None
+    
 
 
 # Global Instance of WebDriver Manager

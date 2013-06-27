@@ -37,7 +37,7 @@ class Test(WTFBaseTest):
         # access the webdriver.  A web browser will be instantiated 
         # according to your config settings. 
         # - see 'selenium' settings in 'configs/default.yaml'
-        webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
         webdriver.get("http://www.google.com")
         
         # Use the PageFactory class to instantiate your page.
