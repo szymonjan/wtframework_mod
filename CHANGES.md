@@ -1,4 +1,9 @@
-## v0.2.14-15 - 6/4/2013
+## v0.2.16 - 6/4/2013
+- Added support for using a fresh browser instance for each test
+- Added BrowserStandBy utility class
+- Use new_driver() instead of get_driver() for creating new drivers.
+
+## v0.2.14-15 - 6/20/2013
 - Added CI builds to open source project
 - Added reading config variable from OS environment.  Name your variables, WTF_VARNAME
 
