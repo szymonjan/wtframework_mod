@@ -77,7 +77,7 @@ class TestConfigReader(unittest.TestCase):
 
     def test_specifying_bad_config_file(self):
         "Test error is thrown when invalid config file is specified."
-        self.assertRaises(ConfigFileReadError, ConfigReader)
+        self.assertRaises(ConfigFileReadError, ConfigReader, "tests/TestConfig1,NOSUCHFILE")
 
         
 
