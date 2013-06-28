@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.config import ConfigReader, ConfigFileReadError
 import unittest
 
 
@@ -74,6 +74,12 @@ class TestConfigReader(unittest.TestCase):
         # should take config from config1
         self.assertRaises(KeyError, config.get, "setting_that_doesnt_exist")
 
+
+    def test_specifying_bad_config_file(self):
+        "Test error is thrown when invalid config file is specified."
+        self.assertRaises(ConfigFileReadError, ConfigReader)
+
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
