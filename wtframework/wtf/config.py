@@ -50,7 +50,8 @@ class ConfigReader:
                 for config in reversed(configs):
                     self.__load_config_file(config)
             elif not ConfigReader.ENV_VARS in os.environ:
-                raise Exception("No Config Specified, using defaults.")
+                print "Config file not specified.  Using config/defaults.yaml"
+                self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
             else:
                 # Read and load in all configs specified in reverse order
                 configs = re.split(",|;", str(os.environ[ConfigReader.ENV_VARS]))
@@ -61,8 +62,8 @@ class ConfigReader:
         except Exception as e:
             #Fall back to default.yaml file when no config settings are specified.
             print "An error occurred while loading config file:", e
-            print "Falling back to 'default' config."
-            self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
+            raise e
+            
 
 
     class __NoDefaultSpecified__(object):
@@ -107,23 +108,28 @@ class ConfigReader:
 
 
     def __load_config_file(self, file_name):
-        config_file_location = os.path.join(ProjectUtils.get_project_root() +
-                                            ConfigReader.CONFIG_LOCATION + 
-                                            file_name + 
-                                            ConfigReader.CONFIG_EXT)
-        print "locating config file:", config_file_location
-        config_yaml = open(config_file_location, 'r')
-        dataMap = yaml.load(config_yaml)
-        self._dataMaps.insert(0, dataMap)
-        config_yaml.close()
+        try:
+            config_file_location = os.path.join(ProjectUtils.get_project_root() +
+                                                ConfigReader.CONFIG_LOCATION + 
+                                                file_name + 
+                                                ConfigReader.CONFIG_EXT)
+            print "locating config file:", config_file_location
+            config_yaml = open(config_file_location, 'r')
+            dataMap = yaml.load(config_yaml)
+            self._dataMaps.insert(0, dataMap)
+            config_yaml.close()
+        except Exception as e:
+            print "Error loading config file " + file_name
+            raise ConfigFileReadError("Error reading config file " + file_name, e)
 
 
-class ConfigReaderAccessException(Exception):
-    '''
-    Exception Thrown that should be explicitly caught when trying to 
-    manually set the config reader.
-    '''
+class ConfigFileReadError(RuntimeError):
+    """
+    Raised when a config file is not found.
+    """
     pass
+
+
 
 
 # Create a global constant for referencing this to avoid re-instantiating 
