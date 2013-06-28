@@ -73,11 +73,14 @@ class WebDriverFactory(object):
 
 
 
-    def create_webdriver(self):
+    def create_webdriver(self, testname=None):
         '''
             Creates an instance of Selenium webdriver based on config settings.
             This should only be called by a shutdown hook.  Do not call directly within 
             a test.
+            
+            @param testname: Optional test name to pass, this gets appended to the test name 
+                             sent to selenium grid.
 
             @return: WebDriver
         '''
@@ -89,7 +92,7 @@ class WebDriverFactory(object):
 
         if driver_type == "REMOTE":
             # Create desired capabilities.
-            self.webdriver = self.__create_remote_webdriver_from_config()
+            self.webdriver = self.__create_remote_webdriver_from_config(testname=testname)
         else:
             #handle as local webdriver
             self.webdriver = self.__create_driver_from_browser_config()
@@ -121,7 +124,7 @@ class WebDriverFactory(object):
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
         # End of method.
 
-    def __create_remote_webdriver_from_config(self):
+    def __create_remote_webdriver_from_config(self, testname=None):
         '''
         Reads the config value for browser type.
         '''
@@ -162,6 +165,10 @@ class WebDriverFactory(object):
         except KeyError:
             pass # No test name is specified, use the default.
 
+        # Append optional testname postfix if supplied.
+        if testname:
+            desired_capabilities['name'] += "-" + testname
+            
         # Instantiate remote webdriver.
         return webdriver.Remote(
             desired_capabilities = desired_capabilities,
@@ -242,7 +249,7 @@ class WebDriverManager(object):
             pass
 
 
-    def new_driver(self):
+    def new_driver(self, testname=None):
         '''
         Used at a start of a test to get a new instance of webdriver.  If the 
         'resuebrowser' setting is true, it will use a recycled webdriver instance.
@@ -251,24 +258,26 @@ class WebDriverManager(object):
         '''
         if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
             if self.webdriver == None:
-                self.webdriver = self._webdriver_factory.create_webdriver()
+                self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
                 #add webdriver to list of drivers to be cleaned up.
                 WebDriverManager.__webdrivers_created.append(self.webdriver)
             else:
                 try:
-                    # Clear cookies and check if webdriver is still healthy.
+                    # Attempt to get the browser to a pristine state as possible when we are 
+                    # reusing this for another test.
                     self.webdriver.delete_all_cookies()
                     self.webdriver.get("about:blank") #check to see if webdriver is still responding
                 except:
+                    # In the case the browser is unhealthy, we should kill it and serve a new one.
                     try:
                         self.webdriver.quit()
                     except:
                         pass
-                    self.webdriver = self._webdriver_factory.create_webdriver()
+                    self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
                 
         else:
             # Attempt to tear down any existing webdriver.
-            self.webdriver = self._webdriver_factory.create_webdriver()
+            self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
 
 
         return self.webdriver
