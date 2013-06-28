@@ -17,14 +17,14 @@
 selenium:
   # Set type to LOCAL for running locally, and to REMOTE, to run on a remote 
   # webdriver.  Default is LOCAL
-  type: LOCAL
-  #type: REMOTE
+  #type: LOCAL
+  type: REMOTE
 
   # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
   # instance each time.  If set to a number, this  would determine whether the browser 
   # session should be discarded after a certain time peroid.  
   # Default is 'true'
-  reusebrowser: true
+  reusebrowser: false
 
   # Terminate Selenium after all tests have run. Disabling this can be helpful
   # during debugging.  In operation you normally want to keep this to clean up 
@@ -32,9 +32,9 @@ selenium:
   shutdown_hook: true
 
   # Take screenshot of browser on error.
-  take_screenshot: true
+  take_screenshot: false
   # Take reference screenshot upon encountering a new page.
-  take_reference_screenshot: true
+  take_reference_screenshot: false
 
   # remote_url is required if type=REMOTE.  Set this to point at the Remote Webdriver 
   # connection string.
@@ -56,10 +56,10 @@ selenium:
     #version: 22
 
     # ANY, ANDROID, LINUX, MAC, UNIX, VISTA, WIN7, WIN8, WINDOWS, XP
-    platform: WINDOWS
+    platform: Windows 8
     
     # Name you'd like to label your sessions. (useful for labeling on sauce)
-    name: YourTestProjectName
+    name: WTFrameworkTravisCI
 
 
 

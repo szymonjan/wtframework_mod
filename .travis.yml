@@ -1,12 +1,13 @@
-language: python
-python:
-  - "2.7"
-
-# command to install dependencies
-install: "pip install -r requirements.txt --use-mirrors"
-
-
-# command to run tests
+--- 
 script: 
-  - "nosetests wtframework/wtf/tests/"
-  
+- nosetests wtframework/wtf/tests/
+language: python
+env: 
+  global: 
+    secure: |-
+      fTcthlylVMmNowShq5n08S9yRkwROaJ8Q7uuADyfc/ZVZovxXIBcOz1oKZEg
+      dLDurEI9/e6uBGvGWXp6SlmlEckElN2Q0TOIFGZuSYuOWyn80d62xUd7EdbF
+      foEd4f7rN4r9fq63dND73DZ7ilsccGLiNHoL3/nBbp1ErCTu1Nw=
+python: 
+- "2.7"
+install: pip install -r requirements.txt --use-mirrors
