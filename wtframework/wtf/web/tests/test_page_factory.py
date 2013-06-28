@@ -14,9 +14,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from selenium import webdriver
 from wtframework.wtf.web.page import NoMatchingPageError, InvalidPageError, \
     PageFactory, PageObject
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import unittest
 
@@ -75,7 +75,7 @@ class TestPageFactory(unittest.TestCase):
         
 
     def test_create_page_createsPageWhenExists(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_createsPageWhenExists")
         self.driver.get("http://www.google.com")
         google = PageFactory.create_page(SearchPage, self.driver)
         self.assertTrue(type(google) == GoogleSearch)
@@ -85,13 +85,13 @@ class TestPageFactory(unittest.TestCase):
 
 
     def test_create_page_raiseExceptionWhenNoMatch(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_raiseExceptionWhenNoMatch")
         self.driver.get("http://www.amazon.com")
         self.assertRaises(NoMatchingPageError, PageFactory.create_page, SearchPage, self.driver)
 
 
     def test_create_page_with_list(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_with_list")
         self.driver.get("http://www.google.com")
         google = PageFactory.create_page([GoogleSearch, YahooSearch], self.driver)
         self.assertTrue(type(google) == GoogleSearch)
@@ -100,7 +100,7 @@ class TestPageFactory(unittest.TestCase):
         self.assertTrue(type(yahoo) == YahooSearch)
 
     def test_create_page_uses_page_rank(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_uses_page_rank")
         self.driver.get("http://www.google.com")
         google_page = PageFactory.create_page([GoogleSearch, GoogleSearch2], self.driver)
         self.assertTrue(isinstance(google_page, GoogleSearch2))

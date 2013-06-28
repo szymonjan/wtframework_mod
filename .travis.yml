@@ -1,6 +1,8 @@
 --- 
 script: 
 - nosetests wtframework/wtf/tests/
+- nosetests wtframework/wtf/web/tests/test_page_factory.py
+
 language: python
 env: 
   global: 
