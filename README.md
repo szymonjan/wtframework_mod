@@ -125,6 +125,52 @@ This allows you to make your test environment agnostic, runnable across multiple
 configurations with just a switch of an environment variable.  This is good for storing 
 environment settings and locations, account information (like DB login), connection 
 strings, etc... 
+
+You can also specify your selenium settings to which webdriver to use. Under `selenium` 
+settings, you can configure whether you want a local or remote/grid, and which browser 
+to use.
+
+	# Settings for Selenium WebDriver used for browser testing.
+	selenium:
+	  # Set type to LOCAL for running locally, and to REMOTE, to run on a remote 
+	  # webdriver.  Default is LOCAL
+	  type: LOCAL
+	  #type: REMOTE
+
+	  # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
+	  # instance each time.  If set to a number, this  would determine whether the browser 
+	  # session should be discarded after a certain time peroid.  
+	  # Default is 'true'
+	  reusebrowser: true
+
+	  # Terminate Selenium after all tests have run. Disabling this can be helpful
+	  # during debugging.  In operation you normally want to keep this to clean up 
+	  # after tests.
+	  shutdown_hook: true
+
+	  # Take screenshot of browser on error.
+	  take_screenshot: true
+	  # Take reference screenshot upon encountering a new page.
+	  take_reference_screenshot: true
+
+	  # remote_url is required if type=REMOTE.  Set this to point at the Remote Webdriver 
+	  # connection string.
+	  #remote_url: http://url.to.seleniumgrid:4444/wd/hub
+
+	  # Browser can be the following options.
+	  # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
+	  # INTERNETEXPLORER, IPAD, IPHONE, OPERA, SAFARI
+	  browser: FIREFOX
+	...
+	
+	
+Then when you want to get an instance of webdriver, use the `WTF_WEBDRIVER_MANAGER` to 
+get an instance of webdriver.  This allows your tests to be agnostic of which webdriver 
+it's instantiating.  You can use a different config file for running it on CI, vs. running
+locally on your machine
+
+	# Get an instance of webdriver.
+	driver = WTF_WEBDRIVER_MANAGER.new_driver()
 	
 
 WTFBaseTest

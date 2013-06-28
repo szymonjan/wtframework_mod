@@ -1,3 +1,8 @@
+## v0.2.22 - 6/28/2013
+- new_driver() can now take an optional test name parameter.  This is useful for passing 
+test names into Sauce on demand.
+- ConfigReader will now throw errors instead of falling back to default for an invalid 
+config file.
 
 ## v0.2.16-21 - 6/26/2013
 - Added support for using a fresh browser instance for each test
