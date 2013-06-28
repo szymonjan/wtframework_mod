@@ -290,8 +290,11 @@ class WebDriverManager(object):
         """
         Close current instance of webdriver.
         """
-        if self.webdriver == None:
-            self.webdriver.quit()
+        if self.webdriver is not None:
+            try:
+                self.webdriver.quit()
+            except:
+                pass
             WebDriverManager.__webdrivers_created.remove(self.webdriver)
             self.webdriver = None
 
