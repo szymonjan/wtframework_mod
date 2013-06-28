@@ -57,10 +57,9 @@ class TestWebDriverFactory(unittest.TestCase):
     def test_createWebDriver_WithHtmlUnitDriver(self):
         "Simple unit test to check if instantiating an HTMLUnit driver works."
         config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG).InAnyOrder().AndReturn(True)
         config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("HTMLUNIT")
-        config_reader.get_or_default("selenium.server", \
+        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
+        config_reader.get("selenium.server", \
                                                  WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)\
                                                  .InAnyOrder()\
                                                  .AndReturn(WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)
@@ -82,15 +81,14 @@ class TestWebDriverFactory(unittest.TestCase):
         When making changes to WebDriverFactory, please run this test manually.
         '''
         config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG, True).InAnyOrder().AndReturn(True)
         config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
         config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
         self._mocker.ReplayAll()
         
         driver_factory = WebDriverFactory(config_reader)
-        driver = driver_factory.create_webdriver()
-        driver.get("http://www.google.com")
-        driver.find_element_by_name('q') #google's famous q element.
+        self._driver = driver_factory.create_webdriver()
+        self._driver.get("http://www.google.com")
+        self._driver.find_element_by_name('q') #google's famous q element.
 
     # This relies on having access to a grid.  Set your selenium config in the config file, 
     # then comment out the skiptest decorator to run this test.

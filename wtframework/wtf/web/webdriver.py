@@ -35,8 +35,7 @@ class WebDriverFactory(object):
     DRIVER_TYPE_CONFIG = "selenium.type"
     REMOTE_URL_CONFIG = "selenium.remote_url"
     BROWSER_TYPE_CONFIG = "selenium.browser"
-    DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"
-    SHUTDOWN_HOOK_CONFIG = "selenium.shutdown_hook"
+    DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"    
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
 
     _DEFAULT_SELENIUM_SERVER_FOLDER = "selenium-server"
@@ -57,8 +56,7 @@ class WebDriverFactory(object):
 
     # Instance Variables#
     _config_reader = None
-    _use_shutdown_hook = False
-    _webdrivers_created = []
+
 
     def __init__(self, config_reader=None):
         '''
@@ -73,28 +71,6 @@ class WebDriverFactory(object):
         else:
             self._config_reader = WTF_CONFIG_READER
 
-        if self._config_reader.get(WebDriverFactory.SHUTDOWN_HOOK_CONFIG, True) == True:
-            WebDriverFactory._use_shutdown_hook = True
-        else:
-            WebDriverFactory._use_shutdown_hook = False
-        
-
-    @staticmethod
-    def clean_up_webdrivers():
-        '''
-        Clean up webdrivers created during execution.
-        '''
-        # Quit webdrivers.
-        print "Cleaning up webdrivers"
-        try:
-            if WebDriverFactory._use_shutdown_hook:
-                for webdriver in WebDriverFactory._webdrivers_created:
-                    try:
-                        webdriver.quit()
-                    except Exception as e:
-                        print e
-        except:
-            pass
 
 
     def create_webdriver(self):
@@ -117,9 +93,6 @@ class WebDriverFactory(object):
         else:
             #handle as local webdriver
             self.webdriver = self.__create_driver_from_browser_config()
-
-        #add webdriver to list of drivers to be cleaned up.
-        WebDriverFactory._webdrivers_created.append(self.webdriver)
 
         self.webdriver.maximize_window()
 
@@ -145,7 +118,7 @@ class WebDriverFactory(object):
         try:
             return browser_type_dict[browser_type]()
         except KeyError:
-            raise TypeError("Unsupported Browser Type {0}".format(browser_type))        
+            raise TypeError("Unsupported Browser Type {0}".format(browser_type))
         # End of method.
 
     def __create_remote_webdriver_from_config(self):
@@ -209,14 +182,6 @@ class WebDriverFactory(object):
 
 # End of Class.
 
-# Adding a shut down hook for cleaning up webdrivers that get 
-# created by WebDriverFactory.
-try: 
-    import atexit
-    atexit.register(WebDriverFactory.clean_up_webdrivers)
-except:
-    pass
-
 
 
 
@@ -230,7 +195,10 @@ class WebDriverManager(object):
     out to assist in unit testing framework classes that may use this. 
     '''
     REUSE_BROWSER = "selenium.reusebrowser"
+    SHUTDOWN_HOOK_CONFIG = "selenium.shutdown_hook"
 
+    __use_shutdown_hook = False
+    __webdrivers_created = []
 
     def __init__(self, webdriver_factory=None, config=WTF_CONFIG_READER):
         '''
@@ -243,12 +211,35 @@ class WebDriverManager(object):
         '''
         self.webdriver = None
         
+        self.__config = config
+        
+        if self.__config.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True):
+            WebDriverManager.__use_shutdown_hook = True
+        else:
+            WebDriverManager.__use_shutdown_hook = False
+        
         if( webdriver_factory != None):
             self._webdriver_factory = webdriver_factory
         else:
             self._webdriver_factory = WebDriverFactory()
 
-        self.__config = WTF_CONFIG_READER
+
+    @staticmethod
+    def clean_up_webdrivers():
+        '''
+        Clean up webdrivers created during execution.
+        '''
+        # Quit webdrivers.
+        print "Cleaning up webdrivers"
+        try:
+            if WebDriverManager.__use_shutdown_hook:
+                for webdriver in WebDriverManager.__webdrivers_created:
+                    try:
+                        webdriver.quit()
+                    except Exception as e:
+                        print e
+        except:
+            pass
 
 
     def new_driver(self):
@@ -261,6 +252,8 @@ class WebDriverManager(object):
         if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
             if self.webdriver == None:
                 self.webdriver = self._webdriver_factory.create_webdriver()
+                #add webdriver to list of drivers to be cleaned up.
+                WebDriverManager.__webdrivers_created.append(self.webdriver)
             else:
                 try:
                     # Clear cookies and check if webdriver is still healthy.
@@ -293,6 +286,15 @@ class WebDriverManager(object):
         return self.webdriver
 
 
+    def close_driver(self):
+        """
+        Close current instance of webdriver.
+        """
+        if self.webdriver == None:
+            self.webdriver.quit()
+            WebDriverManager.__webdrivers_created.remove(self.webdriver)
+            self.webdriver = None
+
 
     def is_driver_available(self):
         '''
@@ -300,7 +302,18 @@ class WebDriverManager(object):
         @rtype: bool
         '''
         return self.webdriver != None
-    
+
+
+
+# Adding a shut down hook for cleaning up webdrivers that get 
+# created by WebDriverFactory.
+try: 
+    import atexit
+    atexit.register(WebDriverManager.clean_up_webdrivers)
+except:
+    pass
+
+
 
 
 # Global Instance of WebDriver Manager
