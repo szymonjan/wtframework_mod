@@ -1,7 +1,10 @@
 --- 
 script: 
-- nosetests wtframework/wtf/tests/
-- nosetests wtframework/wtf/web/tests/test_page_factory.py
+- nosetests wtframework/tests/
+- nosetests wtframework/wtf/data/tests/
+- nosetests wtframework/wtf/testobjects/tests/
+- nosetests wtframework/wtf/utils/tests/
+- nosetests wtframework/wtf/web/tests/
 
 language: python
 env: 

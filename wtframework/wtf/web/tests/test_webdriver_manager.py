@@ -76,8 +76,8 @@ class TestWebDriverManager(unittest.TestCase):
         webdriver_mock1 = self._mocker.CreateMock(phantomjs.webdriver.WebDriver)
         webdriver_mock2 = self._mocker.CreateMock(phantomjs.webdriver.WebDriver)
         webdriverfactory_mock = self._mocker.CreateMock(WebDriverFactory)
-        webdriverfactory_mock.create_webdriver().AndReturn(webdriver_mock1)
-        webdriverfactory_mock.create_webdriver().AndReturn(webdriver_mock2)
+        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock1)
+        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock2)
         self._mocker.ReplayAll()
         
         webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 

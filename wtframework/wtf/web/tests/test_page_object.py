@@ -15,13 +15,15 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from mox import Mox
-from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageObject, InvalidPageError
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import unittest
+
 
 
 class TestPageObject(unittest.TestCase):
@@ -32,10 +34,7 @@ class TestPageObject(unittest.TestCase):
     driver = None
     
     def tearDown(self):
-        try:
-            self.driver.close()
-        except:
-            pass
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
         
 
 
@@ -47,7 +46,7 @@ class TestPageObject(unittest.TestCase):
         config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
         mox.ReplayAll()
 
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageObject.test_createPage_createsPageFromFactory")
         self.driver.get("http://www.google.com")
         google = SearchPage.create_page(self.driver, config_reader=config_reader)
         self.assertTrue(type(google) == GoogleSearch)

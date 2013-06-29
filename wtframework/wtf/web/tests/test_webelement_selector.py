@@ -14,11 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from selenium import webdriver
+
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.webdriver.common.by import By
 from wtframework.wtf.web.webelement import WebElementSelector, BadSelectorError
 import unittest
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+from wtframework.wtf.utils.test_utils import do_and_ignore
 
 
 
@@ -30,14 +32,10 @@ class TestWebElementSelector(unittest.TestCase):
     driver = None
     
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestWebElementSelector")
     
     def tearDown(self):
-        try:
-            self.driver.close()
-        except:
-            pass
-        
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
 
     def test_find_element_by_selectors_with_GoodSelectorFirst(self):
         self.driver.get("http://www.google.com")
