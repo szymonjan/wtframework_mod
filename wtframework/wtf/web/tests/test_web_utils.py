@@ -18,7 +18,7 @@ class TestWebUtils(unittest.TestCase):
         
         time.sleep(12)
         self.assertGreater(fakedriver.counter, 9)
-        self.assertLess(fakedriver.counter, 12)
+        self.assertLess(fakedriver.counter, 13)
     
     
     def test_browserstandby_stop(self):
@@ -29,7 +29,7 @@ class TestWebUtils(unittest.TestCase):
         standby.stop()
         time.sleep(5)
         self.assertGreater(fakedriver.counter, 4)
-        self.assertLess(fakedriver.counter, 6)
+        self.assertLess(fakedriver.counter, 8)
 
 
 class WebdriverCallCounterTestStub(object):
