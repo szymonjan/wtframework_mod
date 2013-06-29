@@ -1,16 +1,28 @@
-'''
-Created on Mar 8, 2013
-
-@author: "David Lai"
-'''
-import unittest
-from wtframework.wtf.web import page
-from selenium import webdriver
-from wtframework.wtf.web.page import PageObject, InvalidPageError,\
-    PageLoadTimeoutError
+##########################################################################
+#This file is part of WTFramework. 
+#
+#    WTFramework is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    WTFramework is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
+##########################################################################
 from datetime import datetime, timedelta
+from wtframework.wtf.utils.test_utils import do_and_ignore
+from wtframework.wtf.web import page
+from wtframework.wtf.web.page import PageObject, InvalidPageError, \
+    PageLoadTimeoutError
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import threading
 import time
+import unittest
 
 class GoogleSearch(PageObject):
     
@@ -26,10 +38,8 @@ class TestPageUtils(unittest.TestCase):
         self._mocker = None
 
         #tear down any webdrivers we create.
-        try:
-            self.driver.close()
-        except:
-            pass
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
+
 
     def __load_google_later(self):
         print "load google later thread started."
@@ -38,7 +48,7 @@ class TestPageUtils(unittest.TestCase):
         print "load google later thread now loading google."
 
     def test_wait_for_page_to_load(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_to_load")
         start_time = datetime.now()
         self.driver.get("http://www.yahoo.com")
         
@@ -57,13 +67,13 @@ class TestPageUtils(unittest.TestCase):
 
    
     def test_wait_for_page_loads_times_out_on_bad_page(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page")
         self.driver.get("http://www.yahoo.com")
         self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, GoogleSearch, self.driver, 1)
 
 
     def test_wait_for_page_loads_times_out_on_bad_page_list(self):
-        self.driver = webdriver.Firefox()
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page_list")
         self.driver.get("http://www.yahoo.com")
         self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, 
                           [GoogleSearch], self.driver, 1)

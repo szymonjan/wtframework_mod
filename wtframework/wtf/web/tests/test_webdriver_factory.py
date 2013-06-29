@@ -14,11 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Dec 20, 2012
+"""
+NOTE:  These tests are all commented out.  These tests will not run over 
+our Travis-CI/Sauce setup.  Ideally these tests should be ran manually 
+before merging any code dealing with Webdriver Factory.
+"""
 
-@author: "David Lai"
-'''
+
 from mox import Mox
 from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
 from wtframework.wtf.web.webdriver import WebDriverFactory
@@ -72,7 +74,7 @@ class TestWebDriverFactory(unittest.TestCase):
         self._driver.find_element_by_name("q") #Google's famous 'q' element.
 
 
-
+    @unittest.skip("Tests running on local are skipped by default so the full suit can run on Travis-CI")
     def test_createWebDriver_WithLocalBrowser(self):
         '''
         This will test this by opening firefox and trying to fetch Google with it.

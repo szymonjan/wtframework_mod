@@ -82,8 +82,11 @@ class ConfigReader:
         @param default_value: Value to return if the config setting does not exist. 
         '''
         # First attempt to get the var from OS enviornment.
-        if type(os.getenv(ConfigReader.ENV_PREFIX + key)) != NoneType:
-            return os.getenv(ConfigReader.ENV_PREFIX + key)
+        os_env_string = ConfigReader.ENV_PREFIX + key
+        os_env_string = os_env_string.replace(".", "_")
+        if type(os.getenv(os_env_string)) != NoneType:
+            return os.getenv(os_env_string)
+
 
         # Otherwise search through config files.
         for data_map in self._dataMaps:
