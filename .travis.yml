@@ -1,6 +1,6 @@
 --- 
 script: 
-- nosetests wtframework/tests/
+- nosetests wtframework/wtf/tests/
 - nosetests wtframework/wtf/data/tests/
 - nosetests wtframework/wtf/testobjects/tests/
 - nosetests wtframework/wtf/utils/tests/
