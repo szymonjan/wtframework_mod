@@ -274,10 +274,12 @@ class WebDriverManager(object):
                     except:
                         pass
                     self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
+                    WebDriverManager.__webdrivers_created.append(self.webdriver)
                 
         else:
             # Attempt to tear down any existing webdriver.
             self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
+            WebDriverManager.__webdrivers_created.append(self.webdriver)
 
 
         return self.webdriver
@@ -299,12 +301,24 @@ class WebDriverManager(object):
         """
         Close current instance of webdriver.
         """
+        if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
+            #If reuse browser is set, we'll avoid closing it and just clear out the cookies,
+            # and reset the location.
+            try:
+                self.webdriver.delete_all_cookies()
+                self.webdriver.get("about:blank") #check to see if webdriver is still responding
+            except:
+                pass
+        
         if self.webdriver is not None:
             try:
                 self.webdriver.quit()
             except:
                 pass
-            WebDriverManager.__webdrivers_created.remove(self.webdriver)
+            
+            if self.webdriver in WebDriverManager.__webdrivers_created:
+                WebDriverManager.__webdrivers_created.remove(self.webdriver)
+            
             self.webdriver = None
 
 
