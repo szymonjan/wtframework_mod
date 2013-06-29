@@ -19,6 +19,7 @@ from wtframework.wtf.web.page import NoMatchingPageError, InvalidPageError, \
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import unittest
+from wtframework.wtf.utils.test_utils import do_and_ignore
 
 # Interface for the other 2 search pages to implement.
 class SearchPage(PageObject):
@@ -66,13 +67,9 @@ class TestPageFactory(unittest.TestCase):
 
     def tearDown(self):
         self._mocker = None
-
         #tear down any webdrivers we create.
-        try:
-            self.driver.close()
-        except:
-            pass
-        
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
+
 
     def test_create_page_createsPageWhenExists(self):
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_createsPageWhenExists")

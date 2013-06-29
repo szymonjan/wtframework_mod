@@ -84,8 +84,8 @@ class ConfigReader:
         # First attempt to get the var from OS enviornment.
         os_env_string = ConfigReader.ENV_PREFIX + key
         os_env_string = os_env_string.replace(".", "_")
-        if type(os.getenv(ConfigReader.ENV_PREFIX + key)) != NoneType:
-            return os.getenv(ConfigReader.ENV_PREFIX + key)
+        if type(os.getenv(os_env_string)) != NoneType:
+            return os.getenv(os_env_string)
 
 
         # Otherwise search through config files.
