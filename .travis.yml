@@ -1,10 +1,10 @@
 --- 
 script: 
-- nosetests wtframework/wtf/tests/
-- nosetests wtframework/wtf/data/tests/
-- nosetests wtframework/wtf/testobjects/tests/
-- nosetests wtframework/wtf/utils/tests/
-- nosetests wtframework/wtf/web/tests/
+- nosetests wtframework/wtf/tests/ -a !noci
+- nosetests wtframework/wtf/data/tests/ -a !noci
+- nosetests wtframework/wtf/testobjects/tests/ -a !noci
+- nosetests wtframework/wtf/utils/tests/ -a !noci
+- nosetests wtframework/wtf/web/tests/ -a !noci
 
 language: python
 env: 
