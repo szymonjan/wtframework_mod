@@ -16,10 +16,10 @@
 ##########################################################################
 from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
 import sys
-import unittest
+import unittest2
 import warnings
 
-class WatchedTestCase(unittest.TestCase):
+class WatchedTestCase(unittest2.TestCase):
     '''
     This test case extends the unittest.TestCase to add support for 
     registering TestWatchers for listening on TestEvents.
@@ -66,9 +66,10 @@ class WatchedTestCase(unittest.TestCase):
 
         self._resultForDoCleanups = result
         result.startTest(self)
-
+        
         testMethod = getattr(self, self._testMethodName)
-        if (getattr(self.__class__, "__unittest_skip__", False) or
+        
+        if (getattr(self.__class__, "__unittest_skip__", False) or 
             getattr(testMethod, "__unittest_skip__", False)):
             # If the class or method was skipped.
             try:
@@ -85,85 +86,74 @@ class WatchedTestCase(unittest.TestCase):
                 for test_watcher in self.__wtf_test_watchers__:
                     test_watcher.before_setup(self, result)
                 # Run test setup.
+
                 self.setUp()
-            except SkipTest as e:
+            except SkipTest, e:
                 self._addSkip(result, str(e))
-            except KeyboardInterrupt:
-                raise
-            except:
+            except Exception:
                 result.addError(self, sys.exc_info())
             else:
                 try:
                     # Run our test watcher actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.before_test(self, result)
+
                     # Run our test
                     testMethod()
                     
-                    # Run our test watcher actions.
+                    # Run our test watcher post test actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_pass(self, result)
-                    
-                except KeyboardInterrupt:
-                    raise
+
                 except self.failureException as e:
                     result.addFailure(self, sys.exc_info())
-
-                    # Run our test watcher actions.
+                    
+                    # Run our test watcher on fail actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_failure(self, result, e)
-                    
-                except _ExpectedFailure as e:
+
+                except _ExpectedFailure, e:
                     addExpectedFailure = getattr(result, 'addExpectedFailure', None)
                     if addExpectedFailure is not None:
                         addExpectedFailure(self, e.exc_info)
-                    else:
-                        warnings.warn("TestResult has no addExpectedFailure method, reporting as passes",
-                                      RuntimeWarning)
+                    else: 
+                        warnings.warn("Use of a TestResult without an addExpectedFailure method is deprecated", 
+                                      DeprecationWarning)
                         result.addSuccess(self)
-
                 except _UnexpectedSuccess:
                     addUnexpectedSuccess = getattr(result, 'addUnexpectedSuccess', None)
                     if addUnexpectedSuccess is not None:
                         addUnexpectedSuccess(self)
                     else:
-                        warnings.warn("TestResult has no addUnexpectedSuccess method, reporting as failures",
-                                      RuntimeWarning)
+                        warnings.warn("Use of a TestResult without an addUnexpectedSuccess method is deprecated", 
+                                      DeprecationWarning)
                         result.addFailure(self, sys.exc_info())
-
-                except SkipTest as e:
+                except SkipTest, e:
                     self._addSkip(result, str(e))
                 except Exception as e:
                     result.addError(self, sys.exc_info())
                     
-                    # Run our test watcher actions.
+                    # Run our test watcher on error actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_error(self, result, e)
                 else:
                     success = True
 
                 try:
-                    # Run our test watcher actions.
+                    # Run our test watcher after test actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_test(self, result)
 
                     # Do tear down.
                     self.tearDown()
-                except KeyboardInterrupt:
-                    raise
-                except Exception as e:
+                except Exception:
                     result.addError(self, sys.exc_info())
                     success = False
                     
-                    # Run our test watcher actions.
-                    for test_watcher in self.__wtf_test_watchers__:
-                        test_watcher.on_test_error(self, result, e)
-                finally:
-                    # Run our test watcher actions.
+                finally: # Run our test watcher actions for after tear down..
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_teardown(self, result)
 
-            
             cleanUpSuccess = self.doCleanups()
             success = success and cleanUpSuccess
             if success:

@@ -38,6 +38,7 @@ setup(
     long_description=open('README.md').read(),
     install_requires=[
         "nose>=1.3.0",
+        "unittest2>=0.5.1",
         "ddt>=0.2.0",
         "pyyaml>=3.10",
         "selenium>=2.33.0",
