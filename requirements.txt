@@ -21,8 +21,11 @@ Mox>=0.5.3
 # PyLint - Requirement for some nosetest below.
 pylint>=0.26.0
 
+# Unittest2 used as testcase base for watched test cases
+unittest2>=0.5.1
+
 # Nose is used as top level test driver and reporting.
-nose>=1.3.0
+nose2>=0.4.6
 
 # DDT module for Data driven decorators. (we extend these for our ddt decorators)
 ddt>=0.2.0
