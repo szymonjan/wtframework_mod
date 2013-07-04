@@ -1,18 +1,17 @@
 --- 
+install: pip install -r requirements.txt --use-mirrors
+env: 
+  global: 
+    secure: |-
+      azb2aXWuGWsymxeXGkUERMQsLGSQ58kJ+bx1MamEYYf5XcoDyW2R8fn/8q1H
+      JcPK/EB0F8gBrvthE/hkyWWNQmV0yHmiTkAbF6tPMC2XCW5HlH38raFZ6eCE
+      hyLNfQpF+MEKTXPs+mcptF/1y3KuUGjPu60dgfyDxCzro+FKPpw=
+python: 
+- "2.7"
+language: python
 script: 
 - nosetests-2.7 wtframework/wtf/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/data/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/testobjects/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/utils/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/web/tests/ -a !noci
-
-language: python
-env: 
-  global: 
-    secure: |-
-      fTcthlylVMmNowShq5n08S9yRkwROaJ8Q7uuADyfc/ZVZovxXIBcOz1oKZEg
-      dLDurEI9/e6uBGvGWXp6SlmlEckElN2Q0TOIFGZuSYuOWyn80d62xUd7EdbF
-      foEd4f7rN4r9fq63dND73DZ7ilsccGLiNHoL3/nBbp1ErCTu1Nw=
-python: 
-- "2.7"
-install: pip install -r requirements.txt --use-mirrors
