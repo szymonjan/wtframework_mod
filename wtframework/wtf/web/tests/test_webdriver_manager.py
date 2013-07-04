@@ -49,7 +49,7 @@ class TestWebDriverManager(unittest.TestCase):
         webdriver_mock.get("http://www.google.com").AndReturn(None)
         webdriver_mock.find_element_by_name('q').AndReturn(mock_element)
         webdriverfactory_mock = self._mocker.CreateMock(WebDriverFactory)
-        webdriverfactory_mock.create_webdriver().AndReturn(webdriver_mock)
+        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock)
         self._mocker.ReplayAll()
 
         webdriver_provider = WebDriverManager(webdriverfactory_mock)
