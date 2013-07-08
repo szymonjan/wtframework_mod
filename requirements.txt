@@ -16,7 +16,7 @@
 ##########################################################################
 
 # Mock Object framework.  Used for unit testing framework code.
-Mox>=0.5.3
+mockito>=0.5.1
 
 # PyLint - Requirement for some nosetest below.
 pylint>=0.26.0

@@ -22,7 +22,7 @@ before merging any code dealing with Webdriver Factory.
 """
 
 
-from mox import Mox
+from mockito import mock, when
 from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
 from wtframework.wtf.web.webdriver import WebDriverFactory
 import unittest
@@ -38,19 +38,13 @@ class TestWebDriverFactory(unittest.TestCase):
     or call external services that may bill us.
     '''
 
-    _mocker = None # Mox() mocking lib.
-    _driver = None
-
-    def setUp(self):
-        #create an instance of Mox() to mock out config.
-        self._mocker = Mox()
 
     def tearDown(self):
         self._mocker = None
 
         #tear down any webdrivers we create.
         try:
-            self._driver.close()
+            if self._driver: self._driver.close()
         except:
             pass
         self._driver = None
@@ -67,18 +61,21 @@ class TestWebDriverFactory(unittest.TestCase):
         This test will normally be commented out since it spawns annoying browser windows.
         When making changes to WebDriverFactory, please run this test manually.
         '''
-        config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
-        self._mocker.ReplayAll()
-        
+        config_reader = mock(ConfigReader)
+        when(config_reader).get(WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
+        when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
+        
+        # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
+        
+        # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q') #google's famous q element.
 
-    
-    
+
+
     def test_createWebDriver_WithGrid(self):
         '''
         This will test a grid setup by making a connection to Sauce Labs.

@@ -15,42 +15,30 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from mox import Mox
-from selenium.webdriver import phantomjs
+from mockito.matchers import any
+from mockito.mockito import when, mock
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from wtframework.wtf.config import ConfigReader
 from wtframework.wtf.web.webdriver import WebDriverFactory, WebDriverManager
 import unittest
-from wtframework.wtf.config import ConfigReader
 
 
 class TestWebDriverManager(unittest.TestCase):
 
-    _mocker = None
-
-    def setUp(self):
-        #create an instance of Mox() to mock out config.
-        self._mocker = Mox()
-
-
-    def tearDown(self):
-        # reset our singleton providers.
-        self._mocker = None
-
 
     
-
     def test_getDriver_ReturnsSingletonSeleniumWebdriver(self):
         '''
         Test we return a single instance of selenium webdriver.
         '''
-        mock_element = self._mocker.CreateMock(WebElement)
-        mock_element.send_keys("Hello World").AndReturn(None)
-        webdriver_mock = self._mocker.CreateMock(phantomjs.webdriver.WebDriver)
-        webdriver_mock.get("http://www.google.com").AndReturn(None)
-        webdriver_mock.find_element_by_name('q').AndReturn(mock_element)
-        webdriverfactory_mock = self._mocker.CreateMock(WebDriverFactory)
-        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock)
-        self._mocker.ReplayAll()
+        mock_element = mock(WebElement)
+        when(mock_element).send_keys(any(str)).thenReturn(None)
+        webdriver_mock = mock(WebDriver)
+        when(webdriver_mock).get("http://www.google.com").thenReturn(None)
+        when(webdriver_mock).find_element_by_name('q').thenReturn(mock_element)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock)
 
         webdriver_provider = WebDriverManager(webdriverfactory_mock)
 
@@ -67,18 +55,15 @@ class TestWebDriverManager(unittest.TestCase):
 
 
     def test_newDriver_ReturnsNewInstance(self):        
-        config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).InAnyOrder().AndReturn(True)
-        config_reader.get(WebDriverManager.REUSE_BROWSER, True).InAnyOrder().AndReturn(False)
-        config_reader.get(WebDriverManager.REUSE_BROWSER, True).InAnyOrder().AndReturn(False)
-        mock_element = self._mocker.CreateMock(WebElement)
-        mock_element.send_keys("Hello World").AndReturn(None)
-        webdriver_mock1 = self._mocker.CreateMock(phantomjs.webdriver.WebDriver)
-        webdriver_mock2 = self._mocker.CreateMock(phantomjs.webdriver.WebDriver)
-        webdriverfactory_mock = self._mocker.CreateMock(WebDriverFactory)
-        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock1)
-        webdriverfactory_mock.create_webdriver(testname=None).AndReturn(webdriver_mock2)
-        self._mocker.ReplayAll()
+        config_reader = mock(ConfigReader)
+        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+
+        webdriver_mock1 = mock(WebDriver)
+        webdriver_mock2 = mock(WebDriver)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1).thenReturn(webdriver_mock2)
         
         webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
                                               config = config_reader)
