@@ -43,7 +43,7 @@ class TestPageUtils(unittest.TestCase):
 
     def __load_google_later(self):
         print "load google later thread started."
-        time.sleep(10)
+        time.sleep(30)
         self.driver.get("http://www.google.com")
         print "load google later thread now loading google."
 
@@ -56,14 +56,14 @@ class TestPageUtils(unittest.TestCase):
         t = threading.Thread(target=self.__load_google_later())
         t.start()
 
-        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 60)
+        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 120)
         
         end_time = datetime.now()
         
         # check we get a page object pack.
         self.assertTrue(isinstance(self.page_obj, GoogleSearch))
         # check that the instantiation happened later when the page was loaded.
-        self.assertGreater(end_time - start_time, timedelta(seconds=10))
+        self.assertGreater(end_time - start_time, timedelta(seconds=30))
 
    
     def test_wait_for_page_loads_times_out_on_bad_page(self):
