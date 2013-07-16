@@ -1,4 +1,4 @@
-## v0.2.2x 
+## v0.3.0 
 - Switched to using nosetest2 as the test runner
 - Switched to using unittest2 instead of unittest for the WatchedTestCase class base.
 - WTFramework project is now tested by Travis-CI, 
