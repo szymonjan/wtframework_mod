@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from nose.plugins.attrib import attr
 """
 NOTE:  These tests are all commented out.  These tests will not run over 
 our Travis-CI/Sauce setup.  Ideally these tests should be ran manually 
@@ -21,7 +22,7 @@ before merging any code dealing with Webdriver Factory.
 """
 
 
-from mox import Mox
+from mockito import mock, when
 from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
 from wtframework.wtf.web.webdriver import WebDriverFactory
 import unittest
@@ -37,44 +38,22 @@ class TestWebDriverFactory(unittest.TestCase):
     or call external services that may bill us.
     '''
 
-    _mocker = None # Mox() mocking lib.
-    _driver = None
-
-    def setUp(self):
-        #create an instance of Mox() to mock out config.
-        self._mocker = Mox()
 
     def tearDown(self):
         self._mocker = None
 
         #tear down any webdrivers we create.
         try:
-            self._driver.close()
+            if self._driver: self._driver.close()
         except:
             pass
         self._driver = None
 
 
-    @unittest.skip("This we do not have support for HTML unit yet.")
-    def test_createWebDriver_WithHtmlUnitDriver(self):
-        "Simple unit test to check if instantiating an HTMLUnit driver works."
-        config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
-        config_reader.get("selenium.server", \
-                                                 WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)\
-                                                 .InAnyOrder()\
-                                                 .AndReturn(WebDriverFactory._DEFAULT_SELENIUM_SERVER_FOLDER)
-        self._mocker.ReplayAll()
-
-        driver_factory = WebDriverFactory(config_reader)
-        self._driver = driver_factory.create_webdriver()
-        self._driver.get("http://www.google.com/")
-        print "page title:", self._driver.title
-        self._driver.find_element_by_name("q") #Google's famous 'q' element.
 
 
-    @unittest.skip("Tests running on local are skipped by default so the full suit can run on Travis-CI")
+    #Tests running on local are skipped by default so the full suit can run on Travis-CI"
+    @attr("noci")
     def test_createWebDriver_WithLocalBrowser(self):
         '''
         This will test this by opening firefox and trying to fetch Google with it.
@@ -82,19 +61,21 @@ class TestWebDriverFactory(unittest.TestCase):
         This test will normally be commented out since it spawns annoying browser windows.
         When making changes to WebDriverFactory, please run this test manually.
         '''
-        config_reader = self._mocker.CreateMock(ConfigReader)
-        config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG).InAnyOrder().AndReturn("LOCAL")
-        config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG).InAnyOrder().AndReturn("FIREFOX")
-        self._mocker.ReplayAll()
-        
+        config_reader = mock(ConfigReader)
+        when(config_reader).get(WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
+        when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
+        
+        # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
+        
+        # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q') #google's famous q element.
 
-    # This relies on having access to a grid.  Set your selenium config in the config file, 
-    # then comment out the skiptest decorator to run this test.
-    @unittest.skip("Tests using external grid skipped by default.")
+
+
     def test_createWebDriver_WithGrid(self):
         '''
         This will test a grid setup by making a connection to Sauce Labs.
@@ -105,7 +86,7 @@ class TestWebDriverFactory(unittest.TestCase):
         config_reader = MockConfigWithSauceLabs()
         
         driver_factory = WebDriverFactory(config_reader)
-        self._driver = driver_factory.create_webdriver()
+        self._driver = driver_factory.create_webdriver("test_createWebDriver_WithGrid")
         exception = None
         try:
             self._driver.get('http://saucelabs.com/test/guinea-pig')
@@ -122,9 +103,6 @@ class TestWebDriverFactory(unittest.TestCase):
         if exception != None:
             raise e
 
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
 
 
 
@@ -141,8 +119,7 @@ class MockConfigWithSauceLabs(object):
             remote_url: {0}
             browser: FIREFOX
             desired_capabilities:
-                version: 16.0
-                platform: Windows 2008
+                platform: Windows 7
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
         """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
         # TODO: Might be good to replace this with a local grid to avoid using up SauceLab automation hours.
@@ -166,4 +143,11 @@ class MockConfigWithSauceLabs(object):
             return temp_var
         else:
             value = self.map[key]
-            return value                
+            return value
+
+
+
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    unittest.main()
+

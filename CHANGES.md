@@ -1,3 +1,9 @@
+## v0.3.0 
+- Switched to using nosetest2 as the test runner
+- Switched to using unittest2 instead of unittest for the WatchedTestCase class base.
+- WTFramework project is now tested by Travis-CI, 
+  https://travis-ci.org/wiredrive/wtframework
+
 ## v0.2.22-3 - 6/28/2013
 - new_driver() can now take an optional test name parameter.  This is useful for passing 
 test names into Sauce on demand.

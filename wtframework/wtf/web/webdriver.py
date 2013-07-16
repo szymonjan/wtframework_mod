@@ -292,7 +292,7 @@ class WebDriverManager(object):
         @rtype: WebDriver
         '''
         if self.webdriver == None:
-            self.webdriver = self._webdriver_factory.create_webdriver()
+            self.webdriver = self.new_driver()
 
         return self.webdriver
 

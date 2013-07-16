@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from mox import Mox
+from mockito import mock, when
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.config import ConfigReader
@@ -40,12 +40,9 @@ class TestPageObject(unittest.TestCase):
 
     def test_createPage_createsPageFromFactory(self):
         # Mock a webdriver that looks like it's viewing yahoo
-        mox = Mox()
-        config_reader = mox.CreateMock(ConfigReader)
-        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
-        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
-        mox.ReplayAll()
-
+        config_reader = mock()
+        when(config_reader).get("selenium.take_reference_screenshot", False).thenReturn(False)
+        
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageObject.test_createPage_createsPageFromFactory")
         self.driver.get("http://www.google.com")
         google = SearchPage.create_page(self.driver, config_reader=config_reader)
@@ -62,13 +59,12 @@ class TestPageObject(unittest.TestCase):
         Note: This test is normally commented out since it launches webbrowsers.
         '''
         # Mock a webdriver that looks like it's viewing yahoo
-        mox = Mox()
-        config_reader = mox.CreateMock(ConfigReader)
-        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
-        driver = mox.CreateMock(WebDriver)
-        driver.get("http://www.yahoo.com").AndReturn(None)
-        driver.current_url = "http://www.yahoo.com"
-        mox.ReplayAll()
+        config_reader = mock(ConfigReader)
+        when(config_reader).get("selenium.take_reference_screenshot", False).thenReturn(False)
+        driver = mock(WebDriver)
+        when(driver).get("http://www.yahoo.com").thenReturn(None)
+        when(driver).current_url = "http://www.yahoo.com"
+
         driver.get("http://www.yahoo.com")
         try:
             # Check we get an Invalid Page error.
@@ -80,17 +76,14 @@ class TestPageObject(unittest.TestCase):
             self.fail("Should throw an InvalidPageError, thrown was: " + str(type(e)))
 
         #Mock a WebDriver that looks like it's returning google.
-        mox.ResetAll()
-        config_reader.get("selenium.take_reference_screenshot", False).AndReturn(False)
-        driver.get("http://www.google.com").AndReturn(None)
-        driver.current_url = "http://www.google.com"
-        element = mox.CreateMock(WebElement)
-        element.send_keys("hello world").AndReturn(None)
-        # Create our 'q' element to test our init_Elements in PageObject.
-        driver.find_element_by_name("q").AndReturn(element)
 
-        driver.close().AndReturn(None)
-        mox.ReplayAll()
+        
+        when(driver).get("http://www.google.com").thenReturn(None)
+        driver.current_url = "http://www.google.com"
+        element = mock(WebElement)
+        # Create our 'q' element to test our init_Elements in PageObject.
+        when(driver).find_element_by_name("q").thenReturn(element)
+
 
         #check if our Page object instantiates like normal
         driver.get("http://www.google.com")
@@ -100,13 +93,13 @@ class TestPageObject(unittest.TestCase):
         driver.close()
 
 
-        
+
 
 
 class GoogleTestPageObj(PageObject):
     "test page"
     def _validate_page(self, webdriver):
-        
+
         current_url = webdriver.current_url
 
         if not "google" in current_url:

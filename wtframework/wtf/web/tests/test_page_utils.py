@@ -15,6 +15,7 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
+from interruptingcow import timeout
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web import page
 from wtframework.wtf.web.page import PageObject, InvalidPageError, \
@@ -35,7 +36,6 @@ class GoogleSearch(PageObject):
 class TestPageUtils(unittest.TestCase):
 
     def tearDown(self):
-        self._mocker = None
 
         #tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
@@ -47,17 +47,18 @@ class TestPageUtils(unittest.TestCase):
         self.driver.get("http://www.google.com")
         print "load google later thread now loading google."
 
+
+    @timeout(60)
     def test_wait_for_page_to_load(self):
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_to_load")
         start_time = datetime.now()
-        self.driver.get("http://www.yahoo.com")
         
         # create a separate thread to load yahoo 10 seconds later.
-        t = threading.Thread(target=self.__load_google_later())
+        t = threading.Thread(target=self.__load_google_later)
         t.start()
 
-        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 60)
-        
+        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 60, sleep=5)
+        t.join()
         end_time = datetime.now()
         
         # check we get a page object pack.

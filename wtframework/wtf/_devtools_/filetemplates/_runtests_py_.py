@@ -57,7 +57,7 @@ if __name__ == '__main__':
         result_path = options.result_file
     else:
         result_path = os.path.join("reports", "results.xml")
-    os.system("nosetests tests/tests/ --with-xunit --xunit-file={0}".format(result_path))
+    os.system("nosetests-2.7 tests/tests/ --with-xunit --xunit-file={0}".format(result_path))
 
 
 
