@@ -15,6 +15,7 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
+from interruptingcow import timeout
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web import page
 from wtframework.wtf.web.page import PageObject, InvalidPageError, \
@@ -23,8 +24,6 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import threading
 import time
 import unittest
-from wtframework.wtf.utils.wait_utils import do_until
-from interruptingcow import timeout
 
 class GoogleSearch(PageObject):
     
