@@ -335,9 +335,9 @@ class PageUtils():
             # Check to see if we're at our target page.
             try:
                 page = PageFactory.create_page(page_obj_class, webdriver=webdriver, **kwargs)
-                PageUtils.wait_until_page_ready(page)
                 return page
             except Exception as e:
+                print "Encountered exception ", e
                 last_exception = e
                 pass
             # Check to see if we're at one of those labled 'Bad' pages.

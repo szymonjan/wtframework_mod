@@ -24,6 +24,9 @@ pylint>=0.26.0
 # Unittest2 used as testcase base for watched test cases
 unittest2>=0.5.1
 
+# Interrupting cow used for wrapping async unit tests.
+interruptingcow>=0.6
+
 # Nose is used as top level test driver and reporting.
 nose2>=0.4.6
 
