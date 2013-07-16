@@ -23,6 +23,8 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import threading
 import time
 import unittest
+from wtframework.wtf.utils.wait_utils import do_until
+from interruptingcow import timeout
 
 class GoogleSearch(PageObject):
     
@@ -35,7 +37,6 @@ class GoogleSearch(PageObject):
 class TestPageUtils(unittest.TestCase):
 
     def tearDown(self):
-        self._mocker = None
 
         #tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
@@ -43,28 +44,28 @@ class TestPageUtils(unittest.TestCase):
 
     def __load_google_later(self):
         print "load google later thread started."
-        time.sleep(30)
+        time.sleep(10)
         self.driver.get("http://www.google.com")
         print "load google later thread now loading google."
 
 
+    @timeout(60)
     def test_wait_for_page_to_load(self):
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_to_load")
         start_time = datetime.now()
-        self.driver.get("http://www.yahoo.com")
         
         # create a separate thread to load yahoo 10 seconds later.
-        t = threading.Thread(target=self.__load_google_later())
+        t = threading.Thread(target=self.__load_google_later)
         t.start()
 
-        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 160)
-        
+        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 60, sleep=5)
+        t.join()
         end_time = datetime.now()
         
         # check we get a page object pack.
         self.assertTrue(isinstance(self.page_obj, GoogleSearch))
         # check that the instantiation happened later when the page was loaded.
-        self.assertGreater(end_time - start_time, timedelta(seconds=30))
+        self.assertGreater(end_time - start_time, timedelta(seconds=10))
 
    
     def test_wait_for_page_loads_times_out_on_bad_page(self):
