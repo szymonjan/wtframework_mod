@@ -15,12 +15,14 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from interruptingcow import timeout
 from mockito.matchers import any
 from mockito.mockito import when, mock
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.config import ConfigReader
 from wtframework.wtf.web.webdriver import WebDriverFactory, WebDriverManager
+import threading
 import unittest
 
 
@@ -54,7 +56,7 @@ class TestWebDriverManager(unittest.TestCase):
         element.send_keys("Hello World")
 
 
-    def test_newDriver_ReturnsNewInstance(self):        
+    def test_newDriver_ReturnsNewInstance(self):
         config_reader = mock(ConfigReader)
         when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
         when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
@@ -73,6 +75,55 @@ class TestWebDriverManager(unittest.TestCase):
 
         self.assertFalse(driver1 is driver2, 
                         "new_driver() should create fresh instance if reusebrowser if false.")
+
+    @timeout(5)
+    def test_multithreadMode(self):
+        """
+        Tests that when we call get_driver() it returns a unique driver for each thread,
+        but for the same thread returns the same driver.
+        """
+        config_reader = mock(ConfigReader)
+        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, False).thenReturn(True)
+        
+        webdriver_mock1 = mock(WebDriver)
+        webdriver_mock2 = mock(WebDriver)
+        webdriver_mock3 = mock(WebDriver)
+        
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)\
+        .thenReturn(webdriver_mock2).thenReturn(webdriver_mock3)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
+                                              config = config_reader)
+
+        # Spawn thread to check if driver is unique per thread.
+        driver1 = webdriver_provider.get_driver()
+        t = threading.Thread(target=lambda: self.__multithreaded_7est_thread2(driver1, webdriver_provider))
+        t.start()
+        t.join()
+        self.assertFalse(self._driver_from_thread_is_same)
+        
+        # Check that driver is same for the same thread.
+        driver3 = webdriver_provider.get_driver()
+        self.assertEqual(driver1, driver3, "Same thread should return same driver.")
+
+
+    def __multithreaded_7est_thread2(self, driver1, webdriver_provider):
+        # verify thread created
+        driver2 =  webdriver_provider.get_driver()
+        
+        if driver1 == driver2:
+            # This will cause the main thread to fail
+            self._driver_from_thread_is_same = True
+        else:
+            self._driver_from_thread_is_same = False
+             
+        self.assertNotEqual(driver1, driver2, "Driver should be unique for each thread.")
+
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
