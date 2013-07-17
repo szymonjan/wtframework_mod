@@ -58,9 +58,9 @@ class TestWebDriverManager(unittest.TestCase):
 
     def test_newDriver_ReturnsNewInstance(self):
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
 
         webdriver_mock1 = mock(WebDriver)
         webdriver_mock2 = mock(WebDriver)
@@ -83,18 +83,14 @@ class TestWebDriverManager(unittest.TestCase):
         but for the same thread returns the same driver.
         """
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
-        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, False).thenReturn(True)
-        
-        webdriver_mock1 = mock(WebDriver)
-        webdriver_mock2 = mock(WebDriver)
-        webdriver_mock3 = mock(WebDriver)
-        
+        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, any()).thenReturn(True)
+
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)\
-        .thenReturn(webdriver_mock2).thenReturn(webdriver_mock3)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(mock(WebDriver))\
+        .thenReturn(mock(WebDriver)).thenReturn(mock(WebDriver))
 
         webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
                                               config = config_reader)
@@ -112,7 +108,7 @@ class TestWebDriverManager(unittest.TestCase):
 
 
     def __multithreaded_7est_thread2(self, driver1, webdriver_provider):
-        # verify thread created
+        # verify that new webdriver is created when requesting a webdriver on another thread.
         driver2 =  webdriver_provider.get_driver()
         
         if driver1 == driver2:
