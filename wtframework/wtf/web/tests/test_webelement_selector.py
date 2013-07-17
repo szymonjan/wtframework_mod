@@ -17,16 +17,16 @@
 
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.webdriver.common.by import By
+from wtframework.wtf.utils.test_utils import do_and_ignore
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 from wtframework.wtf.web.webelement import WebElementSelector, BadSelectorError
 import unittest
-from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-from wtframework.wtf.utils.test_utils import do_and_ignore
 
 
 
 class TestWebElementSelector(unittest.TestCase):
     '''
-    Unit test of the PageObject Class
+    Unit test of the WebElementSelector Class
     '''
 
     driver = None
@@ -36,6 +36,7 @@ class TestWebElementSelector(unittest.TestCase):
     
     def tearDown(self):
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
+
 
     def test_find_element_by_selectors_with_GoodSelectorFirst(self):
         self.driver.get("http://www.google.com")
