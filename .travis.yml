@@ -9,9 +9,9 @@ script:
 - nosetests-2.7 wtframework/wtf/testobjects/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/utils/tests/ -a !noci
 - nosetests-2.7 wtframework/wtf/web/tests/ -a !noci
-#env: 
-#  global: 
-#    secure: |-
-#      aGhXR6Cz33zEDq1I6xhiBShON2AJywMSL0vubVRmTkL8bS3QdKIeCnWcAU6j
-#      CBobRjQ+OLC4TLEe4EzZxc2GlwSe6NtFTk21AtwoBqLQSQE72JDhagsWr7om
-#      sVs3MVtqn8vDGUHDFS1b1UE8YNED2FSHlQNZT8DzKyeQjBMHzew=
+env: 
+  global: 
+    secure: |-
+      aGhXR6Cz33zEDq1I6xhiBShON2AJywMSL0vubVRmTkL8bS3QdKIeCnWcAU6j
+      CBobRjQ+OLC4TLEe4EzZxc2GlwSe6NtFTk21AtwoBqLQSQE72JDhagsWr7om
+      sVs3MVtqn8vDGUHDFS1b1UE8YNED2FSHlQNZT8DzKyeQjBMHzew=
