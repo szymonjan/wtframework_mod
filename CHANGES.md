@@ -1,3 +1,6 @@
+## v0.3.1
+- WebdriverManager support for multi-threaded tests 
+
 ## v0.3.0 
 - Switched to using nosetest2 as the test runner
 - Switched to using unittest2 instead of unittest for the WatchedTestCase class base.

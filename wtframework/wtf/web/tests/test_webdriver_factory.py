@@ -40,7 +40,6 @@ class TestWebDriverFactory(unittest.TestCase):
 
 
     def tearDown(self):
-        self._mocker = None
 
         #tear down any webdrivers we create.
         try:

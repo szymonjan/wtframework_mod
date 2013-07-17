@@ -233,15 +233,14 @@ class WebDriverManager(object):
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
-        print "Cleaning up webdrivers"
+        print "WebdriverManager : Cleaning up webdrivers"
         try:
             if self.__use_shutdown_hook:
                 for key in self.__registered_drivers.keys():
                     for driver in self.__registered_drivers[key]:
                         try:
-                            if driver.is_online():
-                                print "Closing webdriver for thread: ", key
-                                driver.quit()
+                            print "Closing webdriver for thread: ", key
+                            driver.quit()
                         except Exception as e:
                             print e
         except:
@@ -286,8 +285,11 @@ class WebDriverManager(object):
                 
         else:
             # Attempt to tear down any existing webdriver.
-            if driver is not None and driver.is_online():
-                driver.quit()
+            if driver is not None:
+                try:
+                    driver.quit()
+                except:
+                    pass
             self.__unregister_driver(channel)
             driver = self._webdriver_factory.create_webdriver(testname=testname)
             self.__register_driver(channel, driver)
@@ -325,13 +327,12 @@ class WebDriverManager(object):
         
         if driver is not None:
             try:
-                if driver.is_online():
-                    self.webdriver.quit()
+                driver.quit()
             except:
                 pass
 
             self.__unregister_driver(channel)
-            if driver in self.__registered_drivers['channel']:
+            if driver in self.__registered_drivers[channel]:
                 self.__registered_drivers[channel].remove(driver)
 
             self.webdriver = None
@@ -388,15 +389,15 @@ class WebDriverManager(object):
         return channel
 
 
+    def __del__(self):
+        "Deconstructor, call cleanup drivers."
+        try:
+            self.clean_up_webdrivers()
+        except:
+            pass
+
+
 # Global Instance of WebDriver Manager
 WTF_WEBDRIVER_MANAGER = WebDriverManager()
 
 
-
-# Adding a shut down hook for cleaning up webdrivers that get 
-# created by WebDriverFactory.
-try: 
-    import atexit
-    atexit.register(WTF_WEBDRIVER_MANAGER.clean_up_webdrivers)
-except:
-    pass

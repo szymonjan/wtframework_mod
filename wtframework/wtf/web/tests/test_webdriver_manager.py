@@ -17,7 +17,7 @@
 
 from interruptingcow import timeout
 from mockito.matchers import any
-from mockito.mockito import when, mock
+from mockito.mockito import when, mock, verify
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.config import ConfigReader
@@ -123,6 +123,28 @@ class TestWebDriverManager(unittest.TestCase):
              
         self.assertNotEqual(driver1, driver2, "Driver should be unique for each thread.")
 
+
+    def test_cleanup_quits_webdrivers(self):
+        "Tests that clean up is performed on webdrivers created by WebdriverManger"
+        config_reader = mock(ConfigReader)
+        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, False).thenReturn(True)
+        
+        webdriver_mock1 = mock(WebDriver)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
+                                              config = config_reader)
+
+        # Spawn thread to check if driver is unique per thread.
+        driver = webdriver_provider.get_driver()
+        del webdriver_provider
+        
+        # verify decontructor cleans up the webdriver.
+        verify(driver).quit()
 
 
 if __name__ == "__main__":
