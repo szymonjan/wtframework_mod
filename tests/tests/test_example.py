@@ -30,14 +30,21 @@ import unittest
 class Test(WTFBaseTest):
 
 
+    def tearDown(self):
+        "This tear down will close the current allocated webdriver"
+        WTF_WEBDRIVER_MANAGER.close_driver()
+
+
     def test_basic_example(self):
         "Displays a simple PageObject instantiation example."
         
-        # WTF_WEBDRIVER_MANAGER provides a easy to access singleton to 
-        # access the webdriver.  A web browser will be instantiated 
+        # WTF_WEBDRIVER_MANAGER provides a easy to access to 
+        # the webdriver.  A web browser will be instantiated 
         # according to your config settings. 
         # - see 'selenium' settings in 'configs/default.yaml'
         webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
+
+        # Simple navigation
         webdriver.get("http://www.google.com")
         
         # Use the PageFactory class to instantiate your page.
@@ -45,7 +52,7 @@ class Test(WTFBaseTest):
         
         # With your PageObject instantiated, you can call it's methods.
         google_page.search("hello world")
-        time.sleep(5)
+        time.sleep(5) # dumb wait to allow google live search to populate.
         self.assertTrue(google_page.result_contains("hello world"))
 
 

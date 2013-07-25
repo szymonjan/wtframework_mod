@@ -154,10 +154,15 @@ class WebDriverFactory(object):
 
         for prop in other_desired_capabilities:
             value = other_desired_capabilities[prop]
-            if isinstance(value, basestring):
-                desired_capabilities[prop] = value
-            else:
-                desired_capabilities[prop] = str(value)
+            
+            if type(other_desired_capabilities[prop]) is dict:
+                #do some recursive call to flatten this setting.
+                self.__flatten_capabilities(desired_capabilities, prop, other_desired_capabilities[prop])
+            else: # Handle has a single string value.
+                if isinstance(value, basestring):
+                    desired_capabilities[prop] = value
+                else:
+                    desired_capabilities[prop] = str(value)
 
         # Set the test name property if specified in the WTF_TESTNAME var.
         try:
@@ -175,6 +180,19 @@ class WebDriverFactory(object):
             desired_capabilities = desired_capabilities,
             command_executor = remote_url
         )
+        # End of method.
+
+    def __flatten_capabilities(self, desired_capabilities, prefix, setting_group):
+        for key in setting_group.keys():
+            if type(setting_group[key]) is dict:
+                # Do recursive call
+                self.__flatten_capabilities(desired_capabilities, prefix + "." + key, setting_group[key])
+            else:
+                value = setting_group[key]
+                if isinstance(value, basestring):
+                    desired_capabilities[prefix + "." + key] = value
+                else:
+                    desired_capabilities[prefix + "." + key] = str(value)
         # End of method.
 
 
