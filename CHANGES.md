@@ -1,3 +1,6 @@
+## v0.3.2
+- Flatten out desired capabilities for multi-level keys (support browserstack settings)
+
 ## v0.3.1
 - WebdriverManager support for multi-threaded tests 
 
