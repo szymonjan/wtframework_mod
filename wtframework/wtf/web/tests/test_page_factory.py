@@ -62,13 +62,11 @@ class TestPageFactory(unittest.TestCase):
     or call external services that may bill us.
     '''
 
-    driver = None
-
 
     def tearDown(self):
-        self._mocker = None
         #tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
+        self.driver = None
 
 
     def test_create_page_createsPageWhenExists(self):

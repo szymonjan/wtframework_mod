@@ -18,6 +18,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from wtframework.wtf.config import WTF_CONFIG_READER
+from threading import current_thread
 
 
 
@@ -35,7 +36,7 @@ class WebDriverFactory(object):
     DRIVER_TYPE_CONFIG = "selenium.type"
     REMOTE_URL_CONFIG = "selenium.remote_url"
     BROWSER_TYPE_CONFIG = "selenium.browser"
-    DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"    
+    DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
 
     _DEFAULT_SELENIUM_SERVER_FOLDER = "selenium-server"
@@ -142,7 +143,7 @@ class WebDriverFactory(object):
                                  WebDriverFactory.OPERA:DesiredCapabilities.OPERA ,\
                                  WebDriverFactory.SAFARI:DesiredCapabilities.SAFARI,
                                  WebDriverFactory.PHANTOMJS:DesiredCapabilities.PHANTOMJS}
-        
+
         try:
             desired_capabilities = browser_constant_dict[browser_type]
         except KeyError:
@@ -153,10 +154,15 @@ class WebDriverFactory(object):
 
         for prop in other_desired_capabilities:
             value = other_desired_capabilities[prop]
-            if isinstance(value, basestring):
-                desired_capabilities[prop] = value
-            else:
-                desired_capabilities[prop] = str(value)
+            
+            if type(other_desired_capabilities[prop]) is dict:
+                #do some recursive call to flatten this setting.
+                self.__flatten_capabilities(desired_capabilities, prop, other_desired_capabilities[prop])
+            else: # Handle has a single string value.
+                if isinstance(value, basestring):
+                    desired_capabilities[prop] = value
+                else:
+                    desired_capabilities[prop] = str(value)
 
         # Set the test name property if specified in the WTF_TESTNAME var.
         try:
@@ -176,19 +182,18 @@ class WebDriverFactory(object):
         )
         # End of method.
 
-# NOTE: HTML Unit driver is only available on Java at this time. 1/31/13
-#    def __create_html_unit_driver(self):
-#        "Create a HTML unit driver by spawning a selenium server process."
-#        # Note: We are using webdriverplus here.  This 3rd party lib will perform 
-#        # the process of wrapping up a selenium server and exposing it to us as a 
-#        # web driver.  Keep in mind though, this webdriver may not have the same 
-#        # level of functionality as the other webdrivers.
-#        driver = webdriverplus.WebDriver('htmlunit')
-#        return driver
-
-
-# End of Class.
-
+    def __flatten_capabilities(self, desired_capabilities, prefix, setting_group):
+        for key in setting_group.keys():
+            if type(setting_group[key]) is dict:
+                # Do recursive call
+                self.__flatten_capabilities(desired_capabilities, prefix + "." + key, setting_group[key])
+            else:
+                value = setting_group[key]
+                if isinstance(value, basestring):
+                    desired_capabilities[prefix + "." + key] = value
+                else:
+                    desired_capabilities[prefix + "." + key] = str(value)
+        # End of method.
 
 
 
@@ -201,13 +206,18 @@ class WebDriverManager(object):
     of the WebDriver itself is so we can allow that pice to be mocked 
     out to assist in unit testing framework classes that may use this. 
     '''
+    
+    "Config setting to reuse browser instances between WebdriverManager.new_driver() calls."
     REUSE_BROWSER = "selenium.reusebrowser"
+    
+    "Config setting to automatically tear down webdriver upon exiting the main script."
     SHUTDOWN_HOOK_CONFIG = "selenium.shutdown_hook"
+    
+    "Config setting to use new webdriver instance per thread."
+    ENABLE_THREADING_SUPPORT = "selenium.threaded"
 
-    __use_shutdown_hook = False
-    __webdrivers_created = []
 
-    def __init__(self, webdriver_factory=None, config=WTF_CONFIG_READER):
+    def __init__(self, webdriver_factory=None, config=None):
         '''
         Initializer
         
@@ -216,14 +226,18 @@ class WebDriverManager(object):
         that need to mock out the webdriver. 
         @type webdriver_factory: WebDriverFactory
         '''
-        self.webdriver = None
+        self.__webdriver = {} # Object with channel as a key
+        self.__registered_drivers = {}
         
-        self.__config = config
+        if config:
+            self.__config = config
+        else:
+            self.__config = WTF_CONFIG_READER
         
         if self.__config.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True):
-            WebDriverManager.__use_shutdown_hook = True
+            self.__use_shutdown_hook = True
         else:
-            WebDriverManager.__use_shutdown_hook = False
+            self.__use_shutdown_hook = False
         
         if( webdriver_factory != None):
             self._webdriver_factory = webdriver_factory
@@ -231,20 +245,22 @@ class WebDriverManager(object):
             self._webdriver_factory = WebDriverFactory()
 
 
-    @staticmethod
-    def clean_up_webdrivers():
+
+    def clean_up_webdrivers(self):
         '''
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
-        print "Cleaning up webdrivers"
+        print "WebdriverManager : Cleaning up webdrivers"
         try:
-            if WebDriverManager.__use_shutdown_hook:
-                for webdriver in WebDriverManager.__webdrivers_created:
-                    try:
-                        webdriver.quit()
-                    except Exception as e:
-                        print e
+            if self.__use_shutdown_hook:
+                for key in self.__registered_drivers.keys():
+                    for driver in self.__registered_drivers[key]:
+                        try:
+                            print "Closing webdriver for thread: ", key
+                            driver.quit()
+                        except Exception as e:
+                            print e
         except:
             pass
 
@@ -256,34 +272,48 @@ class WebDriverManager(object):
         @return: Selenium WebDriver instance.
         @rtype: WebDriver
         '''
+        channel = self.__get_channel()
+
+        # Get reference for the current driver.
+        driver = self.__get_driver_for_channel(channel)
+        
         if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
-            if self.webdriver == None:
-                self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
-                #add webdriver to list of drivers to be cleaned up.
-                WebDriverManager.__webdrivers_created.append(self.webdriver)
+            
+            if driver is None:
+                driver = self._webdriver_factory.create_webdriver(testname=testname)
+
+                #Register webdriver so it can be retrieved by the manager and cleaned up after exit.
+                self.__register_driver(channel, driver)
             else:
                 try:
                     # Attempt to get the browser to a pristine state as possible when we are 
                     # reusing this for another test.
-                    self.webdriver.delete_all_cookies()
-                    self.webdriver.get("about:blank") #check to see if webdriver is still responding
+                    driver.delete_all_cookies()
+                    driver.get("about:blank") #check to see if webdriver is still responding
                 except:
                     # In the case the browser is unhealthy, we should kill it and serve a new one.
                     try:
-                        self.webdriver.quit()
+                        if driver.is_online():
+                            driver.quit()
                     except:
                         pass
-                    self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
-                    WebDriverManager.__webdrivers_created.append(self.webdriver)
+
+                    driver = self._webdriver_factory.create_webdriver(testname=testname)
+                    self.__register_driver(channel, driver)
                 
         else:
             # Attempt to tear down any existing webdriver.
-            self.webdriver = self._webdriver_factory.create_webdriver(testname=testname)
-            WebDriverManager.__webdrivers_created.append(self.webdriver)
+            if driver is not None:
+                try:
+                    driver.quit()
+                except:
+                    pass
+            self.__unregister_driver(channel)
+            driver = self._webdriver_factory.create_webdriver(testname=testname)
+            self.__register_driver(channel, driver)
 
-
-        return self.webdriver
-
+        return driver
+        # End of new_driver method.
 
     def get_driver(self):
         '''
@@ -291,34 +321,38 @@ class WebDriverManager(object):
         @return: Selenium WebDriver instance.
         @rtype: WebDriver
         '''
-        if self.webdriver == None:
-            self.webdriver = self.new_driver()
+        driver = self.__get_driver_for_channel(self.__get_channel())
+        if driver is None:
+            driver = self.new_driver()
 
-        return self.webdriver
+        return driver
 
 
     def close_driver(self):
         """
         Close current instance of webdriver.
         """
+        channel = self.__get_channel()
+        driver = self.__get_driver_for_channel(channel)
         if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
             #If reuse browser is set, we'll avoid closing it and just clear out the cookies,
             # and reset the location.
             try:
-                self.webdriver.delete_all_cookies()
-                self.webdriver.get("about:blank") #check to see if webdriver is still responding
+                driver.delete_all_cookies()
+                driver.get("about:blank") #check to see if webdriver is still responding
             except:
                 pass
         
-        if self.webdriver is not None:
+        if driver is not None:
             try:
-                self.webdriver.quit()
+                driver.quit()
             except:
                 pass
-            
-            if self.webdriver in WebDriverManager.__webdrivers_created:
-                WebDriverManager.__webdrivers_created.remove(self.webdriver)
-            
+
+            self.__unregister_driver(channel)
+            if driver in self.__registered_drivers[channel]:
+                self.__registered_drivers[channel].remove(driver)
+
             self.webdriver = None
 
 
@@ -327,23 +361,61 @@ class WebDriverManager(object):
         Check if a webdriver instance is created.
         @rtype: bool
         '''
-        return self.webdriver != None
+        channel = self.__get_channel()
+        return self.__webdriver[channel] != None
 
 
+    def __register_driver(self, channel, webdriver):
+        "Register webdriver to a channel."
+        
+        # Add to list of webdrivers to cleanup.
+        if not self.__registered_drivers.has_key(channel):
+            self.__registered_drivers[channel] = [] #set to new empty array
 
-# Adding a shut down hook for cleaning up webdrivers that get 
-# created by WebDriverFactory.
-try: 
-    import atexit
-    atexit.register(WebDriverManager.clean_up_webdrivers)
-except:
-    pass
+        self.__registered_drivers[channel].append(webdriver)
+
+        # Set singleton instance for the channel
+        self.__webdriver[channel] = webdriver
+
+    def __unregister_driver(self, channel):
+        "Unregister webdriver"
+        driver = self.__get_driver_for_channel(channel)
+        
+        if self.__registered_drivers.has_key(channel) \
+        and driver in self.__registered_drivers[channel]:
+
+            self.__registered_drivers[channel].remove(driver)
+
+        self.__webdriver[channel] = None
 
 
+    def __get_driver_for_channel(self, channel):
+        "Get webdriver for channel"
+        try:
+            return self.__webdriver[channel]
+        except:
+            return None
+
+
+    def __get_channel(self):
+        "Get the channel to register webdriver to."
+        if self.__config.get(WebDriverManager.ENABLE_THREADING_SUPPORT, False):
+            channel = current_thread().ident
+        else:
+            channel = 0
+        
+        return channel
+
+
+    def __del__(self):
+        "Deconstructor, call cleanup drivers."
+        try:
+            self.clean_up_webdrivers()
+        except:
+            pass
 
 
 # Global Instance of WebDriver Manager
 WTF_WEBDRIVER_MANAGER = WebDriverManager()
-
 
 
