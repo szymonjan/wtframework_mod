@@ -53,8 +53,19 @@ This will create an the folders and packages of your project.  You'll see someth
 			/tests - Your high level tests will go here.
 	
 	
-Now the directory structure and your python path is setup so nosetests can run tests 
-you write in the WTF framework.
+Now the directory structure and your python path is setup to run tests in WTF framework.
+
+
+Running your tests
+==================
+
+Run your tests using nosetests.
+
+	./runtests.py [-c ConfigFile]
+
+This will execute the unit tests in the `tests/tests` folder.  The test results will be
+written to `reports/`, any screenshots taken during errors will be stored in the
+`screenshots/` folder.
 
 
 Configuring Eclipse/PyDev Environment
@@ -90,16 +101,6 @@ Installing the WTF PageObject Utility Chrome Extension
    to another webpage, clicking on the `WTF` extension button in your chrome toolbar, 
    this should open the WTF PageObject Utility window.
 
-Running your tests
-==================
-
-Run your tests using nosetests.
-
-	./runtests.py [-c ConfigFile]
-
-This will execute the unit tests in the `tests/tests` folder.  The test results will be
-written to `reports/`, any screenshots taken during errors will be stored in the
-`screenshots/` folder.
 
 
 WTF Framework Features
