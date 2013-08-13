@@ -22,6 +22,7 @@ from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 import time
 from threading import Thread
 from datetime import datetime, timedelta
+from wtframework.wtf.utils.test_utils import do_and_ignore
 
 class WebUtils(object):
 
@@ -100,7 +101,7 @@ class WebUtils(object):
         
         webdriver.switch_to_window(original_window)
         raise WindowNotFoundError("Window {0} not found.")
-    
+
 
 class BrowserStandBy(object):
     """
@@ -127,19 +128,26 @@ class BrowserStandBy(object):
         self._thread = Thread(target=lambda: self.__stand_by_loop())
         self._keep_running = True
         self._thread.start()
-        pass
-    
+        return self
+
+
     def stop(self):
         "Stop BrowserStandBy from sending additional calls to webdriver."
         self._keep_running = False
-        pass
-    
-    
+        return self
+
+
     def __stand_by_loop(self):
         print self._keep_running
         while datetime.now() < self._end_time and self._keep_running:
             self.webdriver.current_url #Just performing current_url to keep this alive.
             time.sleep(self._sleep_time)
+
+    def __del__(self):
+        do_and_ignore(lambda: self.stop())
+        self._thread = None
+
+
 
 
 class WindowNotFoundError(RuntimeError):
