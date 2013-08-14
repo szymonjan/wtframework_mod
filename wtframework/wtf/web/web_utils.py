@@ -14,15 +14,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from urllib2 import urlopen
-import urllib2
-import re
-from wtframework.wtf.web.page import PageFactory
-from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
-import time
-from threading import Thread
 from datetime import datetime, timedelta
+from threading import Thread
+from urllib2 import urlopen
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
+from wtframework.wtf.web.page import PageFactory
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+import re
+import time
+import urllib2
 
 class WebUtils(object):
 
@@ -109,10 +110,13 @@ class BrowserStandBy(object):
     a selenium session from timing out.
     """
     
-    def __init__(self, webdriver, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
+    def __init__(self, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
         """
         @param webdriver:Webdriver instance to keep alive. 
         """
+        if webdriver is None:
+            webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
+
         self.webdriver = webdriver
         self._sleep_time = sleep
         self._max_time = max_time
