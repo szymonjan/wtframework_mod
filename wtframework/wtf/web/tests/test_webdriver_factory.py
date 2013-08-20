@@ -14,7 +14,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from mockito import mock, when
 from nose.plugins.attrib import attr
+from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
+from wtframework.wtf.web.webdriver import WebDriverFactory
+import unittest2
+import yaml
 """
 NOTE:  These tests are all commented out.  These tests will not run over 
 our Travis-CI/Sauce setup.  Ideally these tests should be ran manually 
@@ -22,15 +27,10 @@ before merging any code dealing with Webdriver Factory.
 """
 
 
-from mockito import mock, when
-from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
-from wtframework.wtf.web.webdriver import WebDriverFactory
-import unittest
-import yaml
 
 
 
-class TestWebDriverFactory(unittest.TestCase):
+class TestWebDriverFactory(unittest2.TestCase):
     '''
     Test the WebDriverFactory creates webdriver based on config.
     
@@ -148,5 +148,5 @@ class MockConfigWithSauceLabs(object):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()
 

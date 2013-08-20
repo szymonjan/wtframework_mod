@@ -22,11 +22,11 @@ from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageObject, InvalidPageError
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
-import unittest
+import unittest2
 
 
 
-class TestPageObject(unittest.TestCase):
+class TestPageObject(unittest2.TestCase):
     '''
     Unit test of the PageObject Class
     '''
@@ -132,4 +132,4 @@ class YahooSearch(SearchPage):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

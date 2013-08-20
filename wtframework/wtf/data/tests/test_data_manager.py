@@ -17,10 +17,10 @@
 
 from wtframework.wtf.data.data_management import DataManager
 import os
-import unittest
+import unittest2
 
 
-class TestDataManager(unittest.TestCase):
+class TestDataManager(unittest2.TestCase):
 
 
     def test_data_manager_returns_filepath(self):
@@ -41,4 +41,4 @@ class TestDataManager(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

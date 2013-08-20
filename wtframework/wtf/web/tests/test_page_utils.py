@@ -23,7 +23,7 @@ from wtframework.wtf.web.page import PageObject, InvalidPageError, \
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import threading
 import time
-import unittest
+import unittest2
 
 class GoogleSearch(PageObject):
     
@@ -33,7 +33,7 @@ class GoogleSearch(PageObject):
 
 
 
-class TestPageUtils(unittest.TestCase):
+class TestPageUtils(unittest2.TestCase):
 
     def tearDown(self):
 
@@ -83,4 +83,4 @@ class TestPageUtils(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

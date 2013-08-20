@@ -16,10 +16,10 @@
 ##########################################################################
 from wtframework.wtf.web.web_utils import BrowserStandBy
 import time
-import unittest
+import unittest2
 
 
-class TestWebUtils(unittest.TestCase):
+class TestWebUtils(unittest2.TestCase):
 
 
     def test_browserstandby(self):
@@ -55,4 +55,4 @@ class WebdriverCallCounterTestStub(object):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

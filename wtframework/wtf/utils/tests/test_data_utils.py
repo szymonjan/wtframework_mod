@@ -18,10 +18,10 @@
 from wtframework.wtf.utils.data_utils import generate_timestamped_string, \
     generate_timestamp, generate_random_string
 import re
-import unittest
+import unittest2
 
 
-class TestDataUtils(unittest.TestCase):
+class TestDataUtils(unittest2.TestCase):
 
 
     def test_generateTimeStampedString(self):
@@ -39,4 +39,4 @@ class TestDataUtils(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

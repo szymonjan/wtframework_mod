@@ -15,13 +15,13 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-import unittest
+import unittest2
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.email import IMapEmailAccountObject
-from unittest.case import SkipTest
+from unittest2.case import SkipTest
 
 
-class TestImapEmail(unittest.TestCase):
+class TestImapEmail(unittest2.TestCase):
 
     
     def setUp(self):
@@ -53,10 +53,9 @@ class TestImapEmail(unittest.TestCase):
         message_num = self.mail.find_emails_by_subject(self.expected_subject)[0]
         message = self.mail.get_email_message(message_num)
         print message_num, message
-        
 
 
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

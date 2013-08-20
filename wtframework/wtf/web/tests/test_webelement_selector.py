@@ -20,11 +20,11 @@ from selenium.webdriver.common.by import By
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 from wtframework.wtf.web.webelement import WebElementSelector, BadSelectorError
-import unittest
+import unittest2
 
 
 
-class TestWebElementSelector(unittest.TestCase):
+class TestWebElementSelector(unittest2.TestCase):
     '''
     Unit test of the WebElementSelector Class
     '''
@@ -77,3 +77,7 @@ class TestWebElementSelector(unittest.TestCase):
                           ("not valid selector", "anotherNotSlectable") \
         )
 
+
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    unittest2.main()

@@ -16,10 +16,10 @@
 ##########################################################################
 from wtframework.wtf.assets import AssetManager
 import os
-import unittest
+import unittest2
 
 
-class TestAssetManager(unittest.TestCase):
+class TestAssetManager(unittest2.TestCase):
 
 
     def test_asset_manager_returns_filepath(self):
@@ -34,4 +34,4 @@ class TestAssetManager(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

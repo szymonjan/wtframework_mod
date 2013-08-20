@@ -17,12 +17,12 @@
 from datetime import datetime, timedelta
 from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError,\
     do_until
-import unittest
+import unittest2
 
 
 
 
-class TestWaitUtils(unittest.TestCase):
+class TestWaitUtils(unittest2.TestCase):
 
 
     def test_wait_until_returnsAfterConditionsMet(self):
@@ -83,4 +83,4 @@ class TestWaitUtils(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()
