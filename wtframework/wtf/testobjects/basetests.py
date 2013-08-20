@@ -28,13 +28,19 @@ class WTFBaseTest(WatchedTestCase):
     '''
 
     def __init__(self, methodName='runTest', webdriver_provider=None, screenshot_util=None):
+        """
+        Constructor matches that of UnitTest2 test case, but modified to allow passing in 
+        a ScreenShot utility and register delayed test watchers. 
+        """
         super(WTFBaseTest, self).__init__(methodName)
         self._register_watcher(CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
+        
 
         # Note this watcher should be registered after all other watchers that use 
         # on_test_passed() event.
         self._delayed_test_watcher = DelayedTestFailTestWatcher()
         self._register_watcher(self._delayed_test_watcher)
+
 
     def assertWithDelayedFailure(self, assert_method, *args, **kwargs):
         """

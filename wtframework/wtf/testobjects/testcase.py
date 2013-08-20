@@ -168,5 +168,3 @@ class WatchedTestCase(unittest2.TestCase):
                 stopTestRun = getattr(result, 'stopTestRun', None)
                 if stopTestRun is not None:
                     stopTestRun()
-    
-        

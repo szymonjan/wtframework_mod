@@ -14,15 +14,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 8, 2013
 
-@author: davidlai
-'''
-import unittest
-from wtframework.wtf.testobjects.test_decorators import csvdata
 from ddt import ddt
+from wtframework.wtf.testobjects.test_decorators import csvdata
 from wtframework.wtf.testobjects.testcase import WatchedTestCase
+import unittest2
 
 
 @ddt
@@ -42,4 +38,4 @@ class TestCsvDataDrivenTest(WatchedTestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()
