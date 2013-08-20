@@ -101,7 +101,9 @@ class WebDriverFactory(object):
         self.webdriver.maximize_window()
 
         return self.webdriver
-        
+
+
+
     def __create_driver_from_browser_config(self):
         '''
         Reads the config value for browser type.
@@ -265,6 +267,61 @@ class WebDriverManager(object):
             pass
 
 
+    def close_driver(self):
+        """
+        Close current instance of webdriver.
+        """
+        channel = self.__get_channel()
+        driver = self.__get_driver_for_channel(channel)
+        if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
+            #If reuse browser is set, we'll avoid closing it and just clear out the cookies,
+            # and reset the location.
+            try:
+                driver.delete_all_cookies()
+                driver.get("about:blank") #check to see if webdriver is still responding
+            except:
+                pass
+        
+        if driver is not None:
+            try:
+                driver.quit()
+            except:
+                pass
+
+            self.__unregister_driver(channel)
+            if driver in self.__registered_drivers[channel]:
+                self.__registered_drivers[channel].remove(driver)
+
+            self.webdriver = None
+
+
+
+    def get_driver(self):
+        '''
+        Get an already running instance of webdriver. If there is none, it will create one.
+        @return: Selenium WebDriver instance.
+        @rtype: WebDriver
+        '''
+        driver = self.__get_driver_for_channel(self.__get_channel())
+        if driver is None:
+            driver = self.new_driver()
+
+        return driver
+
+
+
+    def is_driver_available(self):
+        '''
+        Check if a webdriver instance is created.
+        @rtype: bool
+        '''
+        channel = self.__get_channel()
+        try:
+            return self.__webdriver[channel] != None
+        except:
+            return False
+
+
     def new_driver(self, testname=None):
         '''
         Used at a start of a test to get a new instance of webdriver.  If the 
@@ -314,56 +371,6 @@ class WebDriverManager(object):
 
         return driver
         # End of new_driver method.
-
-    def get_driver(self):
-        '''
-        Get an already running instance of webdriver. If there is none, it will create one.
-        @return: Selenium WebDriver instance.
-        @rtype: WebDriver
-        '''
-        driver = self.__get_driver_for_channel(self.__get_channel())
-        if driver is None:
-            driver = self.new_driver()
-
-        return driver
-
-
-    def close_driver(self):
-        """
-        Close current instance of webdriver.
-        """
-        channel = self.__get_channel()
-        driver = self.__get_driver_for_channel(channel)
-        if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
-            #If reuse browser is set, we'll avoid closing it and just clear out the cookies,
-            # and reset the location.
-            try:
-                driver.delete_all_cookies()
-                driver.get("about:blank") #check to see if webdriver is still responding
-            except:
-                pass
-        
-        if driver is not None:
-            try:
-                driver.quit()
-            except:
-                pass
-
-            self.__unregister_driver(channel)
-            if driver in self.__registered_drivers[channel]:
-                self.__registered_drivers[channel].remove(driver)
-
-            self.webdriver = None
-
-
-    def is_driver_available(self):
-        '''
-        Check if a webdriver instance is created.
-        @rtype: bool
-        '''
-        channel = self.__get_channel()
-        return self.__webdriver[channel] != None
-
 
     def __register_driver(self, channel, webdriver):
         "Register webdriver to a channel."
