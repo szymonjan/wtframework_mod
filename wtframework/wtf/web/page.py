@@ -28,14 +28,17 @@ import time
 
 
 class PageObject(object):
-    """
-    Baseclass for PageObjects.
+    """Base class for PageObjects.  The goal of PageObjects is to allow a logical 
+    encapsulation of page recognition, mapping of page elements, and exposing logical 
+    services provided by the page on a higher level for high level tests to consume.
     
     Basic Usage:
-    1) define '_validate_page' method.  This method will check to make sure 
+
+    #. define '_validate_page(webdriver)' method.  This method will check to make sure 
        we are on the correct page.
-    2) define '__cmp__' method to allow page ranking when there are multiple matches 
+    #. define '__cmp__' method to allow page ranking when there are multiple matches 
        to the same page to disambiguate which page should take precedence.
+
     """
     __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
 
@@ -45,11 +48,12 @@ class PageObject(object):
 
 
     def __init__(self, webdriver, *args, **kwargs):
-        '''
-        Constructor
-        Args:
-            webdriver (Webdriver) : instance of selenium webdriver.
-        '''
+        """Constructor.  It's better to not call this directly, instead use PageFactory 
+        to instantiate PageObjects.
+        
+        Ars: 
+            webdriver (Webdriver): Selenium Webdriver instance.
+        """
         try:
             config_reader=kwargs['config_reader']
         except KeyError:
@@ -80,10 +84,10 @@ class PageObject(object):
 
     @abc.abstractmethod
     def _validate_page(self, webdriver):
-        """
-        Perform checks to validate this page is the correct target page.
+        """Perform checks to validate this page is the correct target page.
         
-        All pages must implement this method.
+        All PageObjects must implement this method.
+
         Args:
             webdriver (Webdriver) : instance of Selenium Webdriver
         Raises:
@@ -97,10 +101,17 @@ class PageObject(object):
 
     @classmethod
     def create_page(cls, webdriver=None, **kwargs):
-        """
-        Class method short cut to call PageFactory on itself.
+        """Class method short cut to call PageFactory on itself.  Use it to instantiate 
+        this PageObject using a webdriver.
+        
         Args:
             webdriver (Webdriver): Instance of Selenium Webdriver.
+        
+        Returns:
+            PageObject
+        
+        Raises:
+            InvalidPageError
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
@@ -109,10 +120,12 @@ class PageObject(object):
 
     #Magic methods for enabling comparisons.
     def __cmp__(self, other):
-        """
-        Override this to implement PageObject ranking.  This is used by PageObjectFactory
+        """Override this to implement PageObject ranking.  This is used by PageObjectFactory
         when it finds multiple pages that qualify to map to the current page.  The 
         PageObjectFactory will check which page object is preferable.
+        
+        Args:
+            other (PageObject) : Other page object to compare it against.
         """
         if not isinstance(other, PageObject):
             # By default page object will rank itself over non page objects.
@@ -128,13 +141,28 @@ class InvalidPageError(Exception):
 
 
 class PageFactory():
-    "Page Factory class for constructing PageObjects."
+    """Page Factory class for constructing PageObjects.
+    
+    """
 
     @staticmethod
     def create_page(page_object_class_or_interface, \
                     webdriver=None, **kwargs):
         """
         Instantiate a page object from a given Interface or Abstract class.
+
+        Args:
+            page_object_class_or_interface (Class): PageObject class, AbstractBaseClass, or 
+            Interface to attempt to consturct.
+        
+        Kwargs:
+            webdriver (WebDriver): Selenium Webdriver to use to instantiate the page.
+        
+        Returns:
+            PageObject
+        
+        Raises:
+            NoMatchingPageError
         
         Instantiating a Page from PageObject from class usage:
             my_page_instance = PageFactory.create_page(MyPageClass)
@@ -150,9 +178,6 @@ class PageFactory():
         do an import of all pages implementing a base class or the interface inside the 
         __init__.py of the package directory.  
         
-        @param  page_object_class_or_interface: Class, AbstractBaseClass, or Interface to attempt to consturct.
-        @param webdriver: Selenium Webdriver to use to instantiate the page.
-        @type webdriver: WebDriver
         """
         
         if not webdriver:
@@ -280,18 +305,21 @@ class PageObjectUtils():
 
     @staticmethod
     def check_css_selectors(webdriver, *selectors):
-        """
-        Returns true if all CSS selectors passed in is found.  This can be used 
+        """Returns true if all CSS selectors passed in is found.  This can be used 
         to quickly validate a page.
         
+        Args:
+            webdriver (Webdriver) : Selenium Webdriver instance
+            *selectors (*str) : CSS selectors strings to match against the page.
+        
+        Returns:
+            True, False - if the page matches all selectors.
+        
         Usage Example:
-        if not PageObjectUtils.check_css_selectors("form#loginForm", "submit.login"):
+        # Checks for a Form with id='loginForm' and a button with class 'login'
+        if not PageObjectUtils.check_css_selectors("form#loginForm", "button.login"):
             raise InvalidPageError("This is not the login page.")
 
-        @param webdriver: WebDriver.
-        @type webdriver: WebDriver 
-        @param *selectors: CSS selector for element to look for.
-        @type *selectors: str
         """
         for selector in selectors:
             try:
@@ -304,8 +332,7 @@ class PageObjectUtils():
 
 
 class PageUtils():
-    '''
-    Offers utility methods that operate on a page level.
+    '''Offers utility methods that operate on a page level.
     '''
     
     @staticmethod
@@ -317,13 +344,29 @@ class PageUtils():
         """
         Waits until the page is loaded.
         
+        Args:
+            page_obj_class (Class) : PageObject class
+        
+        Kwargs:
+            webdriver (Webdriver) : Selenium Webdriver.  Default uses WTF_WEBDRIVER_MANAGER's instance.
+            timeout (number) : Number of seconds to wait to allow the page to load.
+            sleep (number) : Number of seconds to wait between polling.
+            bad_page_classes (list) : List of PageObject classes to fail if matched.  For example, ServerError page.
+        
+        Returns:
+            PageObject
+        
+        Raises:
+            PageUtilOperationTimeoutError : Timeout occurred before the desired PageObject was matched.
+            BadPageEncounteredError : One or more of the PageObject in the specified 'bad_page_classes' list 
+            was matched.
+            
+        
         Usage Example: 
             webdriver.get("http://www.mysite.com/login")
             # Wait up to 60 seconds for the page to load.
-            login_page = wait_until_page_loaded(LoginPage, timeout=60)
+            login_page = wait_until_page_loaded(LoginPage, timeout=60, [ServerErrorPage])
         
-        @return: Returns PageObject of type passed in.
-        @rtype: PageObject
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
@@ -363,10 +406,17 @@ class PageUtils():
 
 
     @staticmethod
-    def wait_until_page_ready(pageobject, timeout=WTF_TIMEOUT_MANAGER.NORMAL):
-        "Waits until document.readyState == Complete"
+    def wait_until_page_ready(page_object, timeout=WTF_TIMEOUT_MANAGER.NORMAL):
+        """Waits until document.readyState == Complete (e.g. ready to execute javascript commands)
+        
+        Args:
+            page_object (PageObject) : PageObject class
+        
+        Kwargs:
+            timeout (number) : timeout period
+        """
         try:
-            do_until(lambda: pageobject.webdriver.execute_script("return document.readyState").lower() \
+            do_until(lambda: page_object.webdriver.execute_script("return document.readyState").lower() \
                      =='complete', timeout)
         except wait_utils.OperationTimeoutError:
             raise PageUtilOperationTimeoutError("Timeout occurred while waiting for page to be ready.")
