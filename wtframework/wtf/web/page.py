@@ -28,7 +28,7 @@ import time
 
 
 class PageObject(object):
-    '''
+    """
     Baseclass for PageObjects.
     
     Basic Usage:
@@ -36,7 +36,7 @@ class PageObject(object):
        we are on the correct page.
     2) define '__cmp__' method to allow page ranking when there are multiple matches 
        to the same page to disambiguate which page should take precedence.
-    '''
+    """
     __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
 
     # Webdriver associated with this instance of the PageObject
@@ -47,8 +47,8 @@ class PageObject(object):
     def __init__(self, webdriver, *args, **kwargs):
         '''
         Constructor
-        @param webdriver: Instance of Selenium WebDriver
-        @type webdriver: WebDriver
+        Args:
+            webdriver (Webdriver) : instance of selenium webdriver.
         '''
         try:
             config_reader=kwargs['config_reader']
@@ -84,10 +84,13 @@ class PageObject(object):
         Perform checks to validate this page is the correct target page.
         
         All pages must implement this method.
-        
-        @raise InvalidPageError: Raised when we try to assign the wrong page 
-        to this page object.  This exception should be raised when a page match 
-        fails.  Any other exception type would be consider a code failure.
+        Args:
+            webdriver (Webdriver) : instance of Selenium Webdriver
+        Raises:
+            InvalidPageError: Raised when we try to assign the wrong page 
+            to this page object.  This exception should be raised when a page match 
+            fails.  Any other exception type would be consider a code failure.
+            
         """
         return
 
@@ -96,8 +99,8 @@ class PageObject(object):
     def create_page(cls, webdriver=None, **kwargs):
         """
         Class method short cut to call PageFactory on itself.
-        @param webdriver: WebDriver to associate with this page.
-        @type webdriver: WebDriver
+        Args:
+            webdriver (Webdriver): Instance of Selenium Webdriver.
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()

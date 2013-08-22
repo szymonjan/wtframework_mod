@@ -15,15 +15,16 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from mockito import mock, when
 from wtframework.wtf.testobjects.testcase import WatchedTestCase
 import unittest2
 
 __wtf_test_logger_var = []
 
-class TestTestCase(WatchedTestCase):
+class TestWatchedTestCaseWatchers(WatchedTestCase):
     
     def __init__(self, *args, **kwargs):
-        super(TestTestCase, self).__init__(*args, **kwargs)
+        super(TestWatchedTestCaseWatchers, self).__init__(*args, **kwargs)
         self.watcher = LoggerTestWatcher()
         self._register_watcher(self.watcher)
     
@@ -73,6 +74,68 @@ class TestTestCase(WatchedTestCase):
                          self.get_log())
 
 
+class TestWatchedTestCase(unittest2.TestCase):
+
+
+    def test_passed_test_case_runs_setup_and_cleanup(self):
+        mockresult = mock(unittest2.TestResult)
+        tc = TestCaseStub(methodName="runTest")
+        tc.run(mockresult)
+        
+        self.assertTrue(tc.setupRan)
+        self.assertTrue(tc.tearDownRan)
+
+
+    def test_failed_setup_does_not_run_test_and_runs_cleanup(self):
+        mockresult = mock(unittest2.TestResult)
+        tc = TestCaseStub(methodName="runTest")
+        tc.failSetup = True
+        tc.run(mockresult)
+        
+        self.assertTrue(tc.tearDownRan)
+        self.assertFalse(tc.testRan)
+    
+    
+    def test_failed_test_does_not_complete_and_runs_cleanup(self):
+        mockresult = mock(unittest2.TestResult)
+        tc = TestCaseStub(methodName="runTest")
+        tc.failTest = True
+        tc.run(mockresult)
+        
+        self.assertTrue(tc.tearDownRan)
+        self.assertTrue(tc.testRan)
+        self.assertFalse(tc.testPassed)    
+        
+
+class TestCaseStub(WatchedTestCase):
+    setupRan = False
+    testRan = False
+    testPassed = False
+    tearDownRan = False
+    
+    failSetup = False
+    failTest = False
+    
+    def setUp(self):
+        self.setupRan = True
+        
+        if self.failSetup:
+            raise RuntimeError("test error")
+    
+    def tearDown(self):
+        self.tearDownRan = True
+
+    
+    def runTest(self):
+        self.testRan = True
+        
+        if self.failTest:
+            raise RuntimeError("Failed test")
+        
+        self.testPassed = True
+
+
+
 class LoggerTestWatcher(object):
     "This test watcher just logs actions to a list to verify order of events."
     
@@ -107,3 +170,5 @@ class LoggerTestWatcher(object):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()
+
+
