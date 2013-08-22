@@ -15,7 +15,7 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from mockito import mock, when
+from mockito import mock
 from wtframework.wtf.testobjects.testcase import WatchedTestCase
 import unittest2
 
