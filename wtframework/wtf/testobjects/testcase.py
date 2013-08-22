@@ -28,7 +28,8 @@ class WatchedTestCase(unittest2.TestCase):
     def __init__(self, *args, **kwargs):
         self.__wtf_test_watchers__ = []
         super(WatchedTestCase, self).__init__(*args, **kwargs)
-    
+
+
     # '_' prefix is added to hide it form nosetest
     def _register_watcher(self, watcher, position = -1):
         """
@@ -63,6 +64,8 @@ class WatchedTestCase(unittest2.TestCase):
             startTestRun = getattr(result, 'startTestRun', None)
             if startTestRun is not None:
                 startTestRun()
+
+        did_tear_down_execute = False # Track if clean up was run, so we can run clean up if setup failed.
 
         self._resultForDoCleanups = result
         result.startTest(self)
@@ -140,6 +143,7 @@ class WatchedTestCase(unittest2.TestCase):
                     success = True
 
                 try:
+                    did_tear_down_execute = True
                     # Run our test watcher after test actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_test(self, result)
@@ -159,14 +163,25 @@ class WatchedTestCase(unittest2.TestCase):
             if success:
                 result.addSuccess(self)
         finally:
+            # Execute tear down if it did not get executed.
+            if not did_tear_down_execute:
+                # Run our test watcher after test actions.
+                try:
+                    for test_watcher in self.__wtf_test_watchers__:
+                        test_watcher.after_test(self, result)
+                    self.tearDown()
+                except:
+                    pass # do nothing, test case would already failed and failure is already handled.
+                finally: # Run our test watcher actions for after tear down..
+                    for test_watcher in self.__wtf_test_watchers__:
+                        test_watcher.after_teardown(self, result)
+
             # Remove test watchers.  For some strange reason these apply to all test 
             # cases, not just the currently running one.  So we remove them here.
             self.__wtf_test_watchers__ = []
-            
+
             result.stopTest(self)
             if orig_result is None:
                 stopTestRun = getattr(result, 'stopTestRun', None)
                 if stopTestRun is not None:
                     stopTestRun()
-    
-        

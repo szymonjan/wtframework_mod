@@ -23,10 +23,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from wtframework.wtf.config import ConfigReader
 from wtframework.wtf.web.webdriver import WebDriverFactory, WebDriverManager
 import threading
-import unittest
+import unittest2
 
 
-class TestWebDriverManager(unittest.TestCase):
+class TestWebDriverManager(unittest2.TestCase):
 
 
     
@@ -143,6 +143,45 @@ class TestWebDriverManager(unittest.TestCase):
         verify(driver).quit()
 
 
+    def test_is_driver_available_withEmptyChannel_returnsFalse(self):
+        "Test that false is returned if webdriver was not created."
+        config_reader = mock(ConfigReader)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(None)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
+                                              config = config_reader)
+        self.assertFalse(webdriver_provider.is_driver_available())
+
+
+    def test_is_driver_available_withWebdriverCreated_returnsTrue(self):
+        "Test that true is returned if webdriver was created."
+        config_reader = mock(ConfigReader)
+        webdriver_mock1 = mock(WebDriver)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
+                                              config = config_reader)
+        _ = webdriver_provider.new_driver()
+        self.assertTrue(webdriver_provider.is_driver_available())
+
+
+    def test_is_driver_available_withWebdriverClosed_returnsFalse(self):
+        "Test that true is returned if webdriver was created."
+        config_reader = mock(ConfigReader)
+        webdriver_mock1 = mock(WebDriver)
+        webdriverfactory_mock = mock(WebDriverFactory)
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
+                                              config = config_reader)
+        _ = webdriver_provider.new_driver()
+        webdriver_provider.close_driver()
+
+        self.assertFalse(webdriver_provider.is_driver_available())
+
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

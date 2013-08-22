@@ -14,12 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import NoMatchingPageError, InvalidPageError, \
     PageFactory, PageObject
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
-import unittest
+import unittest2
 
 # Interface for the other 2 search pages to implement.
 class SearchPage(PageObject):
@@ -54,7 +55,7 @@ class GoogleSearch2(PageObject):
 
 
 
-class TestPageFactory(unittest.TestCase):
+class TestPageFactory(unittest2.TestCase):
     '''
     Test the WebDriverFactory creates webdriver based on config.
     
@@ -104,6 +105,6 @@ class TestPageFactory(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()
     
     

@@ -1,3 +1,9 @@
+## v0.3.2
+- Fix `is_driver_available()`
+- Modified WatchedTestCase to always run tearDown() when setup() fails. (Note: this is 
+different behavior than the standard unittest, however this type of behavior is descired 
+for end-to-end tests) 
+
 ## v0.3.1
 - WebdriverManager support for multi-threaded tests 
 - Flatten out desired capabilities for multi-level keys (support browserstack settings)

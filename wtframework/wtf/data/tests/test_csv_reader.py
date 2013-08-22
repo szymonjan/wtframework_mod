@@ -16,10 +16,10 @@
 ##########################################################################
 
 from wtframework.wtf.data.data_management import CsvReader, WTF_DATA_MANAGER
-import unittest
+import unittest2
 
 
-class TestCsvReader(unittest.TestCase):
+class TestCsvReader(unittest2.TestCase):
 
 
     def test_csv_reader_reads_csv_file(self):
@@ -43,4 +43,4 @@ class TestCsvReader(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

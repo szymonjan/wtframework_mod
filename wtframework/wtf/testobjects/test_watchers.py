@@ -15,15 +15,12 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import datetime
 import re
-
-
 
 
 class TestWatcher(object):
@@ -102,6 +99,7 @@ class TestWatcher(object):
         """
         pass
 
+
 class DelayedTestFailTestWatcher(TestWatcher):
     '''
     Delayed test fail test watcher allows for the ability to call wrapped assertions.
@@ -172,10 +170,10 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     Catures screenshot on error if the config setting is enabled.
     '''
 
-
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
-        Constructor
+        Constructor.
+        @param screenshot_util: Override the default screenshot util method.
         '''
         if WTF_CONFIG_READER.get("selenium.take_screenshot", True):
             self.capture_screenshot = True
@@ -191,7 +189,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             self._screenshot_util = WebScreenShotUtil
         else:
             self._screenshot_util = screenshot_util 
-            
+
 
     def on_test_failure(self, test_case, test_result, exception):
         """
@@ -200,7 +198,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         @param test_case: wtframework.wtf.testobjects.TestCase
         """
         if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
-    
+
+
     def on_test_error(self, test_case, test_result, exception):
         """
         Runs when a test error occcurs.
@@ -222,10 +221,12 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         fname = fname[:20]
         fmt='%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
-    
+
+
     def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
         Take a screenshot if webdriver is open.
+        @param testcase: Test case  
         '''
         if self._webdriver_provider.is_driver_available():
             try:

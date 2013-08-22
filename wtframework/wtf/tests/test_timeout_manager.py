@@ -15,10 +15,10 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from wtframework.wtf.config import ConfigReader, TimeOutManager
-import unittest
+import unittest2
 
 
-class TestTimeOutManager(unittest.TestCase):
+class TestTimeOutManager(unittest2.TestCase):
 
 
     def setUp(self):
@@ -51,4 +51,4 @@ class TestTimeOutManager(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()

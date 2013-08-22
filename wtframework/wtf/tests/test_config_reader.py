@@ -15,10 +15,10 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from wtframework.wtf.config import ConfigReader, ConfigFileReadError
-import unittest
+import unittest2
 
 
-class TestConfigReader(unittest.TestCase):
+class TestConfigReader(unittest2.TestCase):
 
 
     def test_get_returns_string_config_value(self):
@@ -83,4 +83,4 @@ class TestConfigReader(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest2.main()
