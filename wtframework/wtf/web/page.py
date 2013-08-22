@@ -53,6 +53,7 @@ class PageObject(object):
         
         Ars: 
             webdriver (Webdriver): Selenium Webdriver instance.
+
         """
         try:
             config_reader=kwargs['config_reader']
@@ -112,6 +113,7 @@ class PageObject(object):
         
         Raises:
             InvalidPageError
+
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
@@ -126,6 +128,12 @@ class PageObject(object):
         
         Args:
             other (PageObject) : Other page object to compare it against.
+        
+        Returns:
+            int ::
+                postive number - this page is prioritized over the other page.
+                negative number - this page is lower in priority than the other page.
+
         """
         if not isinstance(other, PageObject):
             # By default page object will rank itself over non page objects.
@@ -164,15 +172,21 @@ class PageFactory():
         Raises:
             NoMatchingPageError
         
-        Instantiating a Page from PageObject from class usage:
+        Instantiating a Page from PageObject from class usage::
+        
             my_page_instance = PageFactory.create_page(MyPageClass)
+            
         
-        Instantiating a Page from an Interface or base class
-            import pages.mysite.* 
+        Instantiating a Page from an Interface or base class::
+        
+            import pages.mysite.*  # Make sure you import classes first, or else PageFactory will not know about it.
             my_page_instance = PageFactory.create_page(MyPageInterfaceClass)
+            
         
-        Instantiating a Page from a list of classes.
+        Instantiating a Page from a list of classes.::
+        
             my_page_instance = PageFactory.create_page([PossiblePage1, PossiblePage2])
+            
         
         Note: It'll only be able to detect pages that are imported.  To it's best to 
         do an import of all pages implementing a base class or the interface inside the 
@@ -310,16 +324,19 @@ class PageObjectUtils():
         
         Args:
             webdriver (Webdriver) : Selenium Webdriver instance
-            *selectors (*str) : CSS selectors strings to match against the page.
+            selectors (str) : N number of CSS selectors strings to match against the page.
         
         Returns:
             True, False - if the page matches all selectors.
         
-        Usage Example:
-        # Checks for a Form with id='loginForm' and a button with class 'login'
-        if not PageObjectUtils.check_css_selectors("form#loginForm", "button.login"):
-            raise InvalidPageError("This is not the login page.")
+        Usage Example::
+        
+            # Checks for a Form with id='loginForm' and a button with class 'login'
+            if not PageObjectUtils.check_css_selectors("form#loginForm", "button.login"):
+                raise InvalidPageError("This is not the login page.")
 
+        You can use this within a PageObject's `_validate_page(webdriver)` method for 
+        validating pages.
         """
         for selector in selectors:
             try:
@@ -362,11 +379,13 @@ class PageUtils():
             was matched.
             
         
-        Usage Example: 
+        Usage Example:: 
             webdriver.get("http://www.mysite.com/login")
             # Wait up to 60 seconds for the page to load.
             login_page = wait_until_page_loaded(LoginPage, timeout=60, [ServerErrorPage])
         
+        This will wait for the login_page to load, then return a LoginPage() PageObject.
+
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
@@ -446,6 +465,7 @@ class PageUtilOperationTimeoutError(Exception):
 class BadPageEncounteredError(Exception):
     "Raised when a bad page is encountered."
     pass
+
 
 class PageLoadTimeoutError(PageUtilOperationTimeoutError):
     "Timeout while waiting for page to load."
