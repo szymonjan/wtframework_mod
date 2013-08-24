@@ -11,6 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: wtframework.wtf.data.data_management
+    :members:
+    
+.. automodule:: wtframework.wtf.data.data_utils
+    :members:
+
 .. automodule:: wtframework.wtf.web.page
 	:members:
 

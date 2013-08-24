@@ -22,20 +22,20 @@ import os
 
 
 class DataManager(object):
-    '''
-    dataManager
+    """
     This class is responsible for providing utilities for accessing 
     test data, the ones stored in the /data folder.
-    '''
+    """
     
     _data_path = None
     
     _DATA_FOLDER_ = "data"
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+
+        """
         root = ProjectUtils.get_project_root()
         if root[-1] == '/' or root[-1] == '\\':
             self._data_path = ProjectUtils.get_project_root() + DataManager._DATA_FOLDER_
@@ -47,7 +47,19 @@ class DataManager(object):
 
     
     def get_data_path(self, filename, env_prefix=None):
-        "Get data path."
+        """
+        Get data path.
+        
+        Args:
+            filename (string) : Name of file inside of /data folder to retrieve.
+        
+        Kwargs:
+            env_prefix (string) : Name of subfolder, ex: 'qa' will find files in /data/qa
+
+        Returns:
+            String - path to file.
+
+        """
         if env_prefix == None:
             target_file = filename
         else:
@@ -60,11 +72,14 @@ class DataManager(object):
 
 
 class DataNotFoundError(RuntimeError):
-    "raised when data cannot be located."
+    """Raised when data cannot be located.
+    
+    """
     pass
 
-WTF_DATA_MANAGER = DataManager()
 
+WTF_DATA_MANAGER = DataManager()
+"""Global instance of DataManager"""
 
 
 
@@ -72,20 +87,34 @@ class CsvReader(object):
     """
     Provides an iterator for accessing CSV records.
     """
+
     _csv_reader = None
     _headers = None
     _file = None
-    
+
     def __init__(self, file_path):
-        "Constructor"
+        """
+        Constructor
+        
+        Args:
+            file_path (string) : path of CSV file to read.
+
+        """
         self._file = open(file_path, 'rb')
         
         self._csv_reader = csv.reader(self._file, delimiter=',', dialect='excel')
         self._headers = self._csv_reader.next()
 
-        
+
     def next(self):
-        "Gets next entry as a dictionary."
+        """
+        Gets next entry as a dictionary.
+        
+        Returns:
+            object - Object key/value pair representing a row. 
+            {key1: value1, key2: value2, ...}
+        
+        """
         try:
             entry = {}
             row = self._csv_reader.next()

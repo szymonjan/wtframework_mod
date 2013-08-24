@@ -41,12 +41,12 @@ chrome.extension.onMessage.addListener(
 				alert("\n\nWTFramework\n\nClick on an element on this page to map it.");
 			}
 			
-						
+			// Handle actions involving elements.
 			if (request.action == "checkElement" || request.action == "highlightElement") {
 				console.log( request.action + " request received.");
-				
+
 				var blinkElement = request.action == "highlightElement";
-				
+
 				var checkOk = false;
 				var query = request.query;
 				try {
@@ -99,16 +99,16 @@ chrome.extension.onMessage.addListener(
 					console.log("did not find element.");
 					console.log(e);
 				}
-				
-				
+
+
 				if (checkOk) {
 					sendResponse({result: "OK"});
 				} else {
 					sendResponse({result: "FAIL"});
 				}
 			}
-			
-			
+
+
 });
 
 //Monitor clicks
@@ -117,9 +117,9 @@ document.onclick = function(clickEvent) {
 	if (_wtfMonitorClick == true) {
 		clickEvent.preventDefault();
 		clickEvent.stopPropagation();
-		
+
 		_wtfMonitorClick = false;
-		
+
 		var clickedElement = $(clickEvent.target);
 		var name = clickedElement.attr('name');
 		var id = clickedElement.attr('id');
@@ -128,7 +128,7 @@ document.onclick = function(clickEvent) {
 		var text = clickedElement.text();
 		var tag = clickedElement.prop("tagName");
 		var value = clickedElement.val();
-		
+
 		var messagePayload = {
 				wtframework:true,
 				action: "element-mapped",
@@ -142,12 +142,12 @@ document.onclick = function(clickEvent) {
 		};
 
 		console.log(messagePayload)
-		
+
 		chrome.extension.sendMessage(null, messagePayload, function() {		
 		});
 	}
-	
-	
+
+
 };
 
 
