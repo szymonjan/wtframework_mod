@@ -75,6 +75,6 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
         except Exception as e:
             last_exception = e
             time.sleep(sleep)
-            
 
     raise OperationTimeoutError("Operation timed out.", last_exception)
+

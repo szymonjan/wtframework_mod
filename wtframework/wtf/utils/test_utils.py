@@ -66,3 +66,4 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 class NoMatchError(RuntimeError):
     "Raised if no match is found."
     pass
+

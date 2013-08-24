@@ -20,7 +20,7 @@ This module contains functions for working with files.
 
 import os
 import tempfile
-from wtframework.wtf.data.data_utils import generate_timestamped_string
+from wtframework.wtf.utils.data_utils import generate_timestamped_string
 import urllib
 
 
