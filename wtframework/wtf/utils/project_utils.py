@@ -15,7 +15,6 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-
 import os
 import re
 
@@ -30,6 +29,9 @@ class ProjectUtils(object):
     def get_project_root(cls):
         '''
         Return path of the project directory.
+        
+        Returns:
+            str - path of project root directory.
         '''
         if(cls.__root_folder__ != None):
             return cls.__root_folder__
@@ -49,3 +51,4 @@ class ProjectUtils(object):
     
         raise RuntimeError("Missing root project folder locator file '.wtf_root_folder'." \
                            + "Check to make sure this file is located in your project directory.")
+

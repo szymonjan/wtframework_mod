@@ -25,17 +25,22 @@ import re
 import time
 import urllib2
 
+
 class WebUtils(object):
+    "Utility class for web testing."
 
 
     @staticmethod
     def check_url(url):
         '''
         Check if resource at URL is fetchable. (by trying to fetch it and checking for 200 status.
-        @param url: Url to check.
-        @type url: str
-        @return: Returns a tuple of {success, response code}
-        @rtype: Tuple
+        
+        Args:
+            url (str): Url to check.
+        
+        Returns:
+            Returns a tuple of {True/False, response code}
+
         '''
         request = urllib2.Request(url)
         try:
@@ -48,7 +53,18 @@ class WebUtils(object):
     def get_base_url(webdriver):
         """
         Get the current base URL.
-        @param webdriver: Selenium webdriver.
+        
+        Args:
+            webdriver: Selenium webdriver.
+        
+        Returns:
+            str - base URL. 
+        
+        usage::
+        
+            WebUtils.get_base_url("http://www.google.com/?q=blah")
+            #returns 'http://www.google.com'
+
         """
         current_url = webdriver.current_url
         try:
@@ -56,11 +72,15 @@ class WebUtils(object):
         except:
             raise RuntimeError("Unable to process base url: {0}".format(current_url) )
 
+
     @staticmethod
     def is_webdriver_mobile(webdriver):
         """
         Check if a web driver if mobile.
-        @param webdriver: Selenium webdriver.
+        
+        Args:
+            webdriver (WebDriver): Selenium webdriver.
+
         """
         browser = webdriver.capabilities['browserName']
 
@@ -74,7 +94,10 @@ class WebUtils(object):
     def is_webdriver_ios(webdriver):
         """
         Check if a web driver if mobile.
-        @param webdriver: Selenium webdriver.
+        
+        Args:
+            webdriver (WebDriver): Selenium webdriver.
+
         """
         browser = webdriver.capabilities['browserName']
 
@@ -88,8 +111,17 @@ class WebUtils(object):
     @staticmethod
     def switch_to_window(page_class, webdriver):
         """
-        @param page_class: Page class to search for/instantiate.
-        @param webdriver: Selenium webdriver.
+        Utility method for switching between windows.  It will search through currently open 
+        windows, then switch to the window matching the provided PageObject class.
+        
+        Args:
+            page_class (PageObject): Page class to search for/instantiate.
+            webdriver (WebDriver): Selenium webdriver.
+
+        usage::
+
+            WebUtils.switch_to_window(DetailsPopUpPage, driver) # switches to the pop up window.
+
         """
         window_list = list(webdriver.window_handles)
         original_window = webdriver.current_window_handle
@@ -107,12 +139,27 @@ class WebUtils(object):
 class BrowserStandBy(object):
     """
     This class allows you to put a browser on stand by sending no-op commands to keep 
-    a selenium session from timing out.
+    a selenium grid session from timing out.  This is useful for running tests on 
+    3rd party grids that have short timeouts.
+
+    Usage::
+
+        stand_by = BrowserStandBy().start()
+        check_email_received() # some operation that can take a long time.
+        stand_by.stop()
+
+
     """
     
     def __init__(self, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
         """
-        @param webdriver:Webdriver instance to keep alive. 
+        Constructor
+
+        Kwargs:
+            webdriver (WebDriver) - Selenium Webdriver instance
+            max_time (number) - Maximum wait time to keep the browser on stand by.
+            sleep (number) - Number of seconds to wait between sending heart beats.
+
         """
         if webdriver is None:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
@@ -120,13 +167,13 @@ class BrowserStandBy(object):
         self.webdriver = webdriver
         self._sleep_time = sleep
         self._max_time = max_time
-        
-        
-    
+
+
     def start(self):
         """
         Start standing by.  A periodic command like 'current_url' will be sent to the 
         webdriver instance to prevent it from timing out.
+
         """
         self._end_time = datetime.now() + timedelta(seconds = self._max_time)
         self._thread = Thread(target=lambda: self.__stand_by_loop())
@@ -136,7 +183,10 @@ class BrowserStandBy(object):
 
 
     def stop(self):
-        "Stop BrowserStandBy from sending additional calls to webdriver."
+        """
+        Stop BrowserStandBy from sending additional calls to webdriver.
+        
+        """
         self._keep_running = False
         return self
 

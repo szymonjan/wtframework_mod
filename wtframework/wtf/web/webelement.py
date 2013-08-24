@@ -24,20 +24,25 @@ import time
 
 
 class WebElementSelector():
-    
+    "Utiltiy class for selecting elements."
+
+
     @staticmethod
     def find_element_by_selectors(webdriver, *selectors):
         """
         Utility method makes it easier to find an element using multiple selectors. This is 
         useful for problematic elements what might works with one browser, but fail in another.
         
-        Usage:
+        Args:
+            selectors - var arg if N number of selectors to match against.  Each selector should 
+                        be a Selenium 'By' object.
+        
+        Usage::
             my_element = WebElementSelector.find_element_by_selectors(webdriver,
                                                                     (By.ID, "MyElementID"),
                                                                     (By.CSS, "MyClassSelector") )
 
-        @param webdriver: Selenium WebDriver.
-        @param selectors: Selectors as a variable arg list of (By, value) pairs.
+
         """
         #perform initial check to verify selectors are valid by statements.
         for selector in selectors:
@@ -57,7 +62,7 @@ class WebElementSelector():
                 pass
         
         raise ElementNotSelectableException("Unable to find elements using:" + ",".join(selectors_used))
-    
+
     @staticmethod
     def __is_valid_by_type(by_type):
         for attr, value in By.__dict__.iteritems():
@@ -73,12 +78,22 @@ class WebElementUtils():
     Utility methods for working with web pages and web elements.
     """
 
-    
 
     @staticmethod
     def wait_until_element_not_visible(webdriver, locator_lambda_expression, \
                                        timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
-        "Wait for a WebElement to disappear."
+        """
+        Wait for a WebElement to disappear.
+        
+        Args:
+            webdriver (Webdriver) - Selenium Webdriver
+            locator (lambda) - Locator lambda expression.
+
+        Kwargs:
+            timeout (number) - timeout period
+            sleep (number) - sleep period between intervals.
+
+        """
         # Wait for loading progress indicator to go away.
         try:
             stoptime = datetime.now() + timedelta(seconds=timeout)
@@ -91,14 +106,16 @@ class WebElementUtils():
         except TimeoutException:
             pass
 
+
     @staticmethod
     def is_image_loaded(webdriver, webelement):
         '''
         Check if an image (in an image tag) is loaded.
         Note: This call will not work against background images.  Only Images in <img> tags.
-        
-        @param webelement: WebDriver web element to validate.
-        @type webelement: WebElement
+
+        Args:
+            webelement (WebElement) - WebDriver web element to validate.
+
         '''
         script = "return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" " +\
                  "&& arguments[0].naturalWidth > 0"
@@ -107,6 +124,8 @@ class WebElementUtils():
         except:
             return False #Img Tag Element is not on page.
 
+
 class BadSelectorError(Exception):
     "Raised when a bad selector is passed into a WebElementSelector() method."
     pass
+

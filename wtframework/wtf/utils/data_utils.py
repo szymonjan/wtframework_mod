@@ -23,12 +23,16 @@ import random
 import string
 
 
-def generate_timestamped_string(subject, number_of_random_chars=4):
+def generate_timestamped_string(subject="test", number_of_random_chars=4):
     """
     Generate time-stamped string. Format as follows...
-    2013-01-31_14:12:23_SubjectString_a3Zg
-    @param subject: String to use as subject.
-    @type subject: str
+    
+    `2013-01-31_14:12:23_SubjectString_a3Zg`
+    
+    Kwargs:
+        subject (str): String to use as subject.
+        number_of_random_chars (int) : Number of random characters to append.
+
     """
     random_str = generate_random_string(number_of_random_chars)
     timestamp = generate_timestamp()
@@ -40,16 +44,22 @@ def generate_timestamped_string(subject, number_of_random_chars=4):
 def generate_timestamp(date_format="%Y-%m-%d_%H.%M.%S"):
     """
     Returns timestamped string. '2012-03-15_14:42:23
-    @param format: A date/time format string.  If not specified, the default will be used.
+    
+    Kwargs:
+        format: A date/time format string.  If not specified, the default will be used.
+
     """
     return datetime.now().strftime(date_format);
 
 
 def generate_random_string(number_of_random_chars=8, character_set=string.ascii_letters):
     """
-    Generate a series of random chracters.
-    @param number_of_random_chars: Number of characters long
-    @param character_set: Specify a character set.  Default is ASCII
+    Generate a series of random characters.
+    
+    Kwargs:
+        number_of_random_chars (int) : Number of characters long
+        character_set (str): Specify a character set.  Default is ASCII
     """
     return ''.join(random.choice(character_set) \
             for _ in range(number_of_random_chars))
+

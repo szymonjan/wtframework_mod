@@ -16,17 +16,17 @@
 ##########################################################################
 
 
+from types import NoneType
 from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
 import re
 import yaml
-from types import NoneType
+import time
 
 
 class ConfigReader:
     '''
-    Config Reader provides a singleton instance of ConfigReader for looking up 
-    values for config variables.
+    Config Reader provides a way of reading configuration settings. 
     '''
 
     CONFIG_LOCATION = 'configs/'
@@ -40,6 +40,9 @@ class ConfigReader:
     _singleton_instance = None #class variable to track singleton.
 
     def __init__(self, _env_var_ = None):
+        """
+        constructor
+        """
         self._dataMaps = []
 
         #load default yaml file if this is not a unit test.
@@ -70,6 +73,7 @@ class ConfigReader:
         "No default specified to config reader."
         pass
 
+
     def get(self,key, default_value=__NoDefaultSpecified__):
         '''
         Gets the value from the yaml config based on the key.
@@ -77,16 +81,21 @@ class ConfigReader:
         No type casting is performed, any type casting should be 
         performed by the caller.
         
-        @param key: Name of the config you wish to retrieve.  
-        @type key: str
-        @param default_value: Value to return if the config setting does not exist. 
+        Args:
+            key (str) - Config setting key.
+        
+        Kwargs:
+            default_value - Default value to return if config is not specified.
+        
+        Returns:
+            Returns value stored in config file.
+
         '''
         # First attempt to get the var from OS enviornment.
         os_env_string = ConfigReader.ENV_PREFIX + key
         os_env_string = os_env_string.replace(".", "_")
         if type(os.getenv(os_env_string)) != NoneType:
             return os.getenv(os_env_string)
-
 
         # Otherwise search through config files.
         for data_map in self._dataMaps:
@@ -138,7 +147,14 @@ class ConfigFileReadError(RuntimeError):
 # Create a global constant for referencing this to avoid re-instantiating 
 # this object over and over.
 WTF_CONFIG_READER = ConfigReader()
+"""
+Global instance of ConfigReader
 
+Usage::
+
+    testurl = WTF_CONFIG_READER.get("testurl", default="http://www.example.com")
+
+"""
 
 
 class TimeOutManager(object):
@@ -148,20 +164,36 @@ class TimeOutManager(object):
     """
     _config = None
     
-    def __init__(self, config_reader = WTF_CONFIG_READER):
-        "Initializer"
-        self._config = config_reader
+    def __init__(self, config_reader = None):
+        """
+        Constructor
+        
+        Args:
+            config_reader (ConfigReader) - override default config reader.
+        """
+        if config_reader:
+            self._config = config_reader
+        else:
+            self._config = WTF_CONFIG_READER
 
     @property
     def BRIEF(self):
-        "Useful for waiting/pausing for things that should happen near instant."
+        """
+        Useful for waiting/pausing for things that should happen near instant.
+        
+        Returns:
+            number - brief wait period.
+        """
         return self._config.get("timeout.brief", 5)
 
     @property
     def SHORT(self):
         """"
         Useful for waiting/pausing for things that are just long enough for a
-        brief appearance of a loading indicator. 
+        typical ajax request to return.
+
+        Returns:
+            number - short wait period. 
         """
         return self._config.get("timeout.short", 10)
 
@@ -171,6 +203,9 @@ class TimeOutManager(object):
         """
         Useful for a normal considerable wait.  Such as waiting for a large page to 
         fully load on screen.
+
+        Returns:
+            number - normal wait period.
         """
         return self._config.get("timeout.normal", 30)
 
@@ -179,6 +214,9 @@ class TimeOutManager(object):
         """
         Useful for things that take a long time.  Such as waiting for an moderate size 
         download/upload to complete.
+
+        Returns:
+            number - long wait period.
         """
         return self._config.get("timeout.long", 60)
 
@@ -187,13 +225,56 @@ class TimeOutManager(object):
         """
         Useful for operations that take an extremly long amount of time.  For example, 
         waiting for a large upload to complete.
+
+        Returns:
+            number - epic wait period.
         """
         return self._config.get("timeout.epic", 300)
 
 
+    def brief_pause(self):
+        """
+        Do a brief pause.
+        """
+        time.sleep(self.BRIEF)
 
-# Default instance of TimeOut Manager for easy access.  You can use this as 
-# follows:
-#        PageUtils.wait_for_page_to_load(SlowPage, WTF_TIMEOUT_MANAGER.LONG)
-#
+
+    def short_pause(self):
+        """
+        Do a short pause.
+        """
+        time.sleep(self.SHORT)
+
+
+    def normal_pause(self):
+        """
+        Do a normal pause.
+        """
+        time.sleep(self.NORMAL)
+
+
+    def long_pause(self):
+        """
+        Do a long pause.
+        """
+        time.sleep(self.LONG)
+
+
+    def epic_pause(self):
+        """
+        Do a epic pause.
+        """
+        time.sleep(self.EPIC)
+
+
+
 WTF_TIMEOUT_MANAGER = TimeOutManager()
+"""
+Global instance of TimeOutManager
+
+Usage Example::
+
+    PageUtils.wait_for_page_to_load(SlowPage, WTF_TIMEOUT_MANAGER.LONG)
+
+
+"""

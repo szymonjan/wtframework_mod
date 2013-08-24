@@ -27,19 +27,45 @@ class TimeDebugger(object):
     
 
     def start_timer(self):
+        """
+        Start the timer.
+        """
         self.start_time = datetime.now()
 
+
     def print_time(self, message="Time is now: ", print_frame_info=True):
+        """
+        Print the current elapsed time.
+        
+        Kwargs:
+            message (str) : Message to prefix the time stamp.
+            print_frame_info (bool) : Add frame info to the print message.
+
+        """
         if print_frame_info:
             frame_info = inspect.getouterframes(inspect.currentframe())[1]
             print message, (datetime.now() - self.start_time), frame_info
         else:
             print message, (datetime.now() - self.start_time)
-        
+
+
     def get_split(self):
+        """
+        Returns the current ellapsed time.
+        
+        Returns:
+            timedelta - current ellapsed time.
+        """
         return (datetime.now() - self.start_time)
 
 
 def print_debug(*args):
+    """
+    Print if and only if the debug flag is set true in the config.yaml file.
+    
+    Args:
+        args : var args of print arguments.
+
+    """
     if WTF_CONFIG_READER.get("debug", False) == True:
         print args

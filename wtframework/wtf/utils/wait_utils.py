@@ -14,6 +14,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+"""
+This module contains various utility methods that assist with waiting and polling.
+"""
 
 from datetime import datetime, timedelta
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
@@ -27,14 +30,35 @@ class OperationTimeoutError(Exception):
     """
     pass
 
+
 def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False):
     '''
-    Waits until URL matches the expression.
-    @param condition: Lambda expression to wait on.  Lambda expression 
-    should return true when conditions is met.
-    @type condition: lambda
-    @param timeout: Timeout period in seconds.
-    @rtype: int
+    Waits wrapper that'll wait for the condition to become true.
+    
+    Args:
+        condition (lambda) - Lambda expression to wait for to evaluate to True.
+    
+    Kwargs:
+        timeout (number) : Maximum number of seconds to wait.
+        sleep (number) : Sleep time to wait between iterations.
+        pass_exceptions (bool) : If set true, any exceptions raised will be re-raised up the chain.
+                                Normally exceptions are ignored.
+
+    Example::
+
+        wait_until(lambda: driver.find_element_by_id("success").is_displayed(), timeout=30)
+    
+    is equivalent to::
+
+        end_time = datetime.now() + timedelta(seconds=30)
+        while datetime.now() < end_time:
+            try:
+                if driver.find_element_by_id("success").is_displayed():
+                    break;
+            except:
+                pass
+            time.sleep(0.5)
+
     '''
     if not hasattr(condition, '__call__'):
         raise RuntimeError("Condition argument does not appear to be a callable function." + 
@@ -57,15 +81,33 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 
 def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
     '''
-    Waits until the function call succeeds.
-    @param function_call_or_lambda: Lambda expression to execute. 
-    should return true when conditions is met.
-    @type lambda_expr: lambda
-    @param timeout: Timeout period in seconds.
-    @type timeout: int
+    A retry wrapper that'll keep performing the action until it succeeds.
     
-    @return: same type as lamba expression.
+    Args:
+        lambda_expr (lambda) : Expression to evaluate.
     
+    Kwargs: 
+        timeout (number): Timeout period in seconds.
+        sleep (number) : Sleep time to wait between iterations
+    
+    Returns:
+        The value of the evaluated lambda expression.
+
+    Usage::
+
+        do_until(lambda: driver.find_element_by_id("save").click())
+    
+    Is equivalent to:
+
+        end_time = datetime.now() + timedelta(seconds=30)
+        while datetime.now() < end_time:
+            try:
+                driver.find_element_by_id("save").click()
+                break;
+            except:
+                pass
+            time.sleep(0.5)
+
     '''
     end_time = datetime.now() + timedelta(seconds = timeout)
     last_exception = None

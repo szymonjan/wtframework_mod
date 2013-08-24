@@ -31,10 +31,12 @@ class WebScreenShotUtil():
     @staticmethod
     def take_screenshot(webdriver, file_name):
         """
-        @param webdriver: WebDriver.
-        @type webdriver: WebDriver
-        @param file_name: Name to label this screenshot.
-        @type file_name: str 
+        Captures a screenshot.
+        
+        Args:
+            webdriver (WebDriver) - Selenium webdriver.
+            file_name (str) - File name to save screenshot as.
+
         """
         file_location = os.path.join(ProjectUtils.get_project_root() +
                                             WebScreenShotUtil.SCREEN_SHOT_LOCATION + 
@@ -45,14 +47,23 @@ class WebScreenShotUtil():
 
     @staticmethod
     def take_reference_screenshot(webdriver, file_name):
+        """
+        Captures a screenshot as a reference screenshot.
+        
+        Args:
+            webdriver (WebDriver) - Selenium webdriver.
+            file_name (str) - File name to save screenshot as.
+        """
         file_location = os.path.join(ProjectUtils.get_project_root() +
                                     WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION + 
                                     file_name + 
                                     ".png")
         WebScreenShotUtil.__capture_screenshot(webdriver, file_location)
 
+
     @staticmethod
     def __capture_screenshot(webdriver, file_location):
+        "Capture a screenshot"
         if isinstance(webdriver, remote.webdriver.WebDriver):
             # If this is a remote webdriver.  We need to transmit the image data 
             # back across system boundries as a base 64 encoded string so it can 

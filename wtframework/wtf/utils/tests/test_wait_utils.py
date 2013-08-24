@@ -15,11 +15,9 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
-from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError,\
+from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError, \
     do_until
 import unittest2
-
-
 
 
 class TestWaitUtils(unittest2.TestCase):
