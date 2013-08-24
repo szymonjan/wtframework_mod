@@ -1,5 +1,6 @@
 ## v0.3.3
 - Remove duplicate instance of data_utils to avoid confusion.
+- Updated documentation
 
 ## v0.3.2
 - Fix `is_driver_available()`
