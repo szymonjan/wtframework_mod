@@ -11,3 +11,5 @@
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/wtframework.iml
+org.eclipse.core.resources.prefs
+dist
