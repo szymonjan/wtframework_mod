@@ -38,19 +38,26 @@ class AssetManager(object):
 
         if not os.path.exists(self._asset_path):
             raise RuntimeError("Missing assets folder.  Please check to make sure you have a /assets directory.")
-    
+
+
     def get_asset_path(self, filename):
         """
         Get the full system path of a tiven asset if it exists.  Otherwise it throws 
         an error.
         
-        Usage:
-            WTF_ASSET_MANAGER.get_asset_path("my_asset.png")
+        Args:
+            filename (str) - File name of a file in /assets folder to fetch the path for.
         
+        Returns:
+            str - path to the target file.
         
-        @param filename: Name of file to find.
-        @type filename: str
-        @raise AssetNotFoundError: Thrown if asset is not found in /assets folder.
+        Raises:
+            AssetNotFoundError - if asset does not exist in the asset folder.
+        
+        Usage::
+            path = WTF_ASSET_MANAGER.get_asset_path("my_asset.png")
+            # path = /your/workspace/location/WTFProjectName/assets/my_asset.png 
+
         """
         if os.path.exists(self._asset_path + "/" + filename):
             return self._asset_path + "/" + filename
@@ -64,3 +71,11 @@ class AssetNotFoundError(RuntimeError):
 
 ## Create Default instance of AssetManager ##
 WTF_ASSET_MANAGER = AssetManager()
+"""
+Global instance of AssetManager
+
+Usage Example::
+
+    image_file_location = WTF_ASSET_MANAGER.get_asset_path("testimage.png")
+
+"""

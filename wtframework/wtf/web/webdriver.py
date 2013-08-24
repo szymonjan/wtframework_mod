@@ -17,20 +17,22 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from wtframework.wtf.config import WTF_CONFIG_READER
 from threading import current_thread
+from wtframework.wtf.config import WTF_CONFIG_READER
 
 
 
 class WebDriverFactory(object):
     '''
     This class constructs a Selenium Webdriver using settings in the config file.
-    
-    Note: please be sure to uncomment the Unit test and run them manually before 
-    pushing any changes.  This is because they are disabled.  The reason is 
-    because the unit tests for this class can use up billable hours on sauce labs 
-    or open annoying browser windows.
+    This allows you to substitute different webdrivers by changing the config settings 
+    while keeping your tests using the same webdriver interface.
     '''
+    
+    #    Note: please be sure to uncomment the Unit test and run them manually before 
+    #    pushing any changes.  This is because they are disabled.  The reason is 
+    #    because the unit tests for this class can use up billable hours on sauce labs 
+    #    or open annoying browser windows.
 
     # CONFIG SETTINGS #
     DRIVER_TYPE_CONFIG = "selenium.type"
@@ -63,8 +65,9 @@ class WebDriverFactory(object):
         '''
         Initializer.
         
-        @param config_reader: Pass in a config reader if you want to stub this out.
-        @type config_reader: ConfigReader
+        Kwargs:
+            config_reader (ConfigReader) - Override the default config reader.
+
         '''
 
         if config_reader != None:
@@ -80,10 +83,13 @@ class WebDriverFactory(object):
             This should only be called by a shutdown hook.  Do not call directly within 
             a test.
             
-            @param testname: Optional test name to pass, this gets appended to the test name 
-                             sent to selenium grid.
+            Kwargs:
+                testname: Optional test name to pass, this gets appended to the test name 
+                          sent to selenium grid.
 
-            @return: WebDriver
+            Returns:
+                WebDriver - Selenium webdriver instance.
+
         '''
         try:
             driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
@@ -223,10 +229,10 @@ class WebDriverManager(object):
         '''
         Initializer
         
-        @param webdriver_factory: Optional webdriver factory to use to 
-        create instances of webdriver.  This is useful for unit tests 
-        that need to mock out the webdriver. 
-        @type webdriver_factory: WebDriverFactory
+        Kwargs:
+            webdriver_factory (WebDriverFactory): Override default webdriver factory. 
+            config (ConfigReader): Override default config reader.
+
         '''
         self.__webdriver = {} # Object with channel as a key
         self.__registered_drivers = {}
@@ -235,12 +241,12 @@ class WebDriverManager(object):
             self.__config = config
         else:
             self.__config = WTF_CONFIG_READER
-        
+
         if self.__config.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True):
             self.__use_shutdown_hook = True
         else:
             self.__use_shutdown_hook = False
-        
+
         if( webdriver_factory != None):
             self._webdriver_factory = webdriver_factory
         else:
@@ -299,8 +305,10 @@ class WebDriverManager(object):
     def get_driver(self):
         '''
         Get an already running instance of webdriver. If there is none, it will create one.
-        @return: Selenium WebDriver instance.
-        @rtype: WebDriver
+        
+        Returns:
+            WebDriver - Selenium Webdriver instance.
+
         '''
         driver = self.__get_driver_for_channel(self.__get_channel())
         if driver is None:
@@ -313,7 +321,10 @@ class WebDriverManager(object):
     def is_driver_available(self):
         '''
         Check if a webdriver instance is created.
-        @rtype: bool
+        
+        Returns:
+            bool - True, webdriver is available; False, webdriver not yet initialized.
+
         '''
         channel = self.__get_channel()
         try:
@@ -326,8 +337,13 @@ class WebDriverManager(object):
         '''
         Used at a start of a test to get a new instance of webdriver.  If the 
         'resuebrowser' setting is true, it will use a recycled webdriver instance.
-        @return: Selenium WebDriver instance.
-        @rtype: WebDriver
+        
+        Kwargs:
+            testname (str) - Optional test name to pass to Selenium Grid.
+            
+        Returns:
+            Webdriver - Selenium Webdriver instance.
+
         '''
         channel = self.__get_channel()
 
@@ -372,6 +388,7 @@ class WebDriverManager(object):
         return driver
         # End of new_driver method.
 
+
     def __register_driver(self, channel, webdriver):
         "Register webdriver to a channel."
         
@@ -383,6 +400,7 @@ class WebDriverManager(object):
 
         # Set singleton instance for the channel
         self.__webdriver[channel] = webdriver
+
 
     def __unregister_driver(self, channel):
         "Unregister webdriver"
@@ -424,5 +442,13 @@ class WebDriverManager(object):
 
 # Global Instance of WebDriver Manager
 WTF_WEBDRIVER_MANAGER = WebDriverManager()
+"""Global instance of webdriver manager.
+
+Usage::
+
+    driver = WTF_WEBDRIVER_MANAGER.new_driver()
+    driver.get('http://www.example.com')
+
+"""
 
 

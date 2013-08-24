@@ -23,14 +23,20 @@ import inspect
 
 class WTFBaseTest(WatchedTestCase):
     '''
-    Test Cases can extend this test to additional unit test functionality such as 
+    Test can extend this basetest to add additional unit test functionality such as 
     take screenshot on failure.
     '''
 
     def __init__(self, methodName='runTest', webdriver_provider=None, screenshot_util=None):
         """
         Constructor matches that of UnitTest2 test case, but modified to allow passing in 
-        a ScreenShot utility and register delayed test watchers. 
+        a ScreenShot utility and register delayed test watchers.
+
+        Kwargs:
+            methodName (str) : Test method name.
+            webdriver_provider (WebdriverManager) : Default webdriver provider.
+            screenshot_util (CaptureScreenShotOnErrorTestWatcher) : Screenshot capture utility.
+
         """
         super(WTFBaseTest, self).__init__(methodName)
         self._register_watcher(CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
@@ -46,10 +52,18 @@ class WTFBaseTest(WatchedTestCase):
         """
         Cause an assertion failure to be delayed till the end of the test.
         
-        Usage:
+        Args:
+            assert_method (function) - Assert method to run.
+            args - arguments to pass into the assert method.
+
+        Kwargs:
+            kwargs - additional kwargs to pass into the assert method.
+
+
+        Will assert if percent == 100 at the end of the test.::
+        
             self.assertWithDelayedFailure(self.AssertEquals, 100, percent)
-        @param assert_method: Reference to assert method.
-        @param *params: parameters to pass into assert method.
+
         """
         frame = None
         try:

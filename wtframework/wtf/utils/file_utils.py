@@ -20,14 +20,24 @@ This module contains functions for working with files.
 
 import os
 import tempfile
-from wtframework.wtf.data.data_utils import generate_timestamped_string
+from wtframework.wtf.utils.data_utils import generate_timestamped_string
 import urllib
 
 
 def temp_path(file_name=None):
     """
-    Returns a temp file path for a file name.
+    Gets a temp path.
+    
+    Kwargs:
+        file_name (str) : if file name is specified, it gets appended to the temp dir.
+    
+    Usage::
+    
+        temp_file_path = temp_path("myfile")
+        copyfile("myfile", temp_file_path) # copies 'myfile' to '/tmp/myfile'
+
     """
+
     if file_name is None:
         file_name = generate_timestamped_string("wtf_temp_file")
     
@@ -40,12 +50,16 @@ def create_temp_file(file_name=None, string_or_another_file = ""):
     Creates a temp file using a given name.  Temp files are placed in the Project/temp/ 
     directory.  Any temp files being created with an existing temp file, will be 
     overridden.
+
+    Kwargs:
+        file_name (str): Name of file
+        string_or_another_file: Contents to set this file to. If this is set to a file, 
+                                it will copy that file.  If this is set to a string, then 
+                                it will write this string to the temp file.
     
-    @param file_name: Name of file
-    @param string_or_another_file: Contents to set this file to. If this is set to a file, 
-                                   it will copy that file.  If this is set to a string, then 
-                                   it will write this string to the temp file.
-    @return: Returns the file path.
+    Return: 
+        str - Returns the file path to the generated temp file.
+
     """
     temp_file_path = temp_path(file_name)
     temp_file = open(temp_file_path, "w+")
@@ -61,12 +75,18 @@ def create_temp_file(file_name=None, string_or_another_file = ""):
     temp_file.close()
     return temp_file_path
 
+
 def download_to_tempfile(url, file_name=None, extension=None):
     """
     Downloads a URL contents to a tempfile.
-    @param file_name: Name of file.
-    @param extension: Extension to use.
-    @return: Returns path to the temp file.
+    
+    Kwargs:
+        file_name (str): Name of file.
+        extension (str): Extension to use.
+    
+    Return:
+        str - Returns path to the temp file.
+
     """
     
     if not file_name:
@@ -84,3 +104,4 @@ def download_to_tempfile(url, file_name=None, extension=None):
     localFile.close()
 
     return file_path
+

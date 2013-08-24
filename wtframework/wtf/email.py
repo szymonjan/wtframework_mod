@@ -28,7 +28,8 @@ class IMapEmailAccountObject(object):
     accounts for test verification.  It provides methods for searching through 
     the inbox and retrieving content for verification.
     
-    Usage Example:
+    Usage Example::
+
         #Instantiate a Email Account Obj.
         email = IMapEmailAccountObject("mail.gmail.com", "yourlogin", "yourpassword")
         #Verify received email with subject.
@@ -37,17 +38,18 @@ class IMapEmailAccountObject(object):
         uid - email.find_emails_by_subject("My Subject Line")
         #Fetch the contents of the email as a string.
         message_contents = email.get_email_message(uid[0])
+
     """
 
     def __init__(self, server_address, username, password):
         """
         Constructor
-        @param server_address: Email Server address.
-        @type server_address: str
-        @param username: Username
-        @type username: str
-        @param password: Password
-        @type password: str
+        
+        Args:
+            server_address (str): Email Server address.
+            username (str): Username
+            password (str): Password
+
         """
         print "connecting to {0}, using {1},{2}".format(server_address, username, password)
         self._mail = imaplib.IMAP4_SSL(server_address)
@@ -59,10 +61,12 @@ class IMapEmailAccountObject(object):
         """
         Searches for Email by Subject.  Returns True or False.
         
-        @param subject: Subject to search for.
-        @type subject: str
-        @return: True if found, false if not found.
-        @rtype: Boolean
+        Args:
+            subject (str): Subject to search for.
+        
+        Returns: 
+            True - email found, False - email not found
+
         """
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
@@ -80,12 +84,16 @@ class IMapEmailAccountObject(object):
         """
         Searches for Email by Subject.  Returns email's imap message IDs 
         as a list if matching subjects is found.
-        
-        @param subject: Subject to search for.
-        @type subject: str
-        @param limit: Limit search to X number of matches, default 50
-        @return: List of Integers representing imap message UIDs.
-        @rtype: list
+
+        Args:
+            subject (str) - Subject to search for.
+
+        Kwargs:
+            limit (int) - Limit search to X number of matches, default 50
+
+        Returns:
+            list - List of Integers representing imap message UIDs.
+
         """
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
@@ -110,10 +118,13 @@ class IMapEmailAccountObject(object):
     def get_email_message(self, message_uid, message_type="text/plain"):
         """
         Fetch contents of email.
-        @param message_uid: IMAP Message UID number.
-        @type message_uid: int 
-        @param message_type: Can be 'text' or 'html'
-        @type message_type: str  
+
+        Args:
+            message_uid (int): IMAP Message UID number.
+        
+        Kwargs:
+            message_type: Can be 'text' or 'html'
+
         """
         self._mail.select("inbox")
         result = self._mail.uid('fetch', message_uid, "(RFC822)")
@@ -133,9 +144,15 @@ class IMapEmailAccountObject(object):
     def raw_search(self, *args, **kwargs):
         """
         Find the a set of emails matching each regular expression passed in against the (RFC822) content.
-        @param *args: list of regular expressions.
-        @keyword limit: Limit to how many of the most resent emails to search through.
-        @keyword date: If specified, it will filter avoid checking messages older than this date.
+        
+        Args:
+            *args: list of regular expressions.
+        
+        Kwargs:
+            limit (int) - Limit to how many of the most resent emails to search through.
+            date (datetime) - If specified, it will filter avoid checking messages older 
+                              than this date.
+
         """
         limit = 50
         try:
@@ -166,7 +183,7 @@ class IMapEmailAccountObject(object):
                 if re.search(expr, rfc_body) is None:
                     match = False
                     break
-            
+
             if match:
                 uid = re.search("UID\\D*(\\d+)\\D*", self._mail.fetch(email_id, 'UID')[1][0]).group(1)
                 matching_uids.append(uid)

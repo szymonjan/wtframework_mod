@@ -43,61 +43,82 @@ class TestWatcher(object):
 
     def before_setup(self, test_case, test_result):
         """
-        Runs before setup. (will always get called)
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs before setup. (will always get called)
+        
+        Args:
+            test_case (TestCase) : TestCase instance associated with watched test
+            test_result (TestResult) : TestReslt instance associated with watched test
         """
         pass
     
         
     def before_test(self, test_case, test_result):
         """
-        Runs before test, but after setup. (will get called if setup succeeds)
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs before test, but after setup. (will get called if setup succeeds)
+        
+        Args:
+            test_case: TestCase instance associated with watched test
+            test_result: TestResult instance associated with watched test
+
         """
         pass
     
     def after_test(self, test_case, test_result):
         """
-        Runs after test, but before teardown (will always get called if test runs)
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs after test, but before teardown (will always get called if test runs)
+        
+        Args:
+            test_case: TestCase instance associated with watched test
+            test_result: TestResult associated with watched test
+
         """
         pass
     
     
     def after_teardown(self, test_case, test_result):
         """
-        Runs after teardown. (will always get called)
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs after tearDown. (will always get called)
+        
+        Args:
+            test_case: TestCase associated with watched test
+            test_result: TestResult associated with watched test
+
         """
         pass
     
     def on_test_failure(self, test_case, test_result, exception):
         """
         Runs when an unexpected test failure occurs
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        
+        Args:
+            test_case: TestCase associated with watched test
+            test_result: TestResult associated with watched test
+            exception: Exception that was thrown by the failure.
+
         """
         pass
-    
+
+
     def on_test_error(self, test_case, test_result, exception):
         """
-        Runs when a test error occcurs.
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs when a test error occurs.
+        
+        @param test_case: TestCase associated with watched test.
+        @param test_result: TestResult associated with watched test.
+        @param exception: Exception raised by the test error.
         """
         pass
-    
+
+
     def on_test_pass(self, test_case, test_result):
         """
-        Runs when a test has passed.
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        Callback runs when a test has passed.
+        
+        @param test_case: TestCase associated with watched test.
+        @param test_result: TestResult associated with watched test.
         """
         pass
+
 
 
 class DelayedTestFailTestWatcher(TestWatcher):
@@ -121,11 +142,14 @@ class DelayedTestFailTestWatcher(TestWatcher):
         """
         Wrap a assertion call to delay test failure till after the test.
         Usage: delayed_fail_watcher.delay_failure( lambda: self.assertEquals(5, x) )
-        
-        @param function: Function reference of lambda expression to be evaluated. 
-        @param current_execution_frame: Pass it a frame to include in the exception to 
-            aid in debugging.
-        @return: None if succeeds.  Returns a reference the exception if failed.
+
+        Args:
+            function (function) : Function to evaluate. 
+            additional_debug_info : Execution frame reference to the failure.
+            
+        Return: 
+            None if succeeds.  Returns a reference the exception if failed.
+
         """
         try:
             #run assertion.
@@ -140,7 +164,11 @@ class DelayedTestFailTestWatcher(TestWatcher):
                 self.exception_list.append((e,additional_debug_info))
             return e
 
+
     def on_test_pass(self, test_case, test_result):
+        """
+        Call back method implementation of this test watcher.
+        """
         if len(self.exception_list) > 0:
             raise DelayedTestFailure(*tuple(self.exception_list))
 
@@ -168,12 +196,23 @@ class DelayedTestFailure(AssertionError):
 class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     '''
     Catures screenshot on error if the config setting is enabled.
+    
+    To enable this, you'll need to set in your config.yaml::
+    
+        selenium:
+            take_screenshot: true
+    
+    
     '''
 
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
         Constructor.
-        @param screenshot_util: Override the default screenshot util method.
+        
+        Kwargs:
+            webdriver_provider: Override the default WebdriverManager instance.
+            screenshot_util: Override the default screenshot util method.
+
         '''
         if WTF_CONFIG_READER.get("selenium.take_screenshot", True):
             self.capture_screenshot = True
@@ -193,18 +232,14 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
 
     def on_test_failure(self, test_case, test_result, exception):
         """
-        Runs when an unexpected test failure occurs
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        On test failure capture screenshot handler.
         """
         if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
 
 
     def on_test_error(self, test_case, test_result, exception):
         """
-        Runs when a test error occcurs.
-        @param test_case: Test case to pass in.
-        @param test_case: wtframework.wtf.testobjects.TestCase
+        On test error, capture screenshot handler.
         """
         if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
 
@@ -212,8 +247,10 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     def __generate_screenshot_filename__(self, testcase):
         '''
         Get the class name and timestamp for generating filenames
-        @return: File Name.
-        @rtype: str
+        
+        Return: 
+            str - File Name.
+
         '''
         fname = type(testcase).__name__ + "_" + testcase._testMethodName
         fname = re.sub("[^a-zA-Z_]+", "_", fname)
@@ -226,7 +263,10 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
         Take a screenshot if webdriver is open.
-        @param testcase: Test case  
+        
+        Args:
+            testcase: TestCase
+
         '''
         if self._webdriver_provider.is_driver_available():
             try:

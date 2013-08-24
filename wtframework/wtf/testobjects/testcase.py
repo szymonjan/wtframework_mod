@@ -34,7 +34,12 @@ class WatchedTestCase(unittest2.TestCase):
     def _register_watcher(self, watcher, position = -1):
         """
         Register a test watcher.
-        @param watcher: A test watcher. 
+
+        Args:
+            watcher: A test watcher to register.
+        
+        Kwargs:
+            position: position in execution queue to insert this watcher.
         """
         self.__wtf_test_watchers__.insert(position, watcher)
 
@@ -43,20 +48,34 @@ class WatchedTestCase(unittest2.TestCase):
     def _unregister_watcher(self, watcher):
         """"
         Unregister a test watcher.
+        
+        Args:
+            watcher : Reference to TestWatcher to unregister.
         """
         self.__wtf_test_watchers__.remove(watcher)
 
+
     def get_log(self):
+        """
+        Get a log of events fired.
+        
+        Returns:
+            list - list of string names of events fired.
+        """
         log = []
         for watcher in self.__wtf_test_watchers__:
             log = watcher.get_log() + log
         return log
 
+
     def run(self, result=None):
         """
         Overriding the run() method to insert calls to our TestWatcher call-backs.
-        
+
         Most of this method is a copy of the unittest.TestCase.run() method source.
+        
+        Kwargs:
+            result: TestResult object.
         """
         orig_result = result
         if result is None:
