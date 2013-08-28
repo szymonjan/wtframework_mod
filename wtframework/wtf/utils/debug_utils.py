@@ -14,13 +14,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from __future__ import print_function
+from datetime import datetime
 from wtframework.wtf.config import WTF_CONFIG_READER
+import inspect
 
 """
 The purpose of this class is to provide tools for helping debug WTF tests.
 """
-from datetime import datetime
-import inspect
 
 class TimeDebugger(object):
     "Object to keeps track of time and has utility methods to print it"
@@ -44,9 +45,9 @@ class TimeDebugger(object):
         """
         if print_frame_info:
             frame_info = inspect.getouterframes(inspect.currentframe())[1]
-            print message, (datetime.now() - self.start_time), frame_info
+            print(message, (datetime.now() - self.start_time), frame_info)
         else:
-            print message, (datetime.now() - self.start_time)
+            print(message, (datetime.now() - self.start_time))
 
 
     def get_split(self):
@@ -59,7 +60,7 @@ class TimeDebugger(object):
         return (datetime.now() - self.start_time)
 
 
-def print_debug(*args):
+def print_debug(*args, **kwargs):
     """
     Print if and only if the debug flag is set true in the config.yaml file.
     
@@ -68,4 +69,4 @@ def print_debug(*args):
 
     """
     if WTF_CONFIG_READER.get("debug", False) == True:
-        print args
+        print(*args, **kwargs)
