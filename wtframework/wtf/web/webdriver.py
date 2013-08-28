@@ -19,6 +19,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from threading import current_thread
 from wtframework.wtf.config import WTF_CONFIG_READER
+from wtframework.wtf.utils.debug_utils import print_debug
 
 
 
@@ -236,16 +237,13 @@ class WebDriverManager(object):
         '''
         self.__webdriver = {} # Object with channel as a key
         self.__registered_drivers = {}
-        
+
         if config:
             self.__config = config
         else:
             self.__config = WTF_CONFIG_READER
 
-        if self.__config.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True):
-            self.__use_shutdown_hook = True
-        else:
-            self.__use_shutdown_hook = False
+        self.__use_shutdown_hook = self.__config.get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True)
 
         if( webdriver_factory != None):
             self._webdriver_factory = webdriver_factory
@@ -259,16 +257,16 @@ class WebDriverManager(object):
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
-        print "WebdriverManager : Cleaning up webdrivers"
+        print_debug("WebdriverManager : Cleaning up webdrivers")
         try:
             if self.__use_shutdown_hook:
                 for key in self.__registered_drivers.keys():
                     for driver in self.__registered_drivers[key]:
                         try:
-                            print "Closing webdriver for thread: ", key
+                            print_debug("Closing webdriver for thread: ", key)
                             driver.quit()
-                        except Exception as e:
-                            print e
+                        except:
+                            pass
         except:
             pass
 
@@ -349,9 +347,9 @@ class WebDriverManager(object):
 
         # Get reference for the current driver.
         driver = self.__get_driver_for_channel(channel)
-        
+
         if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
-            
+
             if driver is None:
                 driver = self._webdriver_factory.create_webdriver(testname=testname)
 
@@ -450,5 +448,13 @@ Usage::
     driver.get('http://www.example.com')
 
 """
+# Adding a shut down hook for cleaning up webdrivers that get 
+# created by WTF_WEBDRIVER_MANAGER instnace.
+try: 
+    import atexit
+    atexit.register(WTF_WEBDRIVER_MANAGER.clean_up_webdrivers)
+except:
+    pass
+
 
 
