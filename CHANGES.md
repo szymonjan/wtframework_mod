@@ -1,3 +1,6 @@
+## v0.3.4
+- Restored `WTF_WEBDRIVER_MANAGER` shut down hook.
+
 ## v0.3.3
 - Remove duplicate instance of data_utils to avoid confusion.
 - Updated documentation
