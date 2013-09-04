@@ -16,7 +16,6 @@
 ##########################################################################
 
 from tests.pages.search_page import ISearchPage
-from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.web.page import PageFactory
 
 
@@ -31,5 +30,5 @@ def perform_search(search_term, webdriver):
     webdriver.get("http://www.google.com")
     search_page = PageFactory.create_page(ISearchPage, webdriver)
     search_page.search(search_term)
-    WTF_TIMEOUT_MANAGER.brief_pause() #brief pause to allow type-ahead search to trigger.
+
     return search_page

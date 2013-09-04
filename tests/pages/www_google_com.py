@@ -1,5 +1,6 @@
 
 from tests.pages.search_page import ISearchPage
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.web.page import PageObject, InvalidPageError
 
 
@@ -34,6 +35,9 @@ class GoogleSearchPage(PageObject, ISearchPage):
         # We can call a mapped element by calling it's lambda function.
         self.search_field().send_keys(search_string)
         
+        # The WTF_TIMEOUT_MANAGER is handy for inserting configurable waits.
+        # In this case we're doing a brief pause to allow the type-ahead search to complete.
+        WTF_TIMEOUT_MANAGER.brief_pause() 
 
     # Here we are implementing the validate result contains method.
     def result_contains(self, text_to_check):

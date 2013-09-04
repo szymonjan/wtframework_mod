@@ -41,3 +41,8 @@ def get_admin_user():
 
 def get_admin_password():
     return WTF_CONFIG_READER.get("admin_password", "password")
+
+
+def get_search_provider():
+    "Configure this via the 'search_provider' setting."
+    return WTF_CONFIG_READER.get("search_provider", "http://www.google.com")

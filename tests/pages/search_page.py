@@ -17,3 +17,8 @@ class ISearchPage(object):
     def result_contains(self):
         "Submit a search"
         pass
+
+# Import your subpages Implementing an Interface in the 
+# "__init__.py" so PageFactory will know about it's existence.
+import tests.pages.www_google_com #@UnusedImport
+import tests.pages.www_yahoo_com #@UnusedImport
