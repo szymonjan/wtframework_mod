@@ -43,7 +43,7 @@ selenium:
   # Browser can be the following options.
   # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
   # INTERNETEXPLORER, IPAD, IPHONE, OPERA, SAFARI, PHANTOMJS
-  browser: PHANTOMJS
+  browser: FIREFOX
 
   # Required if browser is set to CROME.  This should point to the chrome driver path 
   # relative to root '/'.

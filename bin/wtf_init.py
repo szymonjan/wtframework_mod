@@ -18,11 +18,10 @@
 
 from optparse import OptionParser
 from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
-    _root_folder_placeholder_, _runtests_py_, _search_page_py_, \
-    _google_search_page_py_, _yahoo_search_page_py_, _tests_pages_init_, \
-    _test_example_py_
+    _root_folder_placeholder_, _runtests_py_, _examples_
 import os.path
 import wtframework
+
 
 
 ################# UTILITY METHODS ######################
@@ -34,8 +33,8 @@ def ensure_dir(dir_path):
     else: 
         print "{0} already exists".format(dir_path)
 
-def create_file(filepath, contents):
-    if not os.path.exists(filepath):
+def create_file(filepath, contents, overwrite=False):
+    if not os.path.exists(filepath) or overwrite:
         print "Creating {0}".format(filepath)
         text_file = open(filepath, "w")
         text_file.write(contents)
@@ -116,16 +115,14 @@ if __name__ == '__main__':
 
 # Wiredrive Test Framework - WTF
 wtframework=={version}
+
     """.format(version=wtframework.__VERSION__))
 
     if options.examples == True:
         print "Generating example files."
-        create_file(project_dir + "/tests/tests/test_example.py", _test_example_py_.content)
-        create_file(project_dir + "/tests/pages/search_page.py", _search_page_py_.content)
-        create_file(project_dir + "/tests/pages/www_google_com.py", _google_search_page_py_.content)
-        create_file(project_dir + "/tests/pages/www_yahoo_com.py", _yahoo_search_page_py_.content)
-        with open(project_dir + "/tests/pages/__init__.py", "a") as init_file:
-            init_file.write(_tests_pages_init_.contents)
+        
+        for key in _examples_.examples.keys():
+            create_file(project_dir + "/" + key, _examples_.examples[key], overwrite=True)
 
 
 

@@ -16,13 +16,14 @@
 ##########################################################################
 
 
+from tests.flows.search_flows import perform_search
 from tests.pages.search_page import ISearchPage
 from tests.pages.www_google_com import GoogleSearchPage
 from tests.pages.www_yahoo_com import YahooSearchPage
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.testobjects.basetests import WTFBaseTest
 from wtframework.wtf.web.page import PageFactory
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-import time
 import unittest
 
 # Extend the WTFBaseTest to get access to WTF added features like 
@@ -52,7 +53,11 @@ class Test(WTFBaseTest):
         
         # With your PageObject instantiated, you can call it's methods.
         google_page.search("hello world")
-        time.sleep(5) # dumb wait to allow google live search to populate.
+        
+        # The WTF_TIMEOUT_MANAGER is handy for inserting configurable waits.
+        # In this case we're doing a brief pause to allow the type-ahead search to complete.
+        WTF_TIMEOUT_MANAGER.brief_pause() 
+        
         self.assertTrue(google_page.result_contains("hello world"))
 
 
@@ -72,6 +77,12 @@ class Test(WTFBaseTest):
         search_page = PageFactory.create_page(ISearchPage, webdriver)
         self.assertEqual(YahooSearchPage, type(search_page))
 
+
+    def test_using_flows(self):
+        "Demonstrate abstracting out several steps into 1 call into a flow"
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
+        search_page = perform_search("hello world", webdriver)
+        self.assertTrue(search_page.result_contains("hello world"))
 
 
 if __name__ == "__main__":

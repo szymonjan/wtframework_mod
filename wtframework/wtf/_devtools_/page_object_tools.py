@@ -14,11 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-'''
-Created on Feb 6, 2013
 
-@author: davidlai
-'''
 from datetime import datetime
 from wtframework.wtf._devtools_.filetemplates import _page_object_template_
 import re
