@@ -41,6 +41,9 @@ def do_and_ignore(lambda_func):
             driver.find_element_by_id("logoutButton").click()
         except Exception as e:
             print e
+    
+    This function is useful for wrapping cleanup calls, since it'll ignore any errors 
+    and keeps the test moving along.
 
     """
     try:
@@ -65,19 +68,19 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
                             from the iterator as a parameter.
     
                             
-        Example::
+    Example::
 
-            numbers = [1, 2, 3, 4, 5, 6]
-            matcher = lambda num: num % 2 == 0
-            action = lambda num: print num
-            do_if_match(numbers, matcher, action) # prints 2
-        
-        Is equivalent to:
+        numbers = [1, 2, 3, 4, 5, 6]
+        matcher = lambda num: num % 2 == 0
+        action = lambda num: print num
+        do_if_match(numbers, matcher, action) # prints 2
+    
+    Is equivalent to:
 
-            numbers = [1, 2, 3, 4, 5, 6]
-            for num in numbers:
-                if num % 2 == 0:
-                    print num
+        numbers = [1, 2, 3, 4, 5, 6]
+        for num in numbers:
+            if num % 2 == 0:
+                print num
 
     """
     if message is None:

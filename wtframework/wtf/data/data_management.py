@@ -24,7 +24,23 @@ import os
 class DataManager(object):
     """
     This class is responsible for providing utilities for accessing 
-    test data, the ones stored in the /data folder.
+    test data, the ones stored in the /data folder.  There is a global singleton instance 
+    called 'WTF_DATA_MANAGER' that you can use.
+    
+    The idea of having a DataManager class is so you can remove hard coded references to your 
+    data files.  This allows other people who have a copy of your project in a different location 
+    to be able to run your tests just as easily.
+    
+    Instead of::
+    
+        open("/usr/local/mickey/MyProject/data/testdata.csv")
+        
+    We can reference it without using path information that's specific to where you have your project located.::
+    
+        open(WTF_DATA_MANAGER.get_data_path('testdata.csv')
+    
+    This will look for the 'testdata.csv' file relative to YourProject/data folder.
+
     """
     
     _data_path = None
@@ -58,6 +74,12 @@ class DataManager(object):
 
         Returns:
             String - path to file.
+
+        Usage::
+        
+            open(WTF_DATA_MANAGER.get_data_path('testdata.csv')
+        
+        Note: WTF_DATA_MANAGER is a provided global instance of DataManager
 
         """
         if env_prefix == None:

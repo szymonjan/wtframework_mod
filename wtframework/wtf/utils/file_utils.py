@@ -49,7 +49,9 @@ def create_temp_file(file_name=None, string_or_another_file = ""):
     """
     Creates a temp file using a given name.  Temp files are placed in the Project/temp/ 
     directory.  Any temp files being created with an existing temp file, will be 
-    overridden.
+    overridden.  This is useful for testing uploads, where you would want to create a 
+    temporary file with a desired name, upload it, then delete the file when you're 
+    done.
 
     Kwargs:
         file_name (str): Name of file
@@ -59,6 +61,12 @@ def create_temp_file(file_name=None, string_or_another_file = ""):
     
     Return: 
         str - Returns the file path to the generated temp file.
+
+    Usage::
+    
+        temp_file_path = create_temp_file("mytestfile", "The nimble fox jumps over the lazy dog.")
+        file_obj = open(temp_file_path)
+        os.remove(temp_file_path)
 
     """
     temp_file_path = temp_path(file_name)
@@ -78,7 +86,12 @@ def create_temp_file(file_name=None, string_or_another_file = ""):
 
 def download_to_tempfile(url, file_name=None, extension=None):
     """
-    Downloads a URL contents to a tempfile.
+    Downloads a URL contents to a tempfile.  This is useful for testing downloads.
+    It will download the contents of a URL to a tempfile, which you then can 
+    open and use to validate the downloaded contents.
+    
+    Args:
+        url (str) : URL of the contents to download.
     
     Kwargs:
         file_name (str): Name of file.
