@@ -16,23 +16,28 @@
 ##########################################################################
 
 
+from tests.flows.search_flows import perform_search
 from tests.pages.search_page import ISearchPage
 from tests.pages.www_google_com import GoogleSearchPage
 from tests.pages.www_yahoo_com import YahooSearchPage
+from tests.testdata.settings import get_search_provider
 from wtframework.wtf.testobjects.basetests import WTFBaseTest
+from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageFactory
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-import time
 import unittest
 
 # Extend the WTFBaseTest to get access to WTF added features like 
 # taking screenshot on test failure.
 class Test(WTFBaseTest):
 
-
     def tearDown(self):
         "This tear down will close the current allocated webdriver"
-        WTF_WEBDRIVER_MANAGER.close_driver()
+        
+        # do_and_ignore() is a handle wrapper that let's you run a statement 
+        # and not care if it errors or not.  This is helpful for tearDown
+        # routines where the success/failure is not part of the test result.
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
 
 
     def test_basic_example(self):
@@ -52,7 +57,7 @@ class Test(WTFBaseTest):
         
         # With your PageObject instantiated, you can call it's methods.
         google_page.search("hello world")
-        time.sleep(5) # dumb wait to allow google live search to populate.
+        
         self.assertTrue(google_page.result_contains("hello world"))
 
 
@@ -72,6 +77,41 @@ class Test(WTFBaseTest):
         search_page = PageFactory.create_page(ISearchPage, webdriver)
         self.assertEqual(YahooSearchPage, type(search_page))
 
+
+    def test_using_flows(self):
+        """
+        Demonstrate abstracting out several steps into 1 call into a flow
+        
+        Let's say we have 2 or 3 steps that are repeated over and over again.
+        Then it's a good idea to make it a workflow ('flow'), that can be 
+        reused between different tests.
+        """
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
+        search_page = perform_search("hello world", webdriver)
+        self.assertTrue(search_page.result_contains("hello world"))
+
+
+    def test_using_the_testdata(self):
+        """
+        Demonstrates getting a setting via testdata package, and WTF_CONFIG_READER
+        
+        By default it'll use google.com, but you can add this line in the config file 
+        (by default it's default.yaml) You can override this setting.
+        
+        Insert the line below and run again to see this same test run in Yahoo.
+        
+            search_provider: http://www.yahoo.com
+        
+        By creating  testdata functions to abstract directly accessing WTF_CONFIG_READER, 
+        we can reduce the number of hard coded strings that needs to be refactored if 
+        configuration settings need to be refactored.
+        """
+        search_url = get_search_provider()
+        webdriver = WTF_WEBDRIVER_MANAGER.new_driver()
+        webdriver.get(search_url)
+        search_page = PageFactory.create_page(ISearchPage, webdriver)
+        search_page.search("hello world")
+        self.assertTrue(search_page.result_contains("hello world"))
 
 
 if __name__ == "__main__":

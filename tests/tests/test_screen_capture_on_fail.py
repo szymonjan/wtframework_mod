@@ -15,15 +15,19 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-import unittest
 from wtframework.wtf.testobjects.basetests import WTFBaseTest
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+import unittest
 
 
 class TestScreenCaptureOnFail(WTFBaseTest):
     """"
     These test cases are expected to fail.  They are here to test 
     the screen capture on failure.
+    
+    To see these running, comment out the 'expectedFailure' 
+    decorators, then run them.  Upon failures, you should see 
+    screenshots generated in the /screenshots folder.
     """
 
     # Comment out decorator to manually test the screen capture.

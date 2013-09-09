@@ -1,3 +1,7 @@
+## v0.3.5
+- Added more code examples.
+- Reworked how example files are generated.
+
 ## v0.3.4
 - Restored `WTF_WEBDRIVER_MANAGER` shut down hook.
 

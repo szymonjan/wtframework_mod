@@ -15,10 +15,20 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from datetime import datetime
-from wtframework.wtf._devtools_.filetemplates import _test_template_
+from tests.pages.search_page import ISearchPage
+from wtframework.wtf.web.page import PageFactory
 
-def generate_empty_test(test_name):
-    "Generates an empty test extending WTFBaseTest"
-    date = datetime.now()
-    return _test_template_.content.format(date=date, testname=test_name)
+
+# You can use flow functions to group together a set of calls you make frequently 
+# so you can reuse them between tests.
+
+def perform_search(search_term, webdriver):
+    """
+    This flow function groups together a navigation to the search page, and 
+    a search.
+    """
+    webdriver.get("http://www.google.com")
+    search_page = PageFactory.create_page(ISearchPage, webdriver)
+    search_page.search(search_term)
+
+    return search_page

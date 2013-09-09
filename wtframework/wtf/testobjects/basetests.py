@@ -25,6 +25,33 @@ class WTFBaseTest(WatchedTestCase):
     '''
     Test can extend this basetest to add additional unit test functionality such as 
     take screenshot on failure.
+    
+    Example::
+    
+        from wtframework.wtf.testobjects.basetests import WTFBaseTest
+        from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+        
+        class TestScreenCaptureOnFail(WTFBaseTest):
+            """"
+            These test cases are expected to fail.  They are here to test 
+            the screen capture on failure.
+            """
+
+            # Comment out decorator to manually test the screen capture.
+            @unittest.expectedFailure
+            def test_fail(self):
+                driver = WTF_WEBDRIVER_MANAGER.new_driver()
+                driver.get('http://www.google.com')
+                self.fail()
+                #Check your /screenshots folder for a screenshot of Google Homepage.
+
+
+    For the screen capture to work, you need to make sure you use WTF_WEBDRIVER_MANAGER for 
+    getting your webdriver instance. This is used for getting the current instance of webdriver 
+    when a test fails in order to take a screenshot.
+    
+    WTFBaseTest is also an instance of WatchedTestCase, which you can use to add additional 
+    call backs you wish to use for handling errors or other test events.
     '''
 
     def __init__(self, methodName='runTest', webdriver_provider=None, screenshot_util=None):
@@ -51,6 +78,10 @@ class WTFBaseTest(WatchedTestCase):
     def assertWithDelayedFailure(self, assert_method, *args, **kwargs):
         """
         Cause an assertion failure to be delayed till the end of the test.
+        This is good to use if you want the test to continue after an assertion
+        fails, and do addtional assertions.  At the end of the test, it will 
+        pool all the test failures into 1 failed assert with a summary of 
+        all the test failures that occurred during the test.
         
         Args:
             assert_method (function) - Assert method to run.
