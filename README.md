@@ -289,6 +289,13 @@ to avoid cluttering your high level tests and test flows with low level UI logic
 See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageobject.html
 
 
+Getting Help
+====
+* WTFramework Wiki - https://github.com/wiredrive/wtframework/wiki
+* Documentation https://wtframework.readthedocs.org/en/latest/
+* email - David Lai <david@wiredrive.com>
+
+
 Misc
 ====
 
