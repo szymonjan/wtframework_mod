@@ -1,3 +1,6 @@
+## v0.3.6
+- Placeholder
+
 ## v0.3.5
 - Added more code examples.
 - Reworked how example files are generated.
