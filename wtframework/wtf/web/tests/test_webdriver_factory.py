@@ -108,7 +108,7 @@ class TestWebDriverFactory(unittest2.TestCase):
         when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
         
         try: # Check if the person running this test has a config specified for phantom JS, otherwise use default.
-            path = WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH, None)
+            path = WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH)
             when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(path)
         except KeyError:
             when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
