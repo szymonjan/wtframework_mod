@@ -106,14 +106,19 @@ class TestWebDriverFactory(unittest2.TestCase):
         config_reader = mock(ConfigReader)
         when(config_reader).get(WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
         when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
-        when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH, None))
         
+        try: # Check if the person running this test has a config specified for phantom JS, otherwise use default.
+            path = WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH, None)
+            when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(path)
+        except KeyError:
+            when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
-        
+
         # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
-        
+
         # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q') #google's famous q element.
 
