@@ -1,3 +1,6 @@
+## v0.3.6
+- Added support for passing executable path config for PhantomJS driver.
+
 ## v0.3.5
 - Added more code examples.
 - Reworked how example files are generated.
