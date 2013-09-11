@@ -49,6 +49,10 @@ selenium:
   # relative to root '/'.
   #chromedriver_path: /Users/username/path/to/chromedriver
 
+  # Specify path to phantomjs if different than the default location expected by selenium.
+  # relative to root '/'
+  # phantomjs_path: /usr/bin/phantomjs
+
   # Desired capabilities to pass to Selenium Grid.
   # Required if using selenium Grid.
   desired_capabilities:

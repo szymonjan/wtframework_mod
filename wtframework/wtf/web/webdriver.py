@@ -28,6 +28,12 @@ class WebDriverFactory(object):
     This class constructs a Selenium Webdriver using settings in the config file.
     This allows you to substitute different webdrivers by changing the config settings 
     while keeping your tests using the same webdriver interface.
+    
+    Ideally you will not use this directly.  You will normally use WTF_WEBDRIVER_MANAGER.new_driver() 
+    to create a new instance of webdriver.
+    
+    You can extend this class for the purposes of adding support for webdrivers that are not 
+    currently supported.
     '''
     
     #    Note: please be sure to uncomment the Unit test and run them manually before 
@@ -41,6 +47,7 @@ class WebDriverFactory(object):
     BROWSER_TYPE_CONFIG = "selenium.browser"
     DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
+    PHANTOMEJS_EXEC_PATH = "selenium.phantomjs_path"
 
     _DEFAULT_SELENIUM_SERVER_FOLDER = "selenium-server"
 
@@ -126,13 +133,24 @@ class WebDriverFactory(object):
                              WebDriverFactory.FIREFOX: lambda:webdriver.Firefox(),\
                              WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
                              WebDriverFactory.OPERA:lambda:webdriver.Opera(),
-                             WebDriverFactory.PHANTOMJS:lambda:webdriver.PhantomJS()}
+                             WebDriverFactory.PHANTOMJS:lambda:self.__create_phantom_js_driver()}
 
         try:
             return browser_type_dict[browser_type]()
         except KeyError:
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
         # End of method.
+
+    def __create_phantom_js_driver(self):
+        '''
+        Creates an instance of PhantomJS driver.
+        '''
+        try:
+            return webdriver.PhantomJS(executable_path=self._config_reader.get(self.PHANTOMEJS_EXEC_PATH),
+                                       service_args=['--ignore-ssl-errors=true'])
+        except KeyError:
+            return webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+
 
     def __create_remote_webdriver_from_config(self, testname=None):
         '''

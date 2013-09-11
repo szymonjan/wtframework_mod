@@ -1,3 +1,7 @@
+## v0.3.6
+- Added support for passing executable path config for PhantomJS driver.
+- Added ignore ssl error flag to PhantomJS driver startup
+
 ## v0.3.5
 - Added more code examples.
 - Reworked how example files are generated.
