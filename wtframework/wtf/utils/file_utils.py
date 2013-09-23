@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+import re
 """
 This module contains functions for working with files.
 """
@@ -108,8 +109,13 @@ def download_to_tempfile(url, file_name=None, extension=None):
     if extension:
         file_path = temp_path(file_name + extension)
     else:
-        file_path = temp_path(file_name)
-    
+        ext = ""
+        try:
+            ext = re.search("\\.\\w+$", file_name).group(0)
+        except:
+            pass
+        file_path = temp_path(file_name + ext)
+
     webFile = urllib.urlopen(url)
     localFile = open(file_path, 'w')
     localFile.write(webFile.read())
