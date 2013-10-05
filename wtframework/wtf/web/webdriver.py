@@ -188,8 +188,12 @@ class WebDriverFactory(object):
             else: # Handle has a single string value.
                 if isinstance(value, basestring):
                     desired_capabilities[prop] = value
-                else:
+                    
+                elif prop is "version": # Version is specified as a string, but we'll allow user to use an int for convenience.
                     desired_capabilities[prop] = str(value)
+
+                else:
+                    desired_capabilities[prop] = value
 
         # Set the test name property if specified in the WTF_TESTNAME var.
         try:
