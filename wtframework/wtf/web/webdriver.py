@@ -189,7 +189,7 @@ class WebDriverFactory(object):
                 if isinstance(value, basestring):
                     desired_capabilities[prop] = value
                     
-                elif prop is "version": # Version is specified as a string, but we'll allow user to use an int for convenience.
+                elif prop == "version": # Version is specified as a string, but we'll allow user to use an int for convenience.
                     desired_capabilities[prop] = str(value)
 
                 else:
