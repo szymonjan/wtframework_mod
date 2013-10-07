@@ -1,3 +1,6 @@
+## v0.3.7
+- Stop casting all desired capabilities settings to strings. (only browser version)
+
 ## v0.3.6
 - Added support for passing executable path config for PhantomJS driver.
 - Added ignore ssl error flag to PhantomJS driver startup
