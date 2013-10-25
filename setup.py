@@ -41,6 +41,6 @@ setup(
         "unittest2>=0.5.1",
         "ddt>=0.2.0",
         "pyyaml>=3.10",
-        "selenium>=2.35.0",
+        "selenium>=2.37.2",
     ],
 )

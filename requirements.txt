@@ -37,6 +37,6 @@ ddt>=0.2.0
 pyyaml>=3.10
 
 # Selenium WebDriver for driving browsers.
-selenium>=2.35.0
+selenium>=2.37.2
 
 
