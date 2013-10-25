@@ -1,3 +1,6 @@
+## v0.3.8
+- Add support for Safari as local webdriver.
+
 ## v0.3.7
 - Stop casting all desired capabilities settings to strings. (only browser version)
 

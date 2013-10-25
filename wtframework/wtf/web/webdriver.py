@@ -20,6 +20,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from threading import current_thread
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.utils.debug_utils import print_debug
+import os
 
 
 
@@ -41,6 +42,7 @@ class WebDriverFactory(object):
     #    because the unit tests for this class can use up billable hours on sauce labs 
     #    or open annoying browser windows.
 
+
     # CONFIG SETTINGS #
     DRIVER_TYPE_CONFIG = "selenium.type"
     REMOTE_URL_CONFIG = "selenium.remote_url"
@@ -48,8 +50,8 @@ class WebDriverFactory(object):
     DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
     PHANTOMEJS_EXEC_PATH = "selenium.phantomjs_path"
+    SELENIUM_SERVER_LOCATION = "selenium.selenium_server_path"
 
-    _DEFAULT_SELENIUM_SERVER_FOLDER = "selenium-server"
 
     # BROWSER CONSTANTS #
     HTMLUNIT = "HTMLUNIT"
@@ -64,6 +66,8 @@ class WebDriverFactory(object):
     PHANTOMJS = "PHANTOMJS"
     SAFARI = "SAFARI"
 
+    # ENV vars that are used by selenium.
+    __SELENIUM_SERVER_JAR_ENV = "SELENIUM_SERVER_JAR"
 
     # Instance Variables#
     _config_reader = None
@@ -133,13 +137,30 @@ class WebDriverFactory(object):
                              WebDriverFactory.FIREFOX: lambda:webdriver.Firefox(),\
                              WebDriverFactory.INTERNETEXPLORER: lambda:webdriver.Ie(),\
                              WebDriverFactory.OPERA:lambda:webdriver.Opera(),
-                             WebDriverFactory.PHANTOMJS:lambda:self.__create_phantom_js_driver()}
+                             WebDriverFactory.PHANTOMJS:lambda:self.__create_phantom_js_driver(),
+                             WebDriverFactory.SAFARI: lambda: self.__create_safari_driver()
+                             }
 
         try:
             return browser_type_dict[browser_type]()
         except KeyError:
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
         # End of method.
+
+    def __create_safari_driver(self):
+        '''
+        Creates an instance of Safari webdriver.
+        '''
+        # Check for selenium jar env file needed for safari driver.
+        if not os.getenv(self.__SELENIUM_SERVER_JAR_ENV):
+            #If not set, check if we have a config setting for it.
+            try:
+                selenium_server_path = self._config_reader.get(self.SELENIUM_SERVER_LOCATION)
+                os.environ[self.__SELENIUM_SERVER_JAR_ENV] = selenium_server_path
+            except KeyError:
+                raise RuntimeError("Missing selenium server path config {0}.".format(self.SELENIUM_SERVER_LOCATION))
+
+        return  webdriver.Safari()
 
     def __create_phantom_js_driver(self):
         '''
