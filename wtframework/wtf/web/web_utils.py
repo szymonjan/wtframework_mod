@@ -151,7 +151,7 @@ class BrowserStandBy(object):
 
     """
     
-    def __init__(self, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
+    def __init__(self, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5, **kwargs):
         """
         Constructor
 
@@ -167,6 +167,32 @@ class BrowserStandBy(object):
         self.webdriver = webdriver
         self._sleep_time = sleep
         self._max_time = max_time
+
+        self._autostart = False
+        try:
+            if kwargs['_autostart']:
+                self._autostart = True
+        except KeyError:
+            pass
+
+
+    @classmethod
+    def start_standby(cls, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
+        """
+        Create an instance of BrowserStandBy() and immediately return a running instance.
+        
+        This is best used in a 'with' block.
+        
+        Example::
+
+            with BrowserStandBy.start_standby():
+                # Now browser is in standby, you can do a bunch of stuff with in this block.
+                # ...
+            
+            # We are now outside the block, and the browser standby has ended.
+
+        """
+        return cls(webdriver=webdriver, max_time=max_time, sleep=sleep, _autostart=True)
 
 
     def start(self):
@@ -202,6 +228,14 @@ class BrowserStandBy(object):
         self._thread = None
 
 
+    def __enter__(self):
+        if self._autostart:
+            self.start()
+        return self
+
+    def __exit__(self, type_, value, traceback):
+        # Stop standby on exit
+        do_and_ignore(lambda: self.stop())
 
 
 class WindowNotFoundError(RuntimeError):

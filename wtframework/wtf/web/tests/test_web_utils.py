@@ -43,6 +43,17 @@ class TestWebUtils(unittest2.TestCase):
         self.assertLess(fakedriver.counter, 8)
 
 
+    def test_browserstandby_withstmt(self):
+        fakedriver = WebdriverCallCounterTestStub()
+
+        with BrowserStandBy.start_standby(fakedriver, max_time=10, sleep=1):
+            time.sleep(5)
+
+        self.assertGreater(fakedriver.counter, 4)
+        self.assertLess(fakedriver.counter, 8)
+
+
+
 class WebdriverCallCounterTestStub(object):
     "Lazy Stub for testing"
     def __init__(self):

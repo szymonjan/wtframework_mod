@@ -1,5 +1,6 @@
 ## v0.3.8
 - Add support for Safari as local webdriver.
+- Add context manager for BrowserStandBy (so it can be used in a 'with' block)
 
 ## v0.3.7
 - Stop casting all desired capabilities settings to strings. (only browser version)
