@@ -49,6 +49,9 @@ selenium:
   # relative to root '/'.
   #chromedriver_path: /Users/username/path/to/chromedriver
 
+  # Path of Selenium server Jar file.  This is needed for Safari Driver.
+  #selenium_server_path: /path/to/selenium-server-standalone-2.37.0.jar
+
   # Desired capabilities to pass to Selenium Grid.
   # Required if using selenium Grid.
   desired_capabilities:
