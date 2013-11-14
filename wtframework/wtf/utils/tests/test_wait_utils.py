@@ -61,6 +61,13 @@ class TestWaitUtils(unittest2.TestCase):
             #Means we got the wrong error.
             raise e
 
+    def test_wait_until_with_optional_message(self):
+        try:
+            wait_until(lambda: False, message="test custom message")
+        except OperationTimeoutError as e:
+            self.assertIn("test custom message", e.message, 
+                          "Custom message should be in raised exception's message text.")
+
 
     def test_do_until_retries_until_action_successful(self):
         self.__x = 0
