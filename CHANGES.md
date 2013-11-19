@@ -1,4 +1,7 @@
 ## v0.3.8
+- Added ability to specify messages to various timeout errors.
+
+## v0.3.8
 - Added support for local Safari Driver
 
 ## v0.3.7
