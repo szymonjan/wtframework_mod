@@ -18,8 +18,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from threading import current_thread
-from wtframework.wtf.config import WTF_CONFIG_READER
+from wtframework.wtf.config import WTF_CONFIG_READER, TimeOutManager
 from wtframework.wtf.utils.debug_utils import print_debug
+import time
 
 
 
@@ -112,7 +113,15 @@ class WebDriverFactory(object):
             #handle as local webdriver
             self.webdriver = self.__create_driver_from_browser_config()
 
-        self.webdriver.maximize_window()
+        try:
+            self.webdriver.maximize_window()
+        except:
+            # wait a short period and try again.
+            time.sleep(5000)
+            try:
+                self.webdriver.maximize_window()
+            except Exception as e:
+                print "Unable to maxmize browser window. It may be possible the browser did not instantiate correctly.", e
 
         return self.webdriver
 
