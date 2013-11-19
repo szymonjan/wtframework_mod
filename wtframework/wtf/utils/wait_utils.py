@@ -31,7 +31,7 @@ class OperationTimeoutError(Exception):
     pass
 
 
-def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False):
+def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False, message=None):
     '''
     Waits wrapper that'll wait for the condition to become true.
     
@@ -43,6 +43,7 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
         sleep (number) : Sleep time to wait between iterations.
         pass_exceptions (bool) : If set true, any exceptions raised will be re-raised up the chain.
                                 Normally exceptions are ignored.
+        message (str) : Optional message to pass into OperationTimeoutError if the wait times out.
 
     Example::
 
@@ -75,11 +76,14 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
             else:
                 pass
         time.sleep(sleep)
+    
+    if message:
+        raise OperationTimeoutError(message)
+    else:
+        raise OperationTimeoutError("Operation timed out.")
 
-    raise OperationTimeoutError("Operation timed out.")
 
-
-def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
+def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message=None):
     '''
     A retry wrapper that'll keep performing the action until it succeeds.
     
@@ -89,6 +93,7 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
     Kwargs: 
         timeout (number): Timeout period in seconds.
         sleep (number) : Sleep time to wait between iterations
+        message (str) : Provide a message for TimeoutError raised.
     
     Returns:
         The value of the evaluated lambda expression.
@@ -118,5 +123,8 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
             last_exception = e
             time.sleep(sleep)
 
-    raise OperationTimeoutError("Operation timed out.", last_exception)
+    if message:
+        raise OperationTimeoutError(message, last_exception)
+    else:
+        raise OperationTimeoutError("Operation timed out.", last_exception)
 

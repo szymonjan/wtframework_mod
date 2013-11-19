@@ -1,3 +1,7 @@
+## v0.3.9
+- Added ability to specify messages to various timeout errors.
+- Log warning instead of halting the test if Safari window cannot be maximized.
+
 ## v0.3.8
 - Added support for local Safari Driver
 
