@@ -1,3 +1,6 @@
+## v0.3.10
+- Resolve merge issues in v0.3.9
+
 ## v0.3.9
 - Added ability to specify messages to various timeout errors.
 - Log warning instead of halting the test if Safari window cannot be maximized.
