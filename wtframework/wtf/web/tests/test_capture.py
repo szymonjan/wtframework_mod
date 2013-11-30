@@ -31,7 +31,8 @@ class TestCapture(unittest2.TestCase):
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_capture_file_created_and_valid_png")
         self.driver.get("http://www.yahoo.com")
         fname = "test"
-        fpath = os.path.join(WebScreenShotUtil.SCREEN_SHOT_LOCATION, fname + ".png")
+        prj_root = ProjectUtils.get_project_root()
+        fpath = os.path.join(prj_root, WebScreenShotUtil.SCREEN_SHOT_LOCATION, fname + ".png")
         try:
             WebScreenShotUtil.take_screenshot(self.driver, fname)
             self.assertTrue(os.path.isfile(fpath))
