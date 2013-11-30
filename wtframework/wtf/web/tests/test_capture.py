@@ -17,6 +17,7 @@
 import imghdr
 import os
 import unittest2
+from wtframework.wtf.utils.project_utils import ProjectUtils
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
