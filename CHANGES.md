@@ -1,3 +1,6 @@
+## v0.3.11
+- Fixed screenshot capture for non-unix systems. (thanks Hellspam)
+
 ## v0.3.10
 - Resolve merge issues in v0.3.9
 
