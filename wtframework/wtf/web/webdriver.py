@@ -202,7 +202,7 @@ class WebDriverFactory(object):
                                  WebDriverFactory.PHANTOMJS:DesiredCapabilities.PHANTOMJS}
 
         try:
-            desired_capabilities = browser_constant_dict[browser_type]
+            desired_capabilities = browser_constant_dict[browser_type].copy()
         except KeyError:
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
 
