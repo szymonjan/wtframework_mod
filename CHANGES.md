@@ -1,3 +1,7 @@
+## v0.3.12
+- Log the node info of the remote webdriver if possible. (to help debugging)
+- Copy desired capabilities to prevent any unintended side effects.
+
 ## v0.3.11
 - Fixed screenshot capture for non-unix systems. (thanks Hellspam)
 

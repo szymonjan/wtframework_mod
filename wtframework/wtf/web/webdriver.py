@@ -15,14 +15,16 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+import os
+import sys
 from threading import current_thread
 import time
+import urllib2
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.utils.debug_utils import print_debug
-import os
 
 
 class WebDriverFactory(object):
@@ -162,7 +164,7 @@ class WebDriverFactory(object):
         '''
         # Check for selenium jar env file needed for safari driver.
         if not os.getenv(self.__SELENIUM_SERVER_JAR_ENV):
-            #If not set, check if we have a config setting for it.
+            # If not set, check if we have a config setting for it.
             try:
                 selenium_server_path = self._config_reader.get(self.SELENIUM_SERVER_LOCATION)
                 os.environ[self.__SELENIUM_SERVER_JAR_ENV] = selenium_server_path
@@ -202,7 +204,7 @@ class WebDriverFactory(object):
                                  WebDriverFactory.PHANTOMJS:DesiredCapabilities.PHANTOMJS}
 
         try:
-            desired_capabilities = browser_constant_dict[browser_type]
+            desired_capabilities = browser_constant_dict[browser_type].copy()
         except KeyError:
             raise TypeError("Unsupported Browser Type {0}".format(browser_type))
 
@@ -237,10 +239,25 @@ class WebDriverFactory(object):
             desired_capabilities['name'] += "-" + testname
             
         # Instantiate remote webdriver.
-        return webdriver.Remote(
+        driver = webdriver.Remote(
             desired_capabilities=desired_capabilities,
             command_executor=remote_url
         )
+
+        # Log IP Address of node, so it can be used to troubleshoot issues if they occur.
+        if ("wd/hub" in remote_url):
+            try:
+                grid_addr = remote_url[:remote_url.index("wd/hub")]
+                info_request_response = urllib2.urlopen(grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)
+                node_info = info_request_response.read()
+                sys.stderr.write("RemoteWebdriver using node: " + str(node_info).strip())
+            except:
+                # Unable to get IP Address of remote webdriver.
+                # This happens with many 3rd party grid providers as they don't want you accessing info on nodes on 
+                # their internal network.
+                pass 
+
+        return driver
         # End of method.
 
     def __flatten_capabilities(self, desired_capabilities, prefix, setting_group):
@@ -281,7 +298,7 @@ class WebDriverManager(object):
     def __init__(self, webdriver_factory=None, config=None):
         '''
         Initializer
-        
+
         Kwargs:
             webdriver_factory (WebDriverFactory): Override default webdriver factory. 
             config (ConfigReader): Override default config reader.
