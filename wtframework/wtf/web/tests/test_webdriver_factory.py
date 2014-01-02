@@ -137,7 +137,7 @@ class MockConfigWithSauceLabs(object):
             remote_url: {0}
             browser: FIREFOX
             desired_capabilities:
-                platform: Windows 7
+                platform: WINDOWS
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
         """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
         # TODO: Might be good to replace this with a local grid to avoid using up SauceLab automation hours.
@@ -145,23 +145,26 @@ class MockConfigWithSauceLabs(object):
 
 
 
-    def get(self,key):
+    def get(self,key, default_value=None):
         '''
         Gets the value from the yaml config based on the key.
         
         No type casting is performed, any type casting should be 
         performed by the caller.
         '''
-        if "." in key:
-            #this is a multi levl string
-            namespaces = key.split(".")
-            temp_var = self.map
-            for name in namespaces:
-                temp_var = temp_var[name]
-            return temp_var
-        else:
-            value = self.map[key]
-            return value
+        try:
+            if "." in key:
+                #this is a multi levl string
+                namespaces = key.split(".")
+                temp_var = self.map
+                for name in namespaces:
+                    temp_var = temp_var[name]
+                return temp_var
+            else:
+                value = self.map[key]
+                return value
+        except:
+            return default_value
 
 
 
