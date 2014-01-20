@@ -1,3 +1,6 @@
+## v0.3.13
+- Fixes relating to unicode in error handling.
+
 ## v0.3.12
 - Log the node info of the remote webdriver if possible. (to help debugging)
 - Copy desired capabilities to prevent any unintended side effects.

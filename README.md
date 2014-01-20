@@ -292,8 +292,8 @@ See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageo
 Getting Help
 ====
 * WTFramework Wiki - https://github.com/wiredrive/wtframework/wiki
-* Documentation https://wtframework.readthedocs.org/en/latest/
-* email - David Lai <david@wiredrive.com>
+* Documentation - https://wtframework.readthedocs.org/en/latest/
+* Google Groups - https://groups.google.com/forum/#!forum/wtframework
 
 
 Misc
