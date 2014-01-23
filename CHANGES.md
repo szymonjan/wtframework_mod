@@ -1,4 +1,4 @@
-## v0.3.13
+## v0.4.0
 - Fixes relating to unicode in error handling.
 
 ## v0.3.12

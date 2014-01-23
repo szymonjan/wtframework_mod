@@ -1,4 +1,4 @@
-WTF - Web Test Framework
+WTF - Web Test Framework  [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
 ======
 https://github.com/wiredrive/wtframework
 
