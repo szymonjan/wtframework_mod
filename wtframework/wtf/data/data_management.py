@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -30,21 +30,21 @@ class DataManager(object):
     The idea of having a DataManager class is so you can remove hard coded references to your 
     data files.  This allows other people who have a copy of your project in a different location 
     to be able to run your tests just as easily.
-    
+
     Instead of::
-    
+
         open("/usr/local/mickey/MyProject/data/testdata.csv")
-        
+
     We can reference it without using path information that's specific to where you have your project located.::
-    
+
         open(WTF_DATA_MANAGER.get_data_path('testdata.csv')
-    
+
     This will look for the 'testdata.csv' file relative to YourProject/data folder.
 
     """
-    
+
     _data_path = None
-    
+
     _DATA_FOLDER_ = "data"
 
     def __init__(self):
@@ -52,16 +52,11 @@ class DataManager(object):
         Constructor
 
         """
-        root = ProjectUtils.get_project_root()
-        if root[-1] == '/' or root[-1] == '\\':
-            self._data_path = ProjectUtils.get_project_root() + DataManager._DATA_FOLDER_
-        else:
-            self._data_path = ProjectUtils.get_project_root() + "/" + DataManager._DATA_FOLDER_
-            
+        self._data_path = os.path.join(ProjectUtils.get_project_root(), DataManager._DATA_FOLDER_)
+
         if not os.path.exists(self._data_path):
             raise RuntimeError("Missing data folder.  Please check to make sure you have a /data directory.")
 
-    
     def get_data_path(self, filename, env_prefix=None):
         """
         Get data path.
@@ -87,15 +82,15 @@ class DataManager(object):
         else:
             target_file = os.path.join(env_prefix, filename)
 
-        if os.path.exists(os.path.join(self._data_path , target_file) ):
+        if os.path.exists(os.path.join(self._data_path , target_file)):
             return os.path.join(self._data_path , target_file)
         else:
-            raise DataNotFoundError("Cannot find data: {0}".format(target_file))
+            raise DataNotFoundError(u"Cannot find data: {0}".format(target_file))
 
 
 class DataNotFoundError(RuntimeError):
-    """Raised when data cannot be located.
-    
+    """
+    Raised when data cannot be located.
     """
     pass
 
@@ -140,12 +135,12 @@ class CsvReader(object):
         try:
             entry = {}
             row = self._csv_reader.next()
-            for i in range(0,len(row)):
+            for i in range(0, len(row)):
                 entry[self._headers[i]] = row[i]
             
             return entry
         except Exception as e:
-            #close our file when we're done reading.
+            # close our file when we're done reading.
             self._file.close()
             raise e
     
