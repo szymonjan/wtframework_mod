@@ -1,5 +1,6 @@
 ## v0.4.0
-- Fixes relating to unicode in error handling.
+- Convert all strings to use unicode.  You can now use unicode data within your tests
+  now.
 
 ## v0.3.12
 - Log the node info of the remote webdriver if possible. (to help debugging)
