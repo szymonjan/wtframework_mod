@@ -52,10 +52,6 @@ class DataManager(object):
         Constructor
 
         """
-        root = ProjectUtils.get_project_root()
-        if root[-1] == "/":
-            root = root[:-1]
-
         self._data_path = os.path.join(ProjectUtils.get_project_root(), DataManager._DATA_FOLDER_)
 
         if not os.path.exists(self._data_path):
