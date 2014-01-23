@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -61,15 +61,15 @@ if __name__ == '__main__':
         url = args[2]
         print "Generating page object for url:", url
         file_content = page_object_tools.generate_page_object(pagename, url)
-        create_file(ProjectUtils.get_project_root() \
-                    +"tests/pages/{pagename}.py".format(pagename=pagename.lower()), file_content)
+        path = os.path.join(ProjectUtils.get_project_root(), "tests", "pages", pagename.lower() + ".py")
+        create_file(path, file_content)
 
     elif args[0] == "generate-test":
         test_name = args[1]
         print "Generating generic test."
         file_content = test_generation_tools.generate_empty_test(test_name)
         create_file(ProjectUtils.get_project_root() \
-                    +"tests/tests/{test_name}.py".format(test_name=test_name),\
+                    + "tests/tests/{test_name}.py".format(test_name=test_name), \
                     file_content)
         
     else:

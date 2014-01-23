@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -38,10 +38,9 @@ class WebScreenShotUtil():
             file_name (str) - File name to save screenshot as.
 
         """
-        file_location = os.path.join(ProjectUtils.get_project_root() +
-                                            WebScreenShotUtil.SCREEN_SHOT_LOCATION + 
-                                            file_name + 
-                                            ".png")
+        file_location = os.path.join(ProjectUtils.get_project_root(),
+                                            WebScreenShotUtil.SCREEN_SHOT_LOCATION,
+                                            file_name + ".png")
 
         WebScreenShotUtil.__capture_screenshot(webdriver, file_location)
 
@@ -54,7 +53,7 @@ class WebScreenShotUtil():
             webdriver (WebDriver) - Selenium webdriver.
             file_name (str) - File name to save screenshot as.
         """
-        file_location = os.path.join(ProjectUtils.get_project_root() +
+        file_location = os.path.join(ProjectUtils.get_project_root() + 
                                     WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION + 
                                     file_name + 
                                     ".png")

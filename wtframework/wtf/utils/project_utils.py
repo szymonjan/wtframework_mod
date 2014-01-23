@@ -43,7 +43,7 @@ class ProjectUtils(object):
             return cls.__root_folder__
 
         path = os.getcwd()
-        seperator_matches = re.finditer("/|\\\\", path)
+        seperator_matches = re.finditer(u"/|\\\\", path)
 
         paths_to_search = [path]
         for match in seperator_matches:
@@ -51,10 +51,11 @@ class ProjectUtils(object):
             paths_to_search.insert(0, p)
 
         for path in paths_to_search:
-            if os.path.isfile("{0}/.wtf_root_folder".format(path)):
-                cls.__root_folder__ = path + "/"
+            target_path = os.path.join(path, ".wtf_root_folder")
+            if os.path.isfile(target_path):
+                cls.__root_folder__ = path
                 return cls.__root_folder__
 
-        raise RuntimeError("Missing root project folder locator file '.wtf_root_folder'." \
-                           + "Check to make sure this file is located in your project directory.")
+        raise RuntimeError(u"Missing root project folder locator file '.wtf_root_folder'." \
+                           + u"Check to make sure this file is located in your project directory.")
 

@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -49,7 +49,10 @@ def do_and_ignore(lambda_func):
     try:
         return lambda_func()
     except Exception as e:
-        print e
+        try:
+            print e
+        except:
+            print "unknown error"
         return None
 
 

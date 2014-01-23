@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
 
         """
         try:
-            #run assertion.
+            # run assertion.
             function()
 
             return None
@@ -161,7 +161,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
             if not additional_debug_info:
                 self.exception_list.append(e)
             else:
-                self.exception_list.append((e,additional_debug_info))
+                self.exception_list.append((e, additional_debug_info))
             return e
 
 
@@ -181,13 +181,13 @@ class DelayedTestFailure(AssertionError):
         super(DelayedTestFailure, self).__init__(*args, **kwargs)
         self.exception_list = args
     
-    #Overriding __str__ to make the error message easier to read.
+    # Overriding __str__ to make the error message easier to read.
     def __str__(self, *args, **kwargs):
         exception_string = ""
         count = 0
         for exception_entry in self.exception_list:
             count += 1
-            exception_string += "\nError {0}: ".format(count) + exception_entry.__str__()
+            exception_string += u"\nError {0}: ".format(count) + exception_entry.__str__()
         
         return AssertionError.__str__(self, *args, **kwargs) + exception_string
 
@@ -252,11 +252,11 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             str - File Name.
 
         '''
-        fname = type(testcase).__name__ + "_" + testcase._testMethodName
-        fname = re.sub("[^a-zA-Z_]+", "_", fname)
-        #Trim test case name incase it's too long.
+        fname = unicode(type(testcase).__name__) + u"_" + unicode(testcase._testMethodName)
+        fname = re.sub(u"[^a-zA-Z_]+", u"_", fname)
+        # Trim test case name incase it's too long.
         fname = fname[:20]
-        fmt='%y-%m-%d_%H.%M.%S_{fname}'
+        fmt = u'%y-%m-%d_%H.%M.%S_{fname}'
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
 
 
@@ -272,7 +272,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             try:
                 name = self.__generate_screenshot_filename__(testcase)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
-                print "Screenshot taken:" + name
+                print u"Screenshot taken:" + name
             except Exception as e:
-                print "Unable to take screenshot. Reason: " + e.message + str(type(e))
+                print u"Unable to take screenshot. Reason: " + e.message + unicode(type(e))
 

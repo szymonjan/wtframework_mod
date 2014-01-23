@@ -54,7 +54,7 @@ class WebDriverFactory(object):
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
     PHANTOMEJS_EXEC_PATH = "selenium.phantomjs_path"
     SELENIUM_SERVER_LOCATION = "selenium.selenium_server_path"
-
+    LOG_REMOTEDRIVER_PROPS = "selenium.log_remote_webdriver_props"
 
     # BROWSER CONSTANTS #
     HTMLUNIT = "HTMLUNIT"
@@ -236,16 +236,24 @@ class WebDriverFactory(object):
 
         # Append optional testname postfix if supplied.
         if testname:
-            desired_capabilities['name'] += "-" + testname
-            
+            if desired_capabilities['name']:
+                desired_capabilities['name'] += "-" + testname
+            else:
+                # handle case where name is not specified.
+                desired_capabilities['name'] = testname
+
         # Instantiate remote webdriver.
         driver = webdriver.Remote(
             desired_capabilities=desired_capabilities,
             command_executor=remote_url
         )
 
-        # Log IP Address of node, so it can be used to troubleshoot issues if they occur.
-        if ("wd/hub" in remote_url):
+        # Log IP Address of node if configured, so it can be used to troubleshoot issues if they occur.
+        log_driver_props = \
+            self._config_reader.get(\
+                WebDriverFactory.LOG_REMOTEDRIVER_PROPS, default_value=False\
+            ) in [True, "true", "TRUE", "True"] 
+        if "wd/hub" in remote_url and log_driver_props:
             try:
                 grid_addr = remote_url[:remote_url.index("wd/hub")]
                 info_request_response = urllib2.urlopen(grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)

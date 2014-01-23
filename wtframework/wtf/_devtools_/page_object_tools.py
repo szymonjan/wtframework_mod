@@ -24,27 +24,29 @@ def _process_input_tag(html):
     html = html.lower()
 
     #find name property expression, used is varous input types.
-    name_expr = "name=['\"]([^'\"]+)['\"]"
-    value_expr = "value=['\"]([^'\"]+)['\"]"
+    name_expr = u"name=['\"]([^'\"]+)['\"]"
+    value_expr = u"value=['\"]([^'\"]+)['\"]"
     
     # process text input
-    if ("type=\"text\"" in html) or (not "type" in html):
+    if (u"type=\"text\"" in html) or (not u"type" in html):
         try:
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name)
-            obj = "{name}_text = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+            obj = u"{name}_text = lambda self: self.webdriver.find_element_by_name(\"{name}\")"\
+                .format(name=name, display_name=display_name)
             return obj
         except:
             pass
 
     # process password input
-    if ("type=\"password\"" in html):
+    if (u"type=\"password\"" in html):
         try:
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name)
-            if display_name != "password": 
-                display_name += "_password"
-            obj = "{display_name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+            if display_name != u"password": 
+                display_name += u"_password"
+            obj = u"{display_name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")"\
+                .format(name=name, display_name=display_name)
             return obj
         except:
             pass
@@ -54,7 +56,8 @@ def _process_input_tag(html):
         try:
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name)
-            obj = "{name}_textarea = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+            obj = u"{name}_textarea = lambda self: self.webdriver.find_element_by_name(\"{name}\")"\
+                .format(name=name, display_name=display_name)
             
             return obj
         except:
@@ -66,7 +69,8 @@ def _process_input_tag(html):
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             value = re.search(value_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name + "_" + value)
-            obj = "{display_name}_radio = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")".format(name=name, display_name=display_name, value=value)
+            obj = u"{display_name}_radio = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")"\
+                .format(name=name, display_name=display_name, value=value)
             
             return obj
         except:
@@ -79,7 +83,8 @@ def _process_input_tag(html):
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             value = re.search(value_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name + "_" + value)
-            obj = "{display_name}_checkbox = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")".format(name=name, display_name=display_name, value=value)
+            obj = u"{display_name}_checkbox = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")"\
+                .format(name=name, display_name=display_name, value=value)
             
             return obj
         except:
@@ -91,12 +96,14 @@ def _process_input_tag(html):
             try:
                 name = re.search(name_expr, html, re.IGNORECASE).group(1)
                 display_name = _strip_non_chars_from_name(name)
-                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+                obj = u"{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")"\
+                    .format(name=name, display_name=display_name)
                 return obj
             except:
                 value = re.search(value_expr, html, re.IGNORECASE).group(1)
                 display_name = _strip_non_chars_from_name(value)
-                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")".format(value=value, display_name=display_name)
+                obj = u"{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")"\
+                    .format(value=value, display_name=display_name)
                 return obj
         except:
             pass
@@ -107,12 +114,14 @@ def _process_input_tag(html):
             try:
                 name = re.search(name_expr, html, re.IGNORECASE).group(1)
                 display_name = _strip_non_chars_from_name(name)
-                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")".format(name=name, display_name=display_name)
+                obj = u"{display_name}_submit_button = lambda self: self.webdriver.find_element_by_name(\"{name}\")"\
+                    .format(name=name, display_name=display_name)
                 return obj
             except:
                 value = re.search(value_expr, html, re.IGNORECASE).group(1)
                 display_name = _strip_non_chars_from_name(value)
-                obj = "{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")".format(value=value, display_name=display_name)
+                obj = u"{display_name}_submit_button = lambda self: self.webdriver.find_element_by_css_selector(\"input[type='submit'][value='{value}'\")"\
+                    .format(value=value, display_name=display_name)
                 return obj
         except:
             pass
@@ -120,27 +129,27 @@ def _process_input_tag(html):
 
 def _strip_non_chars_from_name(name):
     "remove non alpha chars from name."
-    return re.sub("[^a-zA-Z_]", "_", name).lower()
+    return re.sub(u"[^a-zA-Z_]", "_", name).lower()
 
 def generate_page_object(page_name, url):
     "Generate page object from URL"
     
     # Attempt to extract partial URL for verification.
-    url_with_path = r'^.*//[^/]+([^?]+)?|$'
+    url_with_path = u'^.*//[^/]+([^?]+)?|$'
     try:
         match = re.match(url_with_path, url)
         partial_url = match.group(1)
-        print "Using partial URL for location verification. ", partial_url
+        print u"Using partial URL for location verification. ", partial_url
     except:
         #use full url since we couldn't extract a partial.
         partial_url = url
-        print "Could not find useable partial url, using full url.", url
+        print "Could not find usable partial url, using full url.", url
     
     #Attempt to map input objects.
     print "Processing page source..."
     response = urllib2.urlopen(url)
     html = response.read()
-    input_tags_expr = r'<\s*input[^>]*>'
+    input_tags_expr = u'<\s*input[^>]*>'
     input_tag_iter = re.finditer(input_tags_expr, html, re.IGNORECASE)
     
     objectmap = ""

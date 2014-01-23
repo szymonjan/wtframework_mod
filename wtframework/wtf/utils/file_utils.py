@@ -111,7 +111,7 @@ def download_to_tempfile(url, file_name=None, extension=None):
     else:
         ext = ""
         try:
-            ext = re.search("\\.\\w+$", file_name).group(0)
+            ext = re.search(u"\\.\\w+$", file_name).group(0)
         except:
             pass
         file_path = temp_path(file_name + ext)

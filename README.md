@@ -1,15 +1,13 @@
-WTF - Web Test Framework
+WTF - Web Test Framework  [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
 ======
 https://github.com/wiredrive/wtframework
 
-Selenium does a good job at providing APIs for automating the browser.  What the Web Test 
-Framework (referred to as WTF for short) is to take that base, and build on it to provide 
-a structured test framework for testing a Web Applications in a maintainable manner.  The 
-goal is to provide the project structures and tools to help QA/SDET professionals quickly 
-setup and develop acceptance level web tests which are configurable, robust, and easy to 
-use.  The ultimate goal is to build a common framework on top of Selenium to provide test 
-professionals the tools to build web tests as easily as how Rails and Django makes it easy
-to build web applications.
+Web Test Framework's (referred to as WTF for short) goal is to build on top of Selenium 
+Webdriver tools and and libraries to provide a structured test framework for testing a 
+Web Applications in a maintainable manner.  The goal is to provide the project structures 
+and tools to help QA/SDET professionals quickly setup and develop acceptance level web 
+tests which are configurable, robust, and easy to use.  The ultimate goal is to build a 
+common framework that is highly configurable, maintainable, and easy to use.
 
 
 Installation
@@ -176,9 +174,9 @@ locally on your machine
 
 WTFBaseTest
 -----------
-WTF framework adds some functionality to Python's unittest that are helpful for more end 
-to end level tests.  In order to leverage this functionality, your tests should extend 
-the `WTFBaseTest` base class.  
+WTF framework adds some extensions to Python's unittest that are helpful for more end 
+to end tests functional tests.  In order to leverage this functionality, your tests should 
+extend the `WTFBaseTest` base class.  
 
 WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your own 
 test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
@@ -292,8 +290,8 @@ See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageo
 Getting Help
 ====
 * WTFramework Wiki - https://github.com/wiredrive/wtframework/wiki
-* Documentation https://wtframework.readthedocs.org/en/latest/
-* email - David Lai <david@wiredrive.com>
+* Documentation - https://wtframework.readthedocs.org/en/latest/
+* Google Groups - https://groups.google.com/forum/#!forum/wtframework
 
 
 Misc
