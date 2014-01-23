@@ -62,8 +62,8 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 
     '''
     if not hasattr(condition, '__call__'):
-        raise RuntimeError("Condition argument does not appear to be a callable function." + 
-                           "Please check if this is a properly formatted lambda statement.", 
+        raise RuntimeError(u"Condition argument does not appear to be a callable function." + 
+                           u"Please check if this is a properly formatted lambda statement.", 
                            condition)
     end_time = datetime.now() + timedelta(seconds = timeout)
     while datetime.now() < end_time:

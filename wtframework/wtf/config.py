@@ -125,14 +125,14 @@ class ConfigReader:
                                                 ConfigReader.CONFIG_LOCATION + 
                                                 file_name + 
                                                 ConfigReader.CONFIG_EXT)
-            print "locating config file:", config_file_location
+            print u"locating config file:", config_file_location
             config_yaml = open(config_file_location, 'r')
             dataMap = yaml.load(config_yaml)
             self._dataMaps.insert(0, dataMap)
             config_yaml.close()
         except Exception as e:
-            print "Error loading config file " + file_name
-            raise ConfigFileReadError("Error reading config file " + file_name, e)
+            print u"Error loading config file " + file_name
+            raise ConfigFileReadError(u"Error reading config file " + file_name, e)
 
 
 class ConfigFileReadError(RuntimeError):

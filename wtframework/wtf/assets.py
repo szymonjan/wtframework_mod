@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,8 +15,9 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
+
+from wtframework.wtf.utils.project_utils import ProjectUtils
 
 
 class AssetManager(object):
@@ -59,17 +60,17 @@ class AssetManager(object):
             # path = /your/workspace/location/WTFProjectName/assets/my_asset.png 
 
         """
-        if os.path.exists(self._asset_path + "/" + filename):
-            return self._asset_path + "/" + filename
+        if os.path.exists(os.path.join(self._asset_path, filename)):
+            return os.path.join(self._asset_path, filename)
         else:
-            raise AssetNotFoundError("Cannot find asset: {0}".format(filename))
+            raise AssetNotFoundError(u"Cannot find asset: {0}".format(filename))
 
 
 class AssetNotFoundError(RuntimeError):
     "raised when asset cannot be located."
     pass
 
-## Create Default instance of AssetManager ##
+# # Create Default instance of AssetManager ##
 WTF_ASSET_MANAGER = AssetManager()
 """
 Global instance of AssetManager
