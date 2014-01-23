@@ -45,7 +45,7 @@ class DataManager(object):
 
     _data_path = None
 
-    _DATA_FOLDER_ = "data"
+    _DATA_FOLDER_ = u"data"
 
     def __init__(self):
         """
@@ -85,7 +85,7 @@ class DataManager(object):
         if os.path.exists(os.path.join(self._data_path , target_file)):
             return os.path.join(self._data_path , target_file)
         else:
-            raise DataNotFoundError(u"Cannot find data: {0}".format(target_file))
+            raise DataNotFoundError(u"Cannot find data file: {0}".format(target_file))
 
 
 class DataNotFoundError(RuntimeError):
@@ -143,7 +143,7 @@ class CsvReader(object):
             # close our file when we're done reading.
             self._file.close()
             raise e
-    
+
 
     def __del__(self):
         # close our file if it's not closed yet.
