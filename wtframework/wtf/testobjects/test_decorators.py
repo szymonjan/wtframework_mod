@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,11 +23,14 @@ I'm also adding in a 'csvdata' method decorator for supporting csv data driven t
 """
 
 from functools import wraps
-from wtframework.wtf.data.data_management import CsvReader, WTF_DATA_MANAGER
 import inspect
 import json
 import os
 import re
+
+from six import u
+from wtframework.wtf.data.data_management import CsvReader, WTF_DATA_MANAGER
+
 
 __version__ = '0.4.0wtf'
 
@@ -152,8 +155,8 @@ def ddt(cls):
         if hasattr(f, MAGIC):
             i = 0
             for v in getattr(f, MAGIC):
-                test_name = getattr(v, "__name__", "{0}_{1}".format(name, v))
-                #strip illegal xml characters characters. - DL
+                test_name = getattr(v, "__name__", u("{0}_{1}").format(name, v))
+                # strip illegal xml characters characters. - DL
                 formatted_test_name = re.sub(r'[<>&/]', '', test_name)
                 setattr(cls, formatted_test_name, feed_data(f, v))
                 i = i + 1
@@ -170,26 +173,26 @@ def ddt(cls):
         data_file_path = os.path.join(os.path.dirname(cls_path), file_attr)
 
         def _raise_ve(*args):
-            raise ValueError("%s does not exist" % file_attr)
+            raise ValueError(u("{0} does not exist").format(file_attr))
 
         if os.path.exists(data_file_path) is False:
-            test_name = "{0}_{1}".format(name, "error")
+            test_name = u("{0}_{1}").format(name, "error")
             setattr(cls, test_name, feed_data(_raise_ve, None))
         else:
             data = json.loads(open(data_file_path).read())
             for elem in data:
                 if isinstance(data, dict):
                     key, value = elem, data[elem]
-                    test_name = "{0}_{1}".format(name, key)
+                    test_name = u("{0}_{1}").format(name, key)
                 elif isinstance(data, list):
                     value = elem
-                    test_name = "{0}_{1}".format(name, value)
+                    test_name = u("{0}_{1}").format(name, value)
                 setattr(cls, test_name, feed_data(func, value))
 
     for name, func in list(cls.__dict__.items()):
         if hasattr(func, DATA_ATTR):
             for v in getattr(func, DATA_ATTR):
-                test_name = getattr(v, "__name__", "{0}_{1}".format(name, v))
+                test_name = getattr(v, "__name__", u("{0}_{1}").format(name, v))
                 setattr(cls, test_name, feed_data(func, v))
             delattr(cls, name)
         elif hasattr(func, FILE_ATTR):
