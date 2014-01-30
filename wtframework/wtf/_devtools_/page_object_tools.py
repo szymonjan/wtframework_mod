@@ -167,7 +167,7 @@ def generate_page_object(page_name, url):
                 # we failed to process it, nothing more we can do.
                 pass 
     
-    return _page_object_template_.content.format(date=datetime.now(),
+    return _page_object_template_.contents.format(date=datetime.now(),
                                                 url=url,
                                                 pagename=page_name,
                                                 partialurl=partial_url,

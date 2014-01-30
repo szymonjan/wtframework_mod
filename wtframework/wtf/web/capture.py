@@ -25,8 +25,8 @@ class WebScreenShotUtil():
     Utilities for taking screenshots in Selenium Webdriver.
     '''
 
-    SCREEN_SHOT_LOCATION = "screenshots/"
-    REFERENCE_SCREEN_SHOT_LOCATION = "reference-screenshots/"
+    SCREEN_SHOT_LOCATION = "screenshots"
+    REFERENCE_SCREEN_SHOT_LOCATION = "reference-screenshots"
 
     @staticmethod
     def take_screenshot(webdriver, file_name):
@@ -53,8 +53,8 @@ class WebScreenShotUtil():
             webdriver (WebDriver) - Selenium webdriver.
             file_name (str) - File name to save screenshot as.
         """
-        file_location = os.path.join(ProjectUtils.get_project_root() + 
-                                    WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION + 
+        file_location = os.path.join(ProjectUtils.get_project_root(), 
+                                    WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION, 
                                     file_name + 
                                     ".png")
         WebScreenShotUtil.__capture_screenshot(webdriver, file_location)

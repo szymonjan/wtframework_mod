@@ -108,7 +108,7 @@ def csvdata(csv_file, env_prefix=None):
         
         @csvdata('mydatafile.csv', env_prefix='qa')
         def test_datadriven_test(data):
-            print "column1 data is:", data['column1_name']
+            print("column1 data is:", data['column1_name'])
         
         
     """

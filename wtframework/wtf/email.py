@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,12 +15,16 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-#This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
+# This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
 from __future__ import absolute_import
-from email.parser import HeaderParser
+
 import email
+from email.parser import HeaderParser
 import imaplib
 import re
+
+from wtframework.wtf import _wtflog
+
 
 class IMapEmailAccountObject(object):
     """
@@ -51,10 +55,10 @@ class IMapEmailAccountObject(object):
             password (str): Password
 
         """
-        print "connecting to {0}, using {1},{2}".format(server_address, username, password)
+        _wtflog.info("connecting to %s, using %s:%s", server_address, username, password)
         self._mail = imaplib.IMAP4_SSL(server_address)
         self._mail.login(username, password)
-        print "connected."
+        _wtflog.info("connected.")
 
 
     def check_email_exists_by_subject(self, subject):
@@ -131,12 +135,12 @@ class IMapEmailAccountObject(object):
         msg = email.message_from_string(result[1][0][1])
 
         try:
-            #Try to handle as multipart message first.
+            # Try to handle as multipart message first.
             for part in msg.walk():
                 if part.get_content_type() == message_type :
                     return part.get_payload()
         except:
-            #handle as plain text email
+            # handle as plain text email
             return msg.get_payload()
 
 
@@ -163,7 +167,7 @@ class IMapEmailAccountObject(object):
         # Get first X messages.
         self._mail.select("inbox")
 
-        #apply date filter.
+        # apply date filter.
         try:
             date = kwargs['date']
             date_str = date.strftime("%d-%b-%Y")
@@ -171,7 +175,7 @@ class IMapEmailAccountObject(object):
         except KeyError:
             _, email_ids = self._mail.search(None, 'ALL')
         
-        email_ids = email_ids[0].split() #Above call returns email IDs as an array containing 1 str
+        email_ids = email_ids[0].split()  # Above call returns email IDs as an array containing 1 str
         
         matching_uids = []
         for _ in range(1, min(limit, len(email_ids))):
@@ -203,6 +207,6 @@ class IMapEmailAccountObject(object):
             # Disconnect email.
             self._mail.logout()
         except Exception as e:
-            print e
+            _wtflog.debug(e)
         self._mail = None
 

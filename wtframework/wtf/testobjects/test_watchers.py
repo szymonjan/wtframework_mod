@@ -14,12 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from __future__ import print_function
+
 import abc
 import datetime
 import re
 
 from six import u
+from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
@@ -275,7 +276,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             try:
                 name = self.__generate_screenshot_filename__(testcase)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
-                print("Screenshot taken:", name)
+                _wtflog.warning("Screenshot taken: %s", name)
             except Exception as e:
-                print("Unable to take screenshot. Reason: ", e.message)
+                _wtflog.warning("Unable to take screenshot. Reason: %s", e.message)
 

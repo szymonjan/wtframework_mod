@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,15 +15,17 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
+import re
 from threading import Thread
+import time
 from urllib2 import urlopen
+import urllib2
+
+from six import u
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageFactory
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-import re
-import time
-import urllib2
 
 
 class WebUtils(object):
@@ -70,7 +72,7 @@ class WebUtils(object):
         try:
             return re.findall("^[^/]+//[^/$]+", current_url)[0]
         except:
-            raise RuntimeError("Unable to process base url: {0}".format(current_url) )
+            raise RuntimeError(u("Unable to process base url: {0}").format(current_url))
 
 
     @staticmethod
@@ -84,8 +86,8 @@ class WebUtils(object):
         """
         browser = webdriver.capabilities['browserName']
 
-        if browser == u'iPhone' or \
-        browser == u'android':
+        if browser == u('iPhone') or \
+        browser == u('android'):
             return True
         else:
             return False
@@ -101,8 +103,8 @@ class WebUtils(object):
         """
         browser = webdriver.capabilities['browserName']
 
-        if browser == u'iPhone' or \
-        browser == u'iPad':
+        if browser == u('iPhone') or \
+        browser == u('iPad'):
             return True
         else:
             return False
@@ -133,7 +135,7 @@ class WebUtils(object):
                 pass
         
         webdriver.switch_to_window(original_window)
-        raise WindowNotFoundError("Window {0} not found.")
+        raise WindowNotFoundError(u("Window {0} not found.").format(page_class.__class__.__name__))
 
 
 class BrowserStandBy(object):
@@ -201,7 +203,7 @@ class BrowserStandBy(object):
         webdriver instance to prevent it from timing out.
 
         """
-        self._end_time = datetime.now() + timedelta(seconds = self._max_time)
+        self._end_time = datetime.now() + timedelta(seconds=self._max_time)
         self._thread = Thread(target=lambda: self.__stand_by_loop())
         self._keep_running = True
         self._thread.start()
@@ -220,7 +222,7 @@ class BrowserStandBy(object):
     def __stand_by_loop(self):
         print self._keep_running
         while datetime.now() < self._end_time and self._keep_running:
-            self.webdriver.current_url #Just performing current_url to keep this alive.
+            self.webdriver.current_url  # Just performing current_url to keep this alive.
             time.sleep(self._sleep_time)
 
     def __del__(self):

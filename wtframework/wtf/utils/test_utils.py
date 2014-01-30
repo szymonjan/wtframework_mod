@@ -14,6 +14,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from wtframework.wtf import _wtflog
+from six import u
 """
 This module defines some wrapper functions.
 """
@@ -52,7 +54,7 @@ def do_and_ignore(lambda_func):
         try:
             print e
         except:
-            print "unknown error"
+            _wtflog.debug("unknown error")
         return None
 
 
@@ -87,7 +89,7 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 
     """
     if message is None:
-        message = "Unable to find matching item in " + str(iterator)
+        message = u("Unable to find matching item in ") + u(iterator)
 
     for item in iterator:
         if matching_lambda_expr(item):

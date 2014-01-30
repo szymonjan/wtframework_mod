@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 import os
 import re
+
+from six import u
 
 
 class ProjectUtils(object):
@@ -43,7 +45,7 @@ class ProjectUtils(object):
             return cls.__root_folder__
 
         path = os.getcwd()
-        seperator_matches = re.finditer(u"/|\\\\", path)
+        seperator_matches = re.finditer(u("/|\\\\"), path)
 
         paths_to_search = [path]
         for match in seperator_matches:
@@ -56,6 +58,6 @@ class ProjectUtils(object):
                 cls.__root_folder__ = path
                 return cls.__root_folder__
 
-        raise RuntimeError(u"Missing root project folder locator file '.wtf_root_folder'." \
-                           + u"Check to make sure this file is located in your project directory.")
+        raise RuntimeError(u("Missing root project folder locator file '.wtf_root_folder'.") \
+                           + u("Check to make sure this file is located in your project directory."))
 
