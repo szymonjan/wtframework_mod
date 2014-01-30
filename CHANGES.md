@@ -1,3 +1,7 @@
+## v0.4.1
+- Changes to make library python 2/3 compatible.  Many underhood changes to logging and 
+  string handling.
+
 ## v0.4.0
 - Convert all strings to use unicode.  You can now use unicode data within your tests
   now.
