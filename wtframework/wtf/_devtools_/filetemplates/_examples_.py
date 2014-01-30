@@ -14,16 +14,41 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from six import u
 examples = {}
 
-examples['tests/__init__.py'] = ''''Top level tests folder.  Organize your items in the subfolders below.'
+examples['tests/__init__.py'] = u(''''Top level tests folder.  Organize your items in the subfolders below.'
 
-'''
+''')
 
-examples['tests/flows/__init__.py'] = ''''Put reusable multi-page flows here.'
-'''
+examples['tests/zzztest.py'] = u('''"""
+Created on Jan 30, 2014
 
-examples['tests/flows/search_flows.py'] = '''##########################################################################
+@author: david
+"""
+from __future__ import print_function
+
+import unittest
+
+from wtframework.wtf._devtools_.filetemplates import _default_yaml_
+
+
+class Test(unittest.TestCase):
+
+
+    def testName(self):
+        print(_default_yaml_.contents)
+
+
+if __name__ == "__main__":
+    #import sys;sys.argv = ['', 'Test.testName']
+    unittest.main()
+''')
+
+examples['tests/flows/__init__.py'] = u(''''Put reusable multi-page flows here.'
+''')
+
+examples['tests/flows/search_flows.py'] = u('''##########################################################################
 #This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
@@ -57,21 +82,21 @@ def perform_search(search_term, webdriver):
     search_page.search(search_term)
 
     return search_page
-'''
+''')
 
-examples['tests/models/__init__.py'] = ''''Put models like database abstractions here.'
-'''
+examples['tests/models/__init__.py'] = u(''''Put models like database abstractions here.'
+''')
 
-examples['tests/pages/__init__.py'] = ''''Put your PageObjects here.'
+examples['tests/pages/__init__.py'] = u(''''Put your PageObjects here.'
 
 # Import your subpages Implementing an Interface in the 
 # "__init__.py" so PageFactory will no about it's existence.
 from tests.pages.www_google_com import GoogleSearchPage #@UnusedImport
 from tests.pages.www_yahoo_com import YahooSearchPage #@UnusedImport
 
-'''
+''')
 
-examples['tests/pages/search_page.py'] = '''
+examples['tests/pages/search_page.py'] = u('''
 import abc
 
 
@@ -98,9 +123,9 @@ class ISearchPage(object):
 import tests.pages.www_google_com #@UnusedImport
 import tests.pages.www_yahoo_com #@UnusedImport
 
-'''
+''')
 
-examples['tests/pages/www_google_com.py'] = '''
+examples['tests/pages/www_google_com.py'] = u('''
 from tests.pages.search_page import ISearchPage
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.web.page import PageObject, InvalidPageError
@@ -146,9 +171,9 @@ class GoogleSearchPage(PageObject, ISearchPage):
         "Simple check to see if the word occurs in the page."
         return text_to_check in self.webdriver.page_source
         
-'''
+''')
 
-examples['tests/pages/www_yahoo_com.py'] = '''
+examples['tests/pages/www_yahoo_com.py'] = u('''
 
 from wtframework.wtf.web.page import PageObject, InvalidPageError
 from tests.pages.search_page import ISearchPage
@@ -187,15 +212,15 @@ class YahooSearchPage(PageObject, ISearchPage):
         "Simple check to see if the word occurs in the page."
         return text_to_check in self.webdriver.page_source
         
-'''
+''')
 
-examples['tests/support/__init__.py'] = ''''Put various utility functions you want to reuse here.'
-'''
+examples['tests/support/__init__.py'] = u(''''Put various utility functions you want to reuse here.'
+''')
 
-examples['tests/testdata/__init__.py'] = ''''Put reuseable functions for generating and handling test data here.'
-'''
+examples['tests/testdata/__init__.py'] = u(''''Put reuseable functions for generating and handling test data here.'
+''')
 
-examples['tests/testdata/settings.py'] = '''##########################################################################
+examples['tests/testdata/settings.py'] = u('''##########################################################################
 #This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
@@ -243,12 +268,12 @@ def get_admin_password():
 def get_search_provider():
     "Configure this via the 'search_provider' setting."
     return WTF_CONFIG_READER.get("search_provider", "http://www.google.com")
-'''
+''')
 
-examples['tests/tests/__init__.py'] = ''''Put your high level tests here.'
-'''
+examples['tests/tests/__init__.py'] = u(''''Put your high level tests here.'
+''')
 
-examples['tests/tests/test_example.py'] = '''##########################################################################
+examples['tests/tests/test_example.py'] = u('''##########################################################################
 #This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
@@ -367,9 +392,9 @@ class Test(WTFBaseTest):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
-'''
+''')
 
-examples['tests/tests/test_screen_capture_on_fail.py'] = '''##########################################################################
+examples['tests/tests/test_screen_capture_on_fail.py'] = u('''##########################################################################
 #This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
@@ -428,5 +453,5 @@ class TestScreenCaptureOnFail(WTFBaseTest):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
-'''
+''')
 

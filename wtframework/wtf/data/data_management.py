@@ -16,9 +16,11 @@
 ##########################################################################
 
 
-from wtframework.wtf.utils.project_utils import ProjectUtils
 import csv
 import os
+
+from six import u
+from wtframework.wtf.utils.project_utils import ProjectUtils
 
 
 class DataManager(object):
@@ -45,7 +47,7 @@ class DataManager(object):
 
     _data_path = None
 
-    _DATA_FOLDER_ = u"data"
+    _DATA_FOLDER_ = u("data")
 
     def __init__(self):
         """
@@ -85,7 +87,7 @@ class DataManager(object):
         if os.path.exists(os.path.join(self._data_path , target_file)):
             return os.path.join(self._data_path , target_file)
         else:
-            raise DataNotFoundError(u"Cannot find data file: {0}".format(target_file))
+            raise DataNotFoundError(u("Cannot find data file: {0}").format(target_file))
 
 
 class DataNotFoundError(RuntimeError):

@@ -1,4 +1,7 @@
-content = \
+from six import u
+
+
+contents = u(content = \
 '''#!/usr/bin/env python
 ##########################################################################
 # This file is part of WTFramework. 
@@ -63,4 +66,4 @@ if __name__ == '__main__':
 
 
 
-'''
+''')

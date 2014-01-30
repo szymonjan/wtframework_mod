@@ -1,4 +1,7 @@
-contents = """
+from six import u
+
+
+contents = u("""
 #########################################################################
 # WTF Settings file.  Specify settings using yaml format.
 # ex:
@@ -64,7 +67,10 @@ selenium:
     # Name you'd like to label your sessions. (useful for labeling on sauce)
     name: YourTestProjectName
 
-
+  # Multi Process
+  # Enabling this setting will spawn a unique webdriver per thread, so no 2 threads 
+  # Default is False
+  #threaded: true
 
 
 # Default wait timeout settings. Timeout settings are specified in seconds.
@@ -81,4 +87,4 @@ timeout:
   epic: 300
 
 
-"""
+""")
