@@ -186,6 +186,12 @@ class DelayedTestFailure(AssertionError):
     
     # Overriding __str__ to make the error message easier to read.
     def __str__(self, *args, **kwargs):
+        try:
+            return unicode(self).encode('utf-8')
+        except:
+            return self.__unicode__()
+    
+    def __unicode__(self, *args, **kwargs):
         exception_string = ""
         count = 0
         for exception_entry in self.exception_list:
