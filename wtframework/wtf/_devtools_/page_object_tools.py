@@ -15,12 +15,15 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from __future__ import print_function
+
 from datetime import datetime
-from wtframework.wtf._devtools_.filetemplates import _page_object_template_
 import re
 import urllib2
+
 from six import u
-from __future__ import print_function
+from wtframework.wtf._devtools_.filetemplates import _page_object_template_
+
 
 def _process_input_tag(html):
     html = html.lower()

@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.4.0',
+    version='0.4.1',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework',

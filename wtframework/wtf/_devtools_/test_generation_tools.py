@@ -16,7 +16,9 @@
 ##########################################################################
 
 from datetime import datetime
+
 from wtframework.wtf._devtools_.filetemplates import _test_template_
+
 
 def generate_empty_test(test_name):
     "Generates an empty test extending WTFBaseTest"
