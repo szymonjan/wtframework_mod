@@ -1,6 +1,7 @@
 ## v0.4.1
 - Changes to make library python 2/3 compatible.  Many underhood changes to logging and 
   string handling.
+- Ensure screenshots directory exists before trying to save screenshots.
 
 ## v0.4.0
 - Convert all strings to use unicode.  You can now use unicode data within your tests
