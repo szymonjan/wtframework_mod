@@ -29,8 +29,9 @@ selenium:
   shutdown_hook: true
 
   # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
-  # instance each time.  If set to a number, this  would determine whether the browser 
-  # session should be discarded after a certain time peroid.  
+  # instance each time.  Setting it to false is generally better for more consistent 
+  # results, but will incur the startup time for the browser to start up for each 
+  # test.
   # Default is 'true'
   reusebrowser: true
 
