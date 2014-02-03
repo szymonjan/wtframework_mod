@@ -38,11 +38,10 @@ class WebScreenShotUtil():
             file_name (str) - File name to save screenshot as.
 
         """
-        file_location = os.path.join(ProjectUtils.get_project_root(),
-                                            WebScreenShotUtil.SCREEN_SHOT_LOCATION,
-                                            file_name + ".png")
+        folder_location = os.path.join(ProjectUtils.get_project_root(),
+                                            WebScreenShotUtil.SCREEN_SHOT_LOCATION)
 
-        WebScreenShotUtil.__capture_screenshot(webdriver, file_location)
+        WebScreenShotUtil.__capture_screenshot(webdriver, folder_location, file_name + ".png")
 
     @staticmethod
     def take_reference_screenshot(webdriver, file_name):
@@ -53,16 +52,20 @@ class WebScreenShotUtil():
             webdriver (WebDriver) - Selenium webdriver.
             file_name (str) - File name to save screenshot as.
         """
-        file_location = os.path.join(ProjectUtils.get_project_root(), 
-                                    WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION, 
-                                    file_name + 
-                                    ".png")
-        WebScreenShotUtil.__capture_screenshot(webdriver, file_location)
+        folder_location = os.path.join(ProjectUtils.get_project_root(),
+                                    WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION)
+
+        WebScreenShotUtil.__capture_screenshot(webdriver, folder_location, file_name + ".png")
 
 
     @staticmethod
-    def __capture_screenshot(webdriver, file_location):
+    def __capture_screenshot(webdriver, folder_location, file_name):
         "Capture a screenshot"
+        # Check folder location exists.
+        if not os.path.exists(folder_location) : os.makedirs(folder_location)
+
+        file_location = os.path.join(folder_location, file_name)
+
         if isinstance(webdriver, remote.webdriver.WebDriver):
             # If this is a remote webdriver.  We need to transmit the image data 
             # back across system boundries as a base 64 encoded string so it can 

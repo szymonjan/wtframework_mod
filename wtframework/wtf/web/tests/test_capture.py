@@ -44,3 +44,4 @@ class TestCapture(unittest2.TestCase):
             except OSError:
                 pass
 
+
