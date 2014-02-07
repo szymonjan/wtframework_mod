@@ -89,7 +89,7 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 
     """
     if message is None:
-        message = u("Unable to find matching item in ") + u(iterator)
+        message = u("Unable to find matching item in {0}").format(iterator)
 
     for item in iterator:
         if matching_lambda_expr(item):

@@ -27,6 +27,9 @@ class ProjectUtils(object):
     
     """
 
+    WTF_HOME_CONFIG_ENV_VAR = "WTF_HOME"
+
+    __WTF_ROOT_FOLDER_FILE = ".wtf_root_folder"
 
     __root_folder__ = None
 
@@ -44,6 +47,15 @@ class ProjectUtils(object):
         if(cls.__root_folder__ != None):
             return cls.__root_folder__
 
+        # Check for enviornment variable override.
+        try:
+            cls.__root_folder__ = os.environ[cls.WTF_HOME_CONFIG_ENV_VAR]
+        except KeyError:
+            # Means WTF_HOME override isn't specified.
+            pass
+
+        # Search starting from the current working directory and traverse up parent directories for the 
+        # hidden file denoting the project root folder.
         path = os.getcwd()
         seperator_matches = re.finditer(u("/|\\\\"), path)
 
@@ -53,7 +65,7 @@ class ProjectUtils(object):
             paths_to_search.insert(0, p)
 
         for path in paths_to_search:
-            target_path = os.path.join(path, ".wtf_root_folder")
+            target_path = os.path.join(path, cls.__WTF_ROOT_FOLDER_FILE)
             if os.path.isfile(target_path):
                 cls.__root_folder__ = path
                 return cls.__root_folder__
