@@ -65,8 +65,10 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
     '''
     if not hasattr(condition, '__call__'):
         raise RuntimeError(u("Condition argument does not appear to be a callable function.") + 
-                           u("Please check if this is a properly formatted lambda statement."),
+                           u("Please check if this is a properly formatted lambda/function statement."),
                            condition)
+
+    last_exception = None
     end_time = datetime.now() + timedelta(seconds=timeout)
     while datetime.now() < end_time:
         try:
@@ -76,13 +78,19 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
             if pass_exceptions:
                 raise e
             else:
-                pass
+                last_exception = e
         time.sleep(sleep)
-    
+
     if message:
-        raise OperationTimeoutError(message)
+        if last_exception:
+            raise OperationTimeoutError(message, e)
+        else:
+            raise OperationTimeoutError(message)
     else:
-        raise OperationTimeoutError("Operation timed out.")
+        if last_exception:
+            raise OperationTimeoutError("Operation timed out.", e)
+        else:
+            raise OperationTimeoutError("Operation timed out.")
 
 
 def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message=None):
