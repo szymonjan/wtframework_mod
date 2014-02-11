@@ -275,9 +275,9 @@ you to specify a timeout period (in seconds) to wait for this page to finish loa
 	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, timeout=60)
 
 Note: This will use the PageObject's `_validate_page()` to check if the page is 
-matching the expected page.  It's good to not use a web element in addition to URL or 
-title validation, that way the page validation does not happen until page content appears 
-on the screen.
+matching the expected page.  It's good to use a web element on the page in addition to URL 
+or title validation, that way the page validation does not succeed until page content 
+appears on the screen.
 
 Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
 changes to the mappings and page verification routines.  As a good practice, it's good 
