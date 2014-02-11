@@ -16,15 +16,17 @@
 ##########################################################################
 
 
+import abc
 from datetime import datetime, timedelta
+import time
+
+from six import u
+from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_CONFIG_READER, WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils import wait_utils
-from wtframework.wtf.utils.debug_utils import print_debug
 from wtframework.wtf.utils.wait_utils import do_until
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-import abc
-import time
 
 
 class PageObject(object):
@@ -78,7 +80,7 @@ class PageObject(object):
                     WebScreenShotUtil.take_reference_screenshot(webdriver, class_name)
                     PageObject.__names_of_classes_we_already_took_screen_caps_of__[class_name] = True
                 except Exception as e:
-                    print e  # Some WebDrivers such as head-less drivers does not take screenshots.
+                    _wtflog.error(e)  # Some WebDrivers such as head-less drivers does not take screenshots.
         else:
             pass
 
@@ -233,20 +235,20 @@ class PageFactory():
                 if current_matched_page == None or page > current_matched_page:
                     current_matched_page = page
             except InvalidPageError as e:
-                print_debug("InvalidPageError", e)
+                _wtflog.debug("InvalidPageError: %s", e)
                 pass  # This happens when the page fails check.
             except TypeError as e:
-                print_debug("TypeError", e)
+                _wtflog.debug("TypeError: %s", e)
                 pass  # this happens when it tries to instantiate the original abstract class.
             except Exception as e:
-                print_debug("Exception", e)
+                _wtflog.debug("Exception: %s", e)
                 # Unexpected exception.
                 raise e
 
         # If no matching classes.
         if not isinstance(current_matched_page, PageObject):
-            raise NoMatchingPageError("There's, no matching classes to this page. URL:%s" \
-                                      % webdriver.current_url)
+            raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}") \
+                                      .format(webdriver.current_url))
         else:
             return current_matched_page
 
@@ -291,7 +293,7 @@ class PageFactory():
         ['type', ...'tuple', ...]
         """
         if not isinstance(cls, type):
-            raise TypeError('Argument (%s) passed to PageFactory does not appear to be a valid Class.' % cls, \
+            raise TypeError(u('Argument ({0}) passed to PageFactory does not appear to be a valid Class.').format(cls), \
                             "Check to make sure the first parameter is an PageObject class, interface, or mixin.")
         if _seen is None: _seen = set()
         try:
@@ -405,15 +407,16 @@ class PageUtils():
                 page = PageFactory.create_page(page_obj_class, webdriver=webdriver, **kwargs)
                 return page
             except Exception as e:
-                print "Encountered exception ", e
+                _wtflog.debug("Encountered exception: %s ", e)
                 last_exception = e
-                pass
+
+
             # Check to see if we're at one of those labled 'Bad' pages.
             for bad_page_class in bad_page_classes:
                 try:
                     PageFactory.create_page(bad_page_class, webdriver=webdriver, **kwargs)
                     # if the if/else statement succeeds, than we have an error.
-                    raise BadPageEncounteredError("Encountered a bad page. " + bad_page_class.__name__)
+                    raise BadPageEncounteredError(u("Encountered a bad page. ") + bad_page_class.__name__)
                 except BadPageEncounteredError as e:
                     raise e
                 except:
@@ -423,11 +426,11 @@ class PageUtils():
 
         print "Unable to construct page, last exception", last_exception
         if message:
-            err_msg = message + ":{url}"\
+            err_msg = u(message) + u("{page}:{url}")\
             .format(page=PageUtils.__get_name_for_class__(page_obj_class),
                                      url=webdriver.current_url)
         else:
-            err_msg = "Timedout while waiting for {page} to load. Url:{url}"\
+            err_msg = u("Timed out while waiting for {page} to load. Url:{url}")\
             .format(page=PageUtils.__get_name_for_class__(page_obj_class),
                                      url=webdriver.current_url)
         raise PageLoadTimeoutError(err_msg)

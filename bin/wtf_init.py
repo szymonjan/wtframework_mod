@@ -16,35 +16,37 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from __future__ import print_function
+
 from optparse import OptionParser
+import os.path
+
+import wtframework
 from wtframework.wtf._devtools_.filetemplates import _default_yaml_, \
     _root_folder_placeholder_, _runtests_py_, _examples_
-import os.path
-import wtframework
-
 
 
 ################# UTILITY METHODS ######################
-
 def ensure_dir(dir_path): 
     if not os.path.exists(dir_path):
-        print "Creating {0}".format(dir_path)
+        print("Creating {0}".format(dir_path))
         os.makedirs(dir_path)
     else: 
-        print "{0} already exists".format(dir_path)
+        print("{0} already exists".format(dir_path))
 
 def create_file(filepath, contents, overwrite=False):
     if not os.path.exists(filepath) or overwrite:
-        print "Creating {0}".format(filepath)
+        print("Creating {0}".format(filepath))
         text_file = open(filepath, "w")
         text_file.write(contents)
         text_file.close()
     else:
-        print "{0} already exists.".format(filepath)
+        print("{0} already exists.".format(filepath))
 
 ################# MAIN SETUP SCRIPT ######################
 if __name__ == '__main__':
 
+    # Specify params.
     usage = "usage: %prog NameOfProject [--withexamples]"
     parser = OptionParser(usage=usage)
     parser.add_option("--withexamples", action="store_true",
@@ -57,58 +59,66 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     
     if(options.version_flag):
-        print wtframework.__VERSION__
+        print(wtframework.__VERSION__)
         exit()
-    
+
+    # Handle project directory argument, or prompt to use current directory.
     if len(args) != 1:
-        parser.error("wrong number of arguments")
-    project_dir = os.getcwd() + "/" + args[0]
-    ensure_dir(project_dir)
-    
+        use_cwd = raw_input('Would you like to initialize your wtframework project here: {0}? (Y/n)'.format(os.getcwd()))
+        if use_cwd.lower() in ['n', 'no']:
+            exit(1)
+        else:
+            project_dir = os.getcwd()
+    else:
+        project_dir = os.getcwd() + "/" + args[0]
+        ensure_dir(project_dir)
+
     #create folder root file
-    create_file(project_dir + "/.wtf_root_folder", _root_folder_placeholder_.contents)
+    create_file(os.path.join(project_dir, ".wtf_root_folder"), _root_folder_placeholder_.contents)
+    
     #create runtest script.
-    create_file(project_dir + "/runtests.py", _runtests_py_.content)
+    runtests_path = os.path.join(project_dir, "runtests.py")
+    create_file(runtests_path, _runtests_py_.contents)
     # make file executable
-    os.chmod(project_dir + "/runtests.py", 0755)
+    os.chmod(runtests_path, 0755)
     
     #create asset folder
-    ensure_dir(project_dir + "/assets")
+    ensure_dir(os.path.join(project_dir, "assets"))
 
     #create asset folder
-    ensure_dir(project_dir + "/data")
+    ensure_dir(os.path.join(project_dir,"data"))
     
     #create configs
-    ensure_dir(project_dir + "/configs")
+    ensure_dir(os.path.join(project_dir,"configs"))
     #create default config file
-    create_file(project_dir + "/configs/default.yaml", _default_yaml_.contents)
+    create_file(os.path.join(project_dir,"configs", "default.yaml"), _default_yaml_.contents)
     
     #create reference screenshots dir.
-    ensure_dir(project_dir + "/reference-screenshots")
+    ensure_dir(os.path.join(project_dir, "reference-screenshots"))
     
     #create reports dir
-    ensure_dir(project_dir + "/reports")
+    ensure_dir(os.path.join(project_dir,"reports"))
     
     #create screenshots dir
-    ensure_dir(project_dir + "/screenshots")
+    ensure_dir(os.path.join(project_dir,"screenshots"))
     
     #create tests dir
-    ensure_dir(project_dir + "/tests")
-    create_file(project_dir + "/tests/__init__.py", "'Top level tests folder.  Organize your items in the subfolders below.'")
-    ensure_dir(project_dir + "/tests/flows")
-    create_file(project_dir + "/tests/flows/__init__.py", "'Put reusable multi-page flows here.'")
-    ensure_dir(project_dir + "/tests/models")
-    create_file(project_dir + "/tests/models/__init__.py", "'Put models like database abstractions here.'")
-    ensure_dir(project_dir + "/tests/pages")
-    create_file(project_dir + "/tests/pages/__init__.py", "'Put your PageObjects here.'")
-    ensure_dir(project_dir + "/tests/support")
-    create_file(project_dir + "/tests/support/__init__.py", "Put various utility functions you want to reuse here.'")
-    ensure_dir(project_dir + "/tests/testdata")
-    create_file(project_dir + "/tests/testdata/__init__.py", "'Put reuseable functions for generating and handling test data here.'")
-    ensure_dir(project_dir + "/tests/tests")
-    create_file(project_dir + "/tests/tests/__init__.py", "'Put your high level tests here.'")
+    ensure_dir(os.path.join(project_dir,"tests"))
+    create_file(os.path.join(project_dir,"tests", "__init__.py"), "'Top level tests folder.  Organize your items in the subfolders below.'")
+    ensure_dir(os.path.join(project_dir,"tests", "flows"))
+    create_file(os.path.join(project_dir,"tests", "flows", "__init__.py"), "'Put reusable multi-page flows here.'")
+    ensure_dir(os.path.join(project_dir,"tests", "models"))
+    create_file(os.path.join(project_dir,"tests", "models", "__init__.py"), "'Put models like database abstractions here.'")
+    ensure_dir(os.path.join(project_dir,"tests", "pages"))
+    create_file(os.path.join(project_dir,"tests", "pages", "__init__.py"), "'Put your PageObjects here.'")
+    ensure_dir(os.path.join(project_dir,"tests", "support"))
+    create_file(os.path.join(project_dir,"tests", "support", "__init__.py"), "Put various utility functions you want to reuse here.'")
+    ensure_dir(os.path.join(project_dir,"tests", "testdata"))
+    create_file(os.path.join(project_dir,"tests", "testdata", "__init__.py"), "'Put reuseable functions for generating and handling test data here.'")
+    ensure_dir(os.path.join(project_dir,"tests", "tests"))
+    create_file(os.path.join(project_dir,"tests", "tests", "__init__.py"), "'Put your high level tests here.'")
 
-    create_file(project_dir + "/requirements.txt", """
+    create_file(os.path.join(project_dir,"requirements.txt"), """
 # Requirements.txt file
 # This file contains a list of packages to be installed by PIP
 # when setting up this project.
@@ -119,10 +129,10 @@ wtframework=={version}
     """.format(version=wtframework.__VERSION__))
 
     if options.examples == True:
-        print "Generating example files."
-        
+        print("Generating example files.")
+
         for key in _examples_.examples.keys():
-            create_file(project_dir + "/" + key, _examples_.examples[key], overwrite=True)
+            create_file( os.path.join(project_dir,key), _examples_.examples[key], overwrite=True)
 
 
 

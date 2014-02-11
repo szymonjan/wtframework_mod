@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.4.0',
+    version='0.4.2',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework',
@@ -42,5 +42,6 @@ setup(
         "ddt>=0.2.0",
         "pyyaml>=3.10",
         "selenium>=2.37.2",
+        "six>=1.5.2",
     ],
 )

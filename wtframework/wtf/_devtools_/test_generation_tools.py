@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,9 +16,11 @@
 ##########################################################################
 
 from datetime import datetime
+
 from wtframework.wtf._devtools_.filetemplates import _test_template_
+
 
 def generate_empty_test(test_name):
     "Generates an empty test extending WTFBaseTest"
     date = datetime.now()
-    return _test_template_.content.format(date=date, testname=test_name)
+    return _test_template_.contents.format(date=date, testname=test_name)

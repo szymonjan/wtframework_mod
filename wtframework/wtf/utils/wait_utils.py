@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,8 +19,10 @@ This module contains various utility methods that assist with waiting and pollin
 """
 
 from datetime import datetime, timedelta
-from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 import time
+
+from six import u
+from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 
 
 class OperationTimeoutError(Exception):
@@ -62,10 +64,12 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 
     '''
     if not hasattr(condition, '__call__'):
-        raise RuntimeError(u"Condition argument does not appear to be a callable function." + 
-                           u"Please check if this is a properly formatted lambda statement.", 
+        raise RuntimeError(u("Condition argument does not appear to be a callable function.") + 
+                           u("Please check if this is a properly formatted lambda/function statement."),
                            condition)
-    end_time = datetime.now() + timedelta(seconds = timeout)
+
+    last_exception = None
+    end_time = datetime.now() + timedelta(seconds=timeout)
     while datetime.now() < end_time:
         try:
             if condition():
@@ -74,13 +78,19 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
             if pass_exceptions:
                 raise e
             else:
-                pass
+                last_exception = e
         time.sleep(sleep)
-    
+
     if message:
-        raise OperationTimeoutError(message)
+        if last_exception:
+            raise OperationTimeoutError(message, e)
+        else:
+            raise OperationTimeoutError(message)
     else:
-        raise OperationTimeoutError("Operation timed out.")
+        if last_exception:
+            raise OperationTimeoutError("Operation timed out.", e)
+        else:
+            raise OperationTimeoutError("Operation timed out.")
 
 
 def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message=None):
@@ -114,7 +124,7 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message
             time.sleep(0.5)
 
     '''
-    end_time = datetime.now() + timedelta(seconds = timeout)
+    end_time = datetime.now() + timedelta(seconds=timeout)
     last_exception = None
     while datetime.now() < end_time:
         try:

@@ -1,5 +1,7 @@
+from six import u
 
-contents = """
+
+contents = u("""
 ##########################################################################
 #This file is part of WTFramework. 
 #
@@ -23,4 +25,4 @@ Dummy file to help the WTF framework locate the project root.
 
 
 '''
-"""
+""")

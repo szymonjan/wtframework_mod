@@ -14,14 +14,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from __future__ import print_function
-from datetime import datetime
-from wtframework.wtf.config import WTF_CONFIG_READER
-import inspect
-
 """
 The purpose of this class is to provide tools for helping debug WTF tests.
 """
+
+from __future__ import print_function
+
+from datetime import datetime
+import inspect
+
+from wtframework.wtf.config import WTF_CONFIG_READER
+
 
 class TimeDebugger(object):
     "Object to keeps track of time and has utility methods to print it"

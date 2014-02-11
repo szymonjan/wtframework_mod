@@ -15,12 +15,15 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.config import WTF_CONFIG_READER
-from wtframework.wtf.web.capture import WebScreenShotUtil
-from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import datetime
 import re
+
+from six import u
+from wtframework.wtf import _wtflog
+from wtframework.wtf.config import WTF_CONFIG_READER
+from wtframework.wtf.web.capture import WebScreenShotUtil
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class TestWatcher(object):
@@ -183,13 +186,19 @@ class DelayedTestFailure(AssertionError):
     
     # Overriding __str__ to make the error message easier to read.
     def __str__(self, *args, **kwargs):
+        try:
+            return unicode(self).encode('utf-8')
+        except:
+            return self.__unicode__()
+    
+    def __unicode__(self, *args, **kwargs):
         exception_string = ""
         count = 0
         for exception_entry in self.exception_list:
             count += 1
-            exception_string += u"\nError {0}: ".format(count) + exception_entry.__str__()
+            exception_string += u("\nError {0}: ").format(count) + exception_entry.__str__()
         
-        return AssertionError.__str__(self, *args, **kwargs) + exception_string
+        return u(AssertionError.__str__(self, *args, **kwargs)) + exception_string
 
 
 
@@ -204,6 +213,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     
     
     '''
+    CAPTURE_SCREENSHOT_SETTING = "selenium.take_screenshot"
 
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
@@ -214,7 +224,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             screenshot_util: Override the default screenshot util method.
 
         '''
-        if WTF_CONFIG_READER.get("selenium.take_screenshot", True):
+        if WTF_CONFIG_READER.get(self.CAPTURE_SCREENSHOT_SETTING, True):
             self.capture_screenshot = True
         else:
             self.capture_screenshot = False
@@ -253,10 +263,10 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
 
         '''
         fname = unicode(type(testcase).__name__) + u"_" + unicode(testcase._testMethodName)
-        fname = re.sub(u"[^a-zA-Z_]+", u"_", fname)
+        fname = re.sub(u"[^a-zA-Z_]+", u("_"), fname)
         # Trim test case name incase it's too long.
         fname = fname[:20]
-        fmt = u'%y-%m-%d_%H.%M.%S_{fname}'
+        fmt = u('%y-%m-%d_%H.%M.%S_{fname}')
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
 
 
@@ -272,7 +282,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             try:
                 name = self.__generate_screenshot_filename__(testcase)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
-                print u"Screenshot taken:" + name
+                _wtflog.warning("Screenshot taken: %s", name)
             except Exception as e:
-                print u"Unable to take screenshot. Reason: " + e.message + unicode(type(e))
+                _wtflog.warning("Unable to take screenshot. Reason: %s", e.message)
 
