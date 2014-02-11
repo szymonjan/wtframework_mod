@@ -16,22 +16,24 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from __future__ import print_function
 
 from optparse import OptionParser
+import os
+
+import wtframework
 from wtframework.wtf._devtools_ import page_object_tools, test_generation_tools
 from wtframework.wtf.utils.project_utils import ProjectUtils
-import os
-import wtframework
 
 
 def create_file(filepath, contents):
     if not os.path.exists(filepath):
-        print "Creating {0}".format(filepath)
+        print("Creating {0}".format(filepath))
         text_file = open(filepath, "w")
         text_file.write(contents)
         text_file.close()
     else:
-        print "{0} already exists.".format(filepath)
+        print("{0} already exists.".format(filepath))
 
 
 ################# MAIN SCRIPT ######################
@@ -46,11 +48,11 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     if(options.version_flag):
-        print wtframework.__VERSION__
+        print(wtframework.__VERSION__)
         exit()
 
     if len(args) < 2:
-        print "Invalid command.", usage
+        print("Invalid command.", usage)
         exit(1)
         
     if args[0] == "generate-page":
@@ -59,19 +61,19 @@ if __name__ == '__main__':
 
         pagename = args[1]
         url = args[2]
-        print "Generating page object for url:", url
+        print("Generating page object for url:", url)
         file_content = page_object_tools.generate_page_object(pagename, url)
         path = os.path.join(ProjectUtils.get_project_root(), "tests", "pages", pagename.lower() + ".py")
         create_file(path, file_content)
 
     elif args[0] == "generate-test":
         test_name = args[1]
-        print "Generating generic test."
+        print("Generating generic test.")
         file_content = test_generation_tools.generate_empty_test(test_name)
         create_file(ProjectUtils.get_project_root() \
                     + "tests/tests/{test_name}.py".format(test_name=test_name), \
                     file_content)
         
     else:
-        print "Invalid command.", usage, "\nFor help:\nwtf_tools.py --help\n"
+        print("Invalid command.", usage, "\nFor help:\nwtf_tools.py --help\n")
 

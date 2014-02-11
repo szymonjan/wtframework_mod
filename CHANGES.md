@@ -1,6 +1,7 @@
 ## v0.4.2
 - Embed exceptions raised in wait_until()
 - Create screenshots directory if not exists at the time of screen capture.
+- Fixes to the project generator scripts.
 
 ## v0.4.1
 - Changes to make library python 2/3 compatible.  Many underhood changes to logging and 
