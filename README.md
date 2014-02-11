@@ -308,7 +308,7 @@ You can fork this repository.  To get the unit tests not marked as skipped runni
 you'll need to edit or supply your own config file with values for the selenium settings.
 
 Development on this project is currently done using NVIE branching model.
-Please *do not* submit pull requests directly to *master* (submit pulls against /dev)  
+Please __do not__ submit pull requests directly to __master__ (submit pulls against /dev)  
 http://nvie.com/posts/a-successful-git-branching-model/
 
 CI Scripts are running on Travis, 
