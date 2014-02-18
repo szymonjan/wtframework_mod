@@ -20,6 +20,7 @@ import datetime
 import re
 
 from six import u
+
 from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_CONFIG_READER
 from wtframework.wtf.web.capture import WebScreenShotUtil
@@ -214,6 +215,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     
     '''
     CAPTURE_SCREENSHOT_SETTING = "selenium.take_screenshot"
+    MAX_SCREENSHOT_NAME_LEN_SETTING = "selenium.screenshot_name_max_length"
 
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
@@ -228,7 +230,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             self.capture_screenshot = True
         else:
             self.capture_screenshot = False
-        
+        self.max_screenshot_name_len = int(WTF_CONFIG_READER.get(self.MAX_SCREENSHOT_NAME_LEN_SETTING, 20))
+
         if webdriver_provider == None:
             self._webdriver_provider = WTF_WEBDRIVER_MANAGER
         else:
@@ -265,7 +268,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         fname = unicode(type(testcase).__name__) + u"_" + unicode(testcase._testMethodName)
         fname = re.sub(u"[^a-zA-Z_]+", u("_"), fname)
         # Trim test case name incase it's too long.
-        fname = fname[:20]
+        fname = fname[:self.max_screenshot_name_len]
         fmt = u('%y-%m-%d_%H.%M.%S_{fname}')
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
 
@@ -273,7 +276,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
         Take a screenshot if webdriver is open.
-        
+
         Args:
             testcase: TestCase
 
