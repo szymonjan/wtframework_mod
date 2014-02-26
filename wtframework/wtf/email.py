@@ -61,12 +61,15 @@ class IMapEmailAccountObject(object):
         _wtflog.info("connected.")
 
 
-    def check_email_exists_by_subject(self, subject):
+    def check_email_exists_by_subject(self, subject, match_recipient=None):
         """
         Searches for Email by Subject.  Returns True or False.
         
         Args:
             subject (str): Subject to search for.
+        
+        Kwargs:
+            match_recipient (str) : Recipient to match exactly. (don't care if not specified)
         
         Returns: 
             True - email found, False - email not found
@@ -76,7 +79,7 @@ class IMapEmailAccountObject(object):
         self._mail.select("inbox")
         
         try:
-            matches = self.__search_email_by_subject(subject)
+            matches = self.__search_email_by_subject(subject, match_recipient)
             if len(matches) <= 0:
                 return False
             else:
@@ -84,7 +87,7 @@ class IMapEmailAccountObject(object):
         except Exception as e:
             raise e
 
-    def find_emails_by_subject(self, subject, limit=50):
+    def find_emails_by_subject(self, subject, limit=50, match_recipient=None):
         """
         Searches for Email by Subject.  Returns email's imap message IDs 
         as a list if matching subjects is found.
@@ -94,6 +97,7 @@ class IMapEmailAccountObject(object):
 
         Kwargs:
             limit (int) - Limit search to X number of matches, default 50
+            match_recipient (str) - Recipient to exactly (don't care if not specified)
 
         Returns:
             list - List of Integers representing imap message UIDs.
@@ -105,7 +109,7 @@ class IMapEmailAccountObject(object):
         matches = []
         parser = HeaderParser()
         
-        matching_msg_nums = self.__search_email_by_subject(subject)
+        matching_msg_nums = self.__search_email_by_subject(subject, match_recipient)
 
         for msg_num in matching_msg_nums[-limit:]:
             _, msg_data = self._mail.fetch(msg_num, '(RFC822)')
@@ -196,9 +200,16 @@ class IMapEmailAccountObject(object):
 
 
 
-    def __search_email_by_subject(self, subject):
+    def __search_email_by_subject(self, subject, match_recipient):
         "Get a list of message numbers"
-        _, data = self._mail.search(None, 'SUBJECT', subject)
+        if match_recipient is None:
+            _, data = self._mail.search(None, 'SUBJECT', subject)
+        else:
+            _, data = self._mail.uid('search',
+                                     None, 
+                                     '(HEADER SUBJECT "{subject}" TO "{recipient}")'\
+                                     .format(subject=subject, recipient=match_recipient))
+            
         return data[0].split()
 
     def __del__(self):
