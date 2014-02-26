@@ -204,20 +204,18 @@ class IMapEmailAccountObject(object):
                                      None, 
                                      '(HEADER SUBJECT "{subject}" TO "{recipient}")'\
                                      .format(subject=subject, recipient=match_recipient))
-            # Filter out the messages that does not have an exact recipient match.
-            if re.search("<", match_recipient):
-                email_addr_expr = match_recipient
-            else:
-                email_addr_expr = "<{0}>".format(match_recipient)
+
             filtered_list = []
             uid_list = data[0].split()
             for uid in uid_list:
                 # Those hard coded indexes [1][0][1] is a hard reference to the message email message headers
                 # that's burried in all those wrapper objects that's associated with fetching a message.
-                if re.search("[^-]To: {0}".format(email_addr_expr),self._mail.uid('fetch', uid, "(RFC822)")[1][0][1]):
+                to_addr = re.search("[^-]To: (.*)",self._mail.uid('fetch', uid, "(RFC822)")[1][0][1]).group(1).strip()
+
+                if (to_addr == match_recipient or to_addr == "<{0}>".format(match_recipient)):
                     # Add matching entry to the list.
                     filtered_list.append(uid)
-            
+
             return filtered_list
 
 
