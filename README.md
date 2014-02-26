@@ -275,9 +275,9 @@ you to specify a timeout period (in seconds) to wait for this page to finish loa
 	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, timeout=60)
 
 Note: This will use the PageObject's `_validate_page()` to check if the page is 
-matching the expected page.  It's good to not use a web element in addition to URL or 
-title validation, that way the page validation does not happen until page content appears 
-on the screen.
+matching the expected page.  It's good to use a web element on the page in addition to URL 
+or title validation, that way the page validation does not succeed until page content 
+appears on the screen.
 
 Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
 changes to the mappings and page verification routines.  As a good practice, it's good 
@@ -307,7 +307,8 @@ How to Contribute
 You can fork this repository.  To get the unit tests not marked as skipped running, 
 you'll need to edit or supply your own config file with values for the selenium settings.
 
-Development on this project is currently done using NVIE branching model.  
+Development on this project is currently done using NVIE branching model.
+Please __do not__ submit pull requests directly to __master__ (submit pulls against /dev)  
 http://nvie.com/posts/a-successful-git-branching-model/
 
 CI Scripts are running on Travis, 

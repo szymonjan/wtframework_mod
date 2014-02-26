@@ -1,3 +1,7 @@
+## v0.4.3
+- Config setting for max file length of screen capture on error.
+- Add optional recipient filter to email searches
+
 ## v0.4.2
 - Embed exceptions raised in wait_until()
 - Create screenshots directory if not exists at the time of screen capture.
