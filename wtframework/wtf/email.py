@@ -19,7 +19,6 @@
 from __future__ import absolute_import
 
 import email
-from email.parser import HeaderParser
 import imaplib
 import re
 
@@ -105,21 +104,10 @@ class IMapEmailAccountObject(object):
         """
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
-        
-        matches = []
-        parser = HeaderParser()
-        
-        matching_msg_nums = self.__search_email_by_subject(subject, match_recipient)
 
-        for msg_num in matching_msg_nums[-limit:]:
-            _, msg_data = self._mail.fetch(msg_num, '(RFC822)')
-            raw_msg = msg_data[0][1]
-            msg_headers = parser.parsestr(raw_msg, True)
-            if msg_headers['subject'] == subject:
-                uid = re.search("UID\\D*(\\d+)\\D*", self._mail.fetch(msg_num, 'UID')[1][0]).group(1)
-                matches.append(uid)
+        matching_uids = self.__search_email_by_subject(subject, match_recipient)
 
-        return matches
+        return matching_uids
 
 
 
@@ -204,13 +192,34 @@ class IMapEmailAccountObject(object):
         "Get a list of message numbers"
         if match_recipient is None:
             _, data = self._mail.search(None, 'SUBJECT', subject)
+            _, data = self._mail.uid('search',
+                                     None, 
+                                     '(HEADER SUBJECT "{subject}")'\
+                                     .format(subject=subject))
+
+            uid_list = data[0].split()
+            return uid_list
         else:
             _, data = self._mail.uid('search',
                                      None, 
                                      '(HEADER SUBJECT "{subject}" TO "{recipient}")'\
                                      .format(subject=subject, recipient=match_recipient))
+            # Filter out the messages that does not have an exact recipient match.
+            if re.search("<", match_recipient):
+                email_addr_expr = match_recipient
+            else:
+                email_addr_expr = "<{0}>".format(match_recipient)
+            filtered_list = []
+            uid_list = data[0].split()
+            for uid in uid_list:
+                # Those hard coded indexes [1][0][1] is a hard reference to the message email message headers
+                # that's burried in all those wrapper objects that's associated with fetching a message.
+                if re.search("[^-]To: {0}".format(email_addr_expr),self._mail.uid('fetch', uid, "(RFC822)")[1][0][1]):
+                    # Add matching entry to the list.
+                    filtered_list.append(uid)
             
-        return data[0].split()
+            return filtered_list
+
 
     def __del__(self):
         "Destructor - disconnect from imap when we're done."
