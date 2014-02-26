@@ -1,4 +1,4 @@
-## v0.4.3
+## v0.4.4
 - Config setting for max file length of screen capture on error.
 - Add optional recipient filter to email searches
 
