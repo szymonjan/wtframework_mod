@@ -23,19 +23,22 @@ import yaml
 import time
 
 from six import u
-from wtframework.wtf import _wtflog
+from wtframework.wtf import _wtflog, constants
+
+
 
 class ConfigReader:
     '''
     Config Reader provides a way of reading configuration settings. 
     '''
 
-    CONFIG_LOCATION = 'configs/'
-    DEFAULT_CONFIG_FILE = 'default'
-    CONFIG_EXT = '.yaml'
-
-    ENV_VARS = "WTF_ENV"
     ENV_PREFIX = "WTF_"
+    # NOTE: these vars are defined on __init__.py to avoid loading ConfigReader
+    # when runtests.py is running.
+    CONFIG_LOCATION = constants.WTF_CONFIG_LOCATION
+    DEFAULT_CONFIG_FILE = constants.WTF_DEFAULT_CONFIG_FILE
+    CONFIG_EXT = constants.WTF_CONFIG_EXT
+    ENV_VARS = constants.WTF_ENV_VARS
 
     _dataMaps = None  # instance variable to store config data loaded.
     _singleton_instance = None  # class variable to track singleton.
@@ -54,9 +57,9 @@ class ConfigReader:
                 for config in reversed(configs):
                     self.__load_config_file(config)
             elif not ConfigReader.ENV_VARS in os.environ:
-                _wtflog.warning(u("Config file not specified.  {0}")\
+                _wtflog.warning(u("Config file not specified. Using:{0}")\
                                 .format(os.path.join(ConfigReader.CONFIG_LOCATION,
-                                                     ConfigReader.DEFAULT_CONFIG_FILE)))
+                                                     ConfigReader.DEFAULT_CONFIG_FILE + ConfigReader.CONFIG_EXT)))
                 self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
             else:
                 # Read and load in all configs specified in reverse order

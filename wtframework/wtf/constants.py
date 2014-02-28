@@ -14,7 +14,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-import logging
 
-logging.basicConfig(level=logging.WARNING)
-_wtflog = logging.getLogger('wtframework')
+###
+# Constants that are used by both WTFramework and by the utility script
+# files.  We're putting the constants here to avoid adding an unnecessary
+# dependency on WTFramework classes inside our utility scripts.
+###
+
+# Constants specifying the config structure.
+WTF_CONFIG_LOCATION = 'configs/'
+WTF_DEFAULT_CONFIG_FILE = 'default'
+WTF_CONFIG_EXT = '.yaml'
+WTF_ENV_VARS = "WTF_ENV"
+
