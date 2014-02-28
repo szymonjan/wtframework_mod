@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,59 +23,56 @@ from wtframework.wtf.web.webelement import WebElementSelector, BadSelectorError
 import unittest2
 
 
-
 class TestWebElementSelector(unittest2.TestCase):
+
     '''
     Unit test of the WebElementSelector Class
     '''
 
     driver = None
-    
+
     def setUp(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestWebElementSelector")
-    
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestWebElementSelector")
+
     def tearDown(self):
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
 
-
     def test_find_element_by_selectors_with_GoodSelectorFirst(self):
         self.driver.get("http://www.google.com")
-        
-        element = WebElementSelector.find_element_by_selectors(self.driver, 
+
+        element = WebElementSelector.find_element_by_selectors(self.driver,
                                                                (By.NAME, "q"))
         self.assertIsNotNone(element)
-        
-
 
     def test_find_element_by_selectors_with_GoodSelector2nd(self):
         self.driver.get("http://www.google.com")
-        
-        element = WebElementSelector.find_element_by_selectors(self.driver, 
-                                                               (By.NAME, "somenamenotingoogle.com.blah"),
+
+        element = WebElementSelector.find_element_by_selectors(self.driver,
+                                                               (By.NAME,
+                                                                "somenamenotingoogle.com.blah"),
                                                                (By.NAME, "q"))
         self.assertIsNotNone(element)
 
-
     def test_find_element_by_selectors_with_BadSelectors(self):
         self.driver.get("http://www.google.com")
-        
-        self.assertRaises(ElementNotSelectableException, \
-                          WebElementSelector.find_element_by_selectors, \
-                          self.driver, \
-                          (By.NAME, "somenamenotingoogle.com.blah"), \
-                          (By.ID, "anotherNotSlectable") \
-        )
 
+        self.assertRaises(ElementNotSelectableException,
+                          WebElementSelector.find_element_by_selectors,
+                          self.driver,
+                          (By.NAME, "somenamenotingoogle.com.blah"),
+                          (By.ID, "anotherNotSlectable")
+                          )
 
     def test_find_element_by_selectors_with_IncorrectSelectorTypes(self):
         self.driver.get("http://www.google.com")
 
-        self.assertRaises(BadSelectorError, \
-                          WebElementSelector.find_element_by_selectors, \
-                          self.driver, \
-                          (By.NAME, "somenamenotingoogle.com.blah"), \
-                          ("not valid selector", "anotherNotSlectable") \
-        )
+        self.assertRaises(BadSelectorError,
+                          WebElementSelector.find_element_by_selectors,
+                          self.driver,
+                          (By.NAME, "somenamenotingoogle.com.blah"),
+                          ("not valid selector", "anotherNotSlectable")
+                          )
 
 
 if __name__ == "__main__":

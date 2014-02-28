@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,30 +27,26 @@ before merging any code dealing with Webdriver Factory.
 """
 
 
-
-
-
 class TestWebDriverFactory(unittest2.TestCase):
+
     '''
     Test the WebDriverFactory creates webdriver based on config.
-    
+
     Note: most of these tests will be commented out because they many call physical browsers 
     or call external services that may bill us.
     '''
 
-
     def tearDown(self):
-        #tear down any webdrivers we create.
+        # tear down any webdrivers we create.
         try:
-            if self._driver: self._driver.close()
+            if self._driver:
+                self._driver.close()
         except:
             pass
         self._driver = None
 
-
-
-
-    #Tests running on local are skipped by default so the full suit can run on Travis-CI"
+    # Tests running on local are skipped by default so the full suit can run
+    # on Travis-CI"
     @attr("noci")
     def test_createWebDriver_WithLocalBrowser(self):
         '''
@@ -60,19 +56,19 @@ class TestWebDriverFactory(unittest2.TestCase):
         When making changes to WebDriverFactory, please run this test manually.
         '''
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
-        when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
+        when(config_reader).get(
+            WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
+        when(config_reader).get(
+            WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
 
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
-        
+
         # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
-        
+
         # Check if we can use this instance of webdriver.
-        self._driver.find_element_by_name('q') #google's famous q element.
-
-
+        self._driver.find_element_by_name('q')  # google's famous q element.
 
     def test_createWebDriver_WithGrid(self):
         '''
@@ -82,17 +78,20 @@ class TestWebDriverFactory(unittest2.TestCase):
         on sauce labs.
         '''
         config_reader = MockConfigWithSauceLabs()
-        
+
         driver_factory = WebDriverFactory(config_reader)
-        self._driver = driver_factory.create_webdriver("test_createWebDriver_WithGrid")
+        self._driver = driver_factory.create_webdriver(
+            "test_createWebDriver_WithGrid")
         exception = None
         try:
             self._driver.get('http://saucelabs.com/test/guinea-pig')
-            self.assertGreater(self._driver.session_id, 0, "Did not get a return session id from Sauce.")
+            self.assertGreater(
+                self._driver.session_id, 0, "Did not get a return session id from Sauce.")
         except Exception as e:
             exception = e
         finally:
-            # Make sure we quit sauce labs webdriver to avoid getting billed additonal hours.
+            # Make sure we quit sauce labs webdriver to avoid getting billed
+            # additonal hours.
             try:
                 self._driver.quit()
             except:
@@ -101,17 +100,22 @@ class TestWebDriverFactory(unittest2.TestCase):
         if exception != None:
             raise e
 
-
     def test_create_phantomjs_driver(self):
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
-        when(config_reader).get(WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
-        
-        try: # Check if the person running this test has a config specified for phantom JS, otherwise use default.
+        when(config_reader).get(
+            WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
+        when(config_reader).get(
+            WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
+
+        # Check if the person running this test has a config specified for
+        # phantom JS, otherwise use default.
+        try:
             path = WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH)
-            when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(path)
+            when(config_reader).get(
+                WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(path)
         except KeyError:
-            when(config_reader).get(WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
+            when(config_reader).get(
+                WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
 
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
@@ -120,16 +124,16 @@ class TestWebDriverFactory(unittest2.TestCase):
         self._driver.get("http://www.google.com")
 
         # Check if we can use this instance of webdriver.
-        self._driver.find_element_by_name('q') #google's famous q element.
-
+        self._driver.find_element_by_name('q')  # google's famous q element.
 
 
 class MockConfigWithSauceLabs(object):
+
     '''
     Mock config that returns sauce labs connection string.
     '''
     map = None
-    
+
     def __init__(self):
         config = """
         selenium:
@@ -140,21 +144,20 @@ class MockConfigWithSauceLabs(object):
                 platform: WINDOWS
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
         """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
-        # TODO: Might be good to replace this with a local grid to avoid using up SauceLab automation hours.
+        # TODO: Might be good to replace this with a local grid to avoid using
+        # up SauceLab automation hours.
         self.map = yaml.load(config)
 
-
-
-    def get(self,key, default_value=None):
+    def get(self, key, default_value=None):
         '''
         Gets the value from the yaml config based on the key.
-        
+
         No type casting is performed, any type casting should be 
         performed by the caller.
         '''
         try:
             if "." in key:
-                #this is a multi levl string
+                # this is a multi levl string
                 namespaces = key.split(".")
                 temp_var = self.map
                 for name in namespaces:
@@ -167,8 +170,6 @@ class MockConfigWithSauceLabs(object):
             return default_value
 
 
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()
-

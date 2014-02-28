@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,8 +25,7 @@ import unittest2
 class TestCsvDataDrivenTest(WatchedTestCase):
 
     expected_animals = ['Dog', 'Cat', 'Lizzard']
-    
-    
+
     @csvdata("testdata.csv", "testenv")
     def test_csv_datadriven(self, entry):
         "Test a CSV data driven test runs tests for each data entry."

@@ -1,8 +1,8 @@
 from six import u
 
 
-contents = u(\
-'''#!/usr/bin/env python
+contents = u(
+    '''#!/usr/bin/env python
 ##########################################################################
 # This file is part of WTFramework. 
 #
@@ -23,12 +23,8 @@ contents = u(\
 from __future__ import print_function
 
 from optparse import OptionParser
-import os
-
-
 from wtframework.wtf.utils.project_utils import ProjectUtils
-from wtframework.wtf.constants import WTF_CONFIG_LOCATION, WTF_CONFIG_EXT, \\
-    WTF_ENV_VARS
+from wtframework.wtf.constants import WTF_CONFIG_LOCATION, WTF_CONFIG_EXT, WTF_ENV_VARS
 
 
 if __name__ == '__main__':
@@ -67,6 +63,7 @@ if __name__ == '__main__':
     test_path = os.path.join("tests", "tests") + os.pathsep
     os.system("nosetests-2.7 {test_path} --with-xunit --xunit-file={result_path}"\\
               .format(result_path=result_path, test_path=test_path))
+
 
 
 

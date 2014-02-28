@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ def _process_input_tag(html):
     # find name property expression, used is varous input types.
     name_expr = u"name=['\"]([^'\"]+)['\"]"
     value_expr = u"value=['\"]([^'\"]+)['\"]"
-    
+
     # process text input
     if (u("type=\"text\"") in html) or (not u("type") in html):
         try:
@@ -48,7 +48,7 @@ def _process_input_tag(html):
         try:
             name = re.search(name_expr, html, re.IGNORECASE).group(1)
             display_name = _strip_non_chars_from_name(name)
-            if display_name != u("password"): 
+            if display_name != u("password"):
                 display_name += u("_password")
             obj = u("{display_name} = lambda self: self.webdriver.find_element_by_name(\"{name}\")")\
                 .format(name=name, display_name=display_name)
@@ -76,12 +76,11 @@ def _process_input_tag(html):
             display_name = _strip_non_chars_from_name(name + "_" + value)
             obj = u("{display_name}_radio = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")")\
                 .format(name=name, display_name=display_name, value=value)
-            
+
             return obj
         except:
             pass
 
-    
     # process checkbox types
     if u("type=\"checkbox\"") in html:
         try:
@@ -90,7 +89,7 @@ def _process_input_tag(html):
             display_name = _strip_non_chars_from_name(name + "_" + value)
             obj = u"{display_name}_checkbox = lambda self: self.webdriver.find_element_by_css_selector(\"input[name='{name}'][value='{value}']\")"\
                 .format(name=name, display_name=display_name, value=value)
-            
+
             return obj
         except:
             pass
@@ -136,6 +135,7 @@ def _strip_non_chars_from_name(name):
     "remove non alpha chars from name."
     return re.sub(u"[^a-zA-Z_]", "_", name).lower()
 
+
 def generate_page_object(page_name, url):
     "Generate page object from URL"
 
@@ -149,14 +149,14 @@ def generate_page_object(page_name, url):
         # use full url since we couldn't extract a partial.
         partial_url = url
         print("Could not find usable partial url, using full url.", url)
-    
+
     # Attempt to map input objects.
     print("Processing page source...")
     response = urllib2.urlopen(url)
     html = response.read()
     input_tags_expr = u('<\s*input[^>]*>')
     input_tag_iter = re.finditer(input_tags_expr, html, re.IGNORECASE)
-    
+
     objectmap = ""
     print("Creating object map for <input> tags...")
     for input_tag_match in input_tag_iter:
@@ -168,10 +168,10 @@ def generate_page_object(page_name, url):
             except Exception as e:
                 print(e)
                 # we failed to process it, nothing more we can do.
-                pass 
-    
+                pass
+
     return _page_object_template_.contents.format(date=datetime.now(),
-                                                url=url,
-                                                pagename=page_name,
-                                                partialurl=partial_url,
-                                                objectmap=objectmap)
+                                                  url=url,
+                                                  pagename=page_name,
+                                                  partialurl=partial_url,
+                                                  objectmap=objectmap)

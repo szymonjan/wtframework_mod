@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,10 +28,10 @@ from six import u
 def generate_timestamped_string(subject="test", number_of_random_chars=4):
     """
     Generate time-stamped string. Format as follows...
-    
+
     `2013-01-31_14:12:23_SubjectString_a3Zg`
-    
-    
+
+
     Kwargs:
         subject (str): String to use as subject.
         number_of_random_chars (int) : Number of random characters to append.
@@ -39,7 +39,7 @@ def generate_timestamped_string(subject="test", number_of_random_chars=4):
 
     This method is helpful for creating unique names with timestamps in them so 
     when you have to troubleshoot an issue, the name is easier to find.::
-    
+
         self.project_name = generate_timestamped_string("project")
         new_project_page.create_project(project_name)
 
@@ -54,22 +54,21 @@ def generate_timestamped_string(subject="test", number_of_random_chars=4):
 def generate_timestamp(date_format="%Y-%m-%d_%H.%M.%S"):
     """
     Returns timestamped string. '2012-03-15_14:42:23
-    
+
     Kwargs:
         format: A date/time format string.  If not specified, the default will be used.
 
     """
-    return datetime.now().strftime(date_format);
+    return datetime.now().strftime(date_format)
 
 
 def generate_random_string(number_of_random_chars=8, character_set=string.ascii_letters):
     """
     Generate a series of random characters.
-    
+
     Kwargs:
         number_of_random_chars (int) : Number of characters long
         character_set (str): Specify a character set.  Default is ASCII
     """
-    return u('').join(random.choice(character_set) \
-            for _ in range(number_of_random_chars))
-
+    return u('').join(random.choice(character_set)
+                      for _ in range(number_of_random_chars))

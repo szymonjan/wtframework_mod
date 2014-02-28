@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -43,13 +43,12 @@ FILE_ATTR = '%file_path'
 MAGIC = '%values'  # this value cannot conflict with any real python attribute
 
 
-
 def data(*values):
     """
     Method decorator to add to your test methods.
 
     Should be added to methods of instances of ``unittest.TestCase``.
-    
+
     Args:
         values - var args of values to run the test against.
 
@@ -97,30 +96,31 @@ def csvdata(csv_file, env_prefix=None):
     Method decorator to use CSV data driven tests.
 
     Should be added to methods of instances of ``unittest.TestCase``.
-    
+
     Args:
         csv_file (str) : name of CSV file
-    
+
     Kwargs:
         env_prefix (str) : subfolder of /data directory to pull csv file from.
 
     Example::
-        
+
         @csvdata('mydatafile.csv', env_prefix='qa')
         def test_datadriven_test(data):
             print("column1 data is:", data['column1_name'])
-        
-        
+
+
     """
     entry_list = []
     try:
-        csv_file = CsvReader(WTF_DATA_MANAGER.get_data_path(csv_file, env_prefix))
+        csv_file = CsvReader(
+            WTF_DATA_MANAGER.get_data_path(csv_file, env_prefix))
         while True:
             entry_list.append(csv_file.next())
     except StopIteration:
-        pass 
+        pass
     values = tuple(entry_list)
-    
+
     def wrapper(func):
         setattr(func, MAGIC, values)
         return func
@@ -155,7 +155,8 @@ def ddt(cls):
         if hasattr(f, MAGIC):
             i = 0
             for v in getattr(f, MAGIC):
-                test_name = getattr(v, "__name__", u("{0}_{1}").format(name, v))
+                test_name = getattr(
+                    v, "__name__", u("{0}_{1}").format(name, v))
                 # strip illegal xml characters characters. - DL
                 formatted_test_name = re.sub(r'[<>&/]', '', test_name)
                 setattr(cls, formatted_test_name, feed_data(f, v))
@@ -163,7 +164,6 @@ def ddt(cls):
             delattr(cls, name)
 
     return cls
-
 
     def process_file_data(name, func, file_attr):
         """
@@ -192,7 +192,8 @@ def ddt(cls):
     for name, func in list(cls.__dict__.items()):
         if hasattr(func, DATA_ATTR):
             for v in getattr(func, DATA_ATTR):
-                test_name = getattr(v, "__name__", u("{0}_{1}").format(name, v))
+                test_name = getattr(
+                    v, "__name__", u("{0}_{1}").format(name, v))
                 setattr(cls, test_name, feed_data(func, v))
             delattr(cls, name)
         elif hasattr(func, FILE_ATTR):

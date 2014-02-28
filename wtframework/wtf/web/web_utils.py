@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,17 +29,17 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class WebUtils(object):
-    "Utility class for web testing."
 
+    "Utility class for web testing."
 
     @staticmethod
     def check_url(url):
         '''
         Check if resource at URL is fetchable. (by trying to fetch it and checking for 200 status.
-        
+
         Args:
             url (str): Url to check.
-        
+
         Returns:
             Returns a tuple of {True/False, response code}
 
@@ -55,15 +55,15 @@ class WebUtils(object):
     def get_base_url(webdriver):
         """
         Get the current base URL.
-        
+
         Args:
             webdriver: Selenium webdriver.
-        
+
         Returns:
             str - base URL. 
-        
+
         usage::
-        
+
             WebUtils.get_base_url("http://www.google.com/?q=blah")
             #returns 'http://www.google.com'
 
@@ -72,14 +72,14 @@ class WebUtils(object):
         try:
             return re.findall("^[^/]+//[^/$]+", current_url)[0]
         except:
-            raise RuntimeError(u("Unable to process base url: {0}").format(current_url))
-
+            raise RuntimeError(
+                u("Unable to process base url: {0}").format(current_url))
 
     @staticmethod
     def is_webdriver_mobile(webdriver):
         """
         Check if a web driver if mobile.
-        
+
         Args:
             webdriver (WebDriver): Selenium webdriver.
 
@@ -87,7 +87,7 @@ class WebUtils(object):
         browser = webdriver.capabilities['browserName']
 
         if browser == u('iPhone') or \
-        browser == u('android'):
+                browser == u('android'):
             return True
         else:
             return False
@@ -96,7 +96,7 @@ class WebUtils(object):
     def is_webdriver_ios(webdriver):
         """
         Check if a web driver if mobile.
-        
+
         Args:
             webdriver (WebDriver): Selenium webdriver.
 
@@ -104,18 +104,17 @@ class WebUtils(object):
         browser = webdriver.capabilities['browserName']
 
         if browser == u('iPhone') or \
-        browser == u('iPad'):
+                browser == u('iPad'):
             return True
         else:
             return False
-
 
     @staticmethod
     def switch_to_window(page_class, webdriver):
         """
         Utility method for switching between windows.  It will search through currently open 
         windows, then switch to the window matching the provided PageObject class.
-        
+
         Args:
             page_class (PageObject): Page class to search for/instantiate.
             webdriver (WebDriver): Selenium webdriver.
@@ -133,12 +132,14 @@ class WebUtils(object):
                 return PageFactory.create_page(page_class, webdriver)
             except:
                 pass
-        
+
         webdriver.switch_to_window(original_window)
-        raise WindowNotFoundError(u("Window {0} not found.").format(page_class.__class__.__name__))
+        raise WindowNotFoundError(
+            u("Window {0} not found.").format(page_class.__class__.__name__))
 
 
 class BrowserStandBy(object):
+
     """
     This class allows you to put a browser on stand by sending no-op commands to keep 
     a selenium grid session from timing out.  This is useful for running tests on 
@@ -152,7 +153,7 @@ class BrowserStandBy(object):
 
 
     """
-    
+
     def __init__(self, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5, **kwargs):
         """
         Constructor
@@ -177,25 +178,23 @@ class BrowserStandBy(object):
         except KeyError:
             pass
 
-
     @classmethod
     def start_standby(cls, webdriver=None, max_time=WTF_TIMEOUT_MANAGER.EPIC, sleep=5):
         """
         Create an instance of BrowserStandBy() and immediately return a running instance.
-        
+
         This is best used in a 'with' block.
-        
+
         Example::
 
             with BrowserStandBy.start_standby():
                 # Now browser is in standby, you can do a bunch of stuff with in this block.
                 # ...
-            
+
             # We are now outside the block, and the browser standby has ended.
 
         """
         return cls(webdriver=webdriver, max_time=max_time, sleep=sleep, _autostart=True)
-
 
     def start(self):
         """
@@ -209,26 +208,24 @@ class BrowserStandBy(object):
         self._thread.start()
         return self
 
-
     def stop(self):
         """
         Stop BrowserStandBy from sending additional calls to webdriver.
-        
+
         """
         self._keep_running = False
         return self
 
-
     def __stand_by_loop(self):
         print self._keep_running
         while datetime.now() < self._end_time and self._keep_running:
-            self.webdriver.current_url  # Just performing current_url to keep this alive.
+            # Just performing current_url to keep this alive.
+            self.webdriver.current_url
             time.sleep(self._sleep_time)
 
     def __del__(self):
         do_and_ignore(lambda: self.stop())
         self._thread = None
-
 
     def __enter__(self):
         if self._autostart:
@@ -241,6 +238,5 @@ class BrowserStandBy(object):
 
 
 class WindowNotFoundError(RuntimeError):
+
     "Raised when window is not found by web_utils script."
-
-

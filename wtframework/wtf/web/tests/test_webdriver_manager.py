@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,8 +28,6 @@ import unittest2
 
 class TestWebDriverManager(unittest2.TestCase):
 
-
-    
     def test_getDriver_ReturnsSingletonSeleniumWebdriver(self):
         '''
         Test we return a single instance of selenium webdriver.
@@ -40,7 +38,8 @@ class TestWebDriverManager(unittest2.TestCase):
         when(webdriver_mock).get("http://www.google.com").thenReturn(None)
         when(webdriver_mock).find_element_by_name('q').thenReturn(mock_element)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock)
+        when(webdriverfactory_mock).create_webdriver(
+            testname=None).thenReturn(webdriver_mock)
 
         webdriver_provider = WebDriverManager(webdriverfactory_mock)
 
@@ -48,33 +47,39 @@ class TestWebDriverManager(unittest2.TestCase):
         driver1 = webdriver_provider.get_driver()
         driver2 = webdriver_provider.get_driver()
         self.assertIsNotNone(driver1, 'object is not webdriver.')
-        self.assertEqual(id(driver1), id(driver2), 'Webdriver instance should be singleton.')
+        self.assertEqual(
+            id(driver1), id(driver2), 'Webdriver instance should be singleton.')
 
-        # Do a small test by grabbing google's screen to exercise the webdriver interface.
+        # Do a small test by grabbing google's screen to exercise the webdriver
+        # interface.
         driver1.get("http://www.google.com")
-        element = driver1.find_element_by_name('q') # Q is the name google use for the query field.
+        # Q is the name google use for the query field.
+        element = driver1.find_element_by_name('q')
         element.send_keys("Hello World")
-
 
     def test_newDriver_ReturnsNewInstance(self):
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
 
         webdriver_mock1 = mock(WebDriver)
         webdriver_mock2 = mock(WebDriver)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1).thenReturn(webdriver_mock2)
-        
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
-        
+        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(
+            webdriver_mock1).thenReturn(webdriver_mock2)
+
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
+
         driver1 = webdriver_provider.new_driver()
         driver2 = webdriver_provider.new_driver()
 
-        self.assertFalse(driver1 is driver2, 
-                        "new_driver() should create fresh instance if reusebrowser if false.")
+        self.assertFalse(driver1 is driver2,
+                         "new_driver() should create fresh instance if reusebrowser if false.")
 
     @timeout(5)
     def test_multithreadMode(self):
@@ -83,99 +88,110 @@ class TestWebDriverManager(unittest2.TestCase):
         but for the same thread returns the same driver.
         """
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
-        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, any()).thenReturn(True)
+        when(config_reader).get(
+            WebDriverManager.SHUTDOWN_HOOK_CONFIG, any()).thenReturn(True)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, any()).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.ENABLE_THREADING_SUPPORT, any()).thenReturn(True)
 
         webdriverfactory_mock = mock(WebDriverFactory)
         when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(mock(WebDriver))\
-        .thenReturn(mock(WebDriver)).thenReturn(mock(WebDriver))
+            .thenReturn(mock(WebDriver)).thenReturn(mock(WebDriver))
 
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
 
         # Spawn thread to check if driver is unique per thread.
         driver1 = webdriver_provider.get_driver()
-        t = threading.Thread(target=lambda: self.__multithreaded_7est_thread2(driver1, webdriver_provider))
+        t = threading.Thread(
+            target=lambda: self.__multithreaded_7est_thread2(driver1, webdriver_provider))
         t.start()
         t.join()
         self.assertFalse(self._driver_from_thread_is_same)
-        
+
         # Check that driver is same for the same thread.
         driver3 = webdriver_provider.get_driver()
-        self.assertEqual(driver1, driver3, "Same thread should return same driver.")
-
+        self.assertEqual(
+            driver1, driver3, "Same thread should return same driver.")
 
     def __multithreaded_7est_thread2(self, driver1, webdriver_provider):
-        # verify that new webdriver is created when requesting a webdriver on another thread.
-        driver2 =  webdriver_provider.get_driver()
-        
+        # verify that new webdriver is created when requesting a webdriver on
+        # another thread.
+        driver2 = webdriver_provider.get_driver()
+
         if driver1 == driver2:
             # This will cause the main thread to fail
             self._driver_from_thread_is_same = True
         else:
             self._driver_from_thread_is_same = False
-             
-        self.assertNotEqual(driver1, driver2, "Driver should be unique for each thread.")
 
+        self.assertNotEqual(
+            driver1, driver2, "Driver should be unique for each thread.")
 
     def test_cleanup_quits_webdrivers(self):
         "Tests that clean up is performed on webdrivers created by WebdriverManger"
         config_reader = mock(ConfigReader)
-        when(config_reader).get(WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
-        when(config_reader).get(WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
-        when(config_reader).get(WebDriverManager.ENABLE_THREADING_SUPPORT, False).thenReturn(True)
-        
+        when(config_reader).get(
+            WebDriverManager.SHUTDOWN_HOOK_CONFIG, True).thenReturn(True)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.REUSE_BROWSER, True).thenReturn(False)
+        when(config_reader).get(
+            WebDriverManager.ENABLE_THREADING_SUPPORT, False).thenReturn(True)
+
         webdriver_mock1 = mock(WebDriver)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+        when(webdriverfactory_mock).create_webdriver(
+            testname=None).thenReturn(webdriver_mock1)
 
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
 
         # Spawn thread to check if driver is unique per thread.
         driver = webdriver_provider.get_driver()
         del webdriver_provider
-        
+
         # verify decontructor cleans up the webdriver.
         verify(driver).quit()
-
 
     def test_is_driver_available_withEmptyChannel_returnsFalse(self):
         "Test that false is returned if webdriver was not created."
         config_reader = mock(ConfigReader)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(None)
+        when(webdriverfactory_mock).create_webdriver(
+            testname=None).thenReturn(None)
 
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
         self.assertFalse(webdriver_provider.is_driver_available())
-
 
     def test_is_driver_available_withWebdriverCreated_returnsTrue(self):
         "Test that true is returned if webdriver was created."
         config_reader = mock(ConfigReader)
         webdriver_mock1 = mock(WebDriver)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+        when(webdriverfactory_mock).create_webdriver(
+            testname=None).thenReturn(webdriver_mock1)
 
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
         _ = webdriver_provider.new_driver()
         self.assertTrue(webdriver_provider.is_driver_available())
-
 
     def test_is_driver_available_withWebdriverClosed_returnsFalse(self):
         "Test that true is returned if webdriver was created."
         config_reader = mock(ConfigReader)
         webdriver_mock1 = mock(WebDriver)
         webdriverfactory_mock = mock(WebDriverFactory)
-        when(webdriverfactory_mock).create_webdriver(testname=None).thenReturn(webdriver_mock1)
+        when(webdriverfactory_mock).create_webdriver(
+            testname=None).thenReturn(webdriver_mock1)
 
-        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock, 
-                                              config = config_reader)
+        webdriver_provider = WebDriverManager(webdriver_factory=webdriverfactory_mock,
+                                              config=config_reader)
         _ = webdriver_provider.new_driver()
         webdriver_provider.close_driver()
 
