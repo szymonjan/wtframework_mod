@@ -54,7 +54,9 @@ class ConfigReader:
                 for config in reversed(configs):
                     self.__load_config_file(config)
             elif not ConfigReader.ENV_VARS in os.environ:
-                _wtflog.warning(u("Config file not specified.  Using config/defaults.yaml"))
+                _wtflog.warning(u("Config file not specified.  {0}")\
+                                .format(os.path.join(ConfigReader.CONFIG_LOCATION,
+                                                     ConfigReader.DEFAULT_CONFIG_FILE)))
                 self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
             else:
                 # Read and load in all configs specified in reverse order
@@ -132,7 +134,7 @@ class ConfigReader:
             config_yaml.close()
         except Exception as e:
             _wtflog.error(u("Error loading config file: %s"), file_name)
-            raise ConfigFileReadError(u("Error reading config file ") + file_name, e)
+            raise ConfigFileReadError(u("Error reading config file {0}").format(file_name), e)
 
 
 class ConfigFileReadError(RuntimeError):
