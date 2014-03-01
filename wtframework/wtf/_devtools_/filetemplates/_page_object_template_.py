@@ -1,4 +1,7 @@
-content = \
+from six import u
+
+
+contents = u(\
 '''
 """
 Created on {date}
@@ -33,4 +36,4 @@ class {pagename}(PageObject):
     
     
     #END Class
-'''
+''')

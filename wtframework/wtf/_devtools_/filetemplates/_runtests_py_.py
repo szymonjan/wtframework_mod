@@ -1,7 +1,10 @@
-content = \
+from six import u
+
+
+contents = u(\
 '''#!/usr/bin/env python
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,10 +20,15 @@ content = \
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from __future__ import print_function
+
 from optparse import OptionParser
-from wtframework.wtf.config import ConfigReader
-from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
+
+
+from wtframework.wtf.utils.project_utils import ProjectUtils
+from wtframework.wtf.constants import WTF_CONFIG_LOCATION, WTF_CONFIG_EXT, \\
+    WTF_ENV_VARS
 
 
 if __name__ == '__main__':
@@ -36,20 +44,19 @@ if __name__ == '__main__':
 
     if options.config:
         # check if config exists.
-        if os.path.exists(ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
-                          ConfigReader.CONFIG_EXT):
-            print "Setting config WTF_ENV to:", options.config
-            os.putenv(ConfigReader.ENV_VARS, options.config)
+        expected_path = os.path.join(ProjectUtils.get_project_root(),
+                                     WTF_CONFIG_LOCATION,
+                                     options.config + WTF_CONFIG_EXT)
+        if os.path.exists(expected_path):
+            print("Setting config WTF_ENV to:", options.config)
+            os.putenv(WTF_ENV_VARS, options.config)
         else:
-            print "Cannot find config: ", ProjectUtils.get_project_root() + \
-                          ConfigReader.CONFIG_LOCATION + options.config +\
-                          ConfigReader.CONFIG_EXT
+            print("Cannot find config: ", expected_path)
 
     # Set PYTHONPATH if not set.
     try:
         if ProjectUtils.get_project_root() not in os.environ["PYTHONPATH"]:
-            os.putenv("PYTHONPATH", os.environ["PYTHONPATH"] + os.pathsep + ProjectUtils.get_project_root())
+            os.putenv("PYTHONPATH", os.path.join(os.environ["PYTHONPATH"], ProjectUtils.get_project_root()))
     except:
         os.putenv("PYTHONPATH", ProjectUtils.get_project_root())
 
@@ -57,9 +64,10 @@ if __name__ == '__main__':
         result_path = options.result_file
     else:
         result_path = os.path.join("reports", "results.xml")
-    os.system("nosetests-2.7 tests/tests/ --with-xunit --xunit-file={0}".format(result_path))
+    test_path = os.path.join("tests", "tests") + os.pathsep
+    os.system("nosetests-2.7 {test_path} --with-xunit --xunit-file={result_path}"\\
+              .format(result_path=result_path, test_path=test_path))
 
 
 
-
-'''
+''')

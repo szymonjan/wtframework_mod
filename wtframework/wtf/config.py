@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-
 from types import NoneType
 from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
@@ -23,29 +22,34 @@ import re
 import yaml
 import time
 
+from six import u
+from wtframework.wtf import _wtflog, constants
+
+
 
 class ConfigReader:
     '''
     Config Reader provides a way of reading configuration settings. 
     '''
 
-    CONFIG_LOCATION = 'configs/'
-    DEFAULT_CONFIG_FILE = 'default'
-    CONFIG_EXT = '.yaml'
-
-    ENV_VARS = "WTF_ENV"
     ENV_PREFIX = "WTF_"
+    # NOTE: these vars are defined on __init__.py to avoid loading ConfigReader
+    # when runtests.py is running.
+    CONFIG_LOCATION = constants.WTF_CONFIG_LOCATION
+    DEFAULT_CONFIG_FILE = constants.WTF_DEFAULT_CONFIG_FILE
+    CONFIG_EXT = constants.WTF_CONFIG_EXT
+    ENV_VARS = constants.WTF_ENV_VARS
 
-    _dataMaps = None #instance variable to store config data loaded.
-    _singleton_instance = None #class variable to track singleton.
+    _dataMaps = None  # instance variable to store config data loaded.
+    _singleton_instance = None  # class variable to track singleton.
 
-    def __init__(self, _env_var_ = None):
+    def __init__(self, _env_var_=None):
         """
         constructor
         """
         self._dataMaps = []
 
-        #load default yaml file if this is not a unit test.
+        # load default yaml file if this is not a unit test.
         try:
             if _env_var_ != None: 
                 # We pass in a custom env var for unit testing.
@@ -53,7 +57,9 @@ class ConfigReader:
                 for config in reversed(configs):
                     self.__load_config_file(config)
             elif not ConfigReader.ENV_VARS in os.environ:
-                print "Config file not specified.  Using config/defaults.yaml"
+                _wtflog.warning(u("Config file not specified. Using:{0}")\
+                                .format(os.path.join(ConfigReader.CONFIG_LOCATION,
+                                                     ConfigReader.DEFAULT_CONFIG_FILE + ConfigReader.CONFIG_EXT)))
                 self.__load_config_file(ConfigReader.DEFAULT_CONFIG_FILE)
             else:
                 # Read and load in all configs specified in reverse order
@@ -63,10 +69,10 @@ class ConfigReader:
 
                 
         except Exception as e:
-            #Fall back to default.yaml file when no config settings are specified.
-            print "An error occurred while loading config file:", e
+            # Fall back to default.yaml file when no config settings are specified.
+            _wtflog.error(u("An error occurred while loading config file: %s"), e)
             raise e
-            
+
 
 
     class __NoDefaultSpecified__(object):
@@ -74,7 +80,7 @@ class ConfigReader:
         pass
 
 
-    def get(self,key, default_value=__NoDefaultSpecified__):
+    def get(self, key, default_value=__NoDefaultSpecified__):
         '''
         Gets the value from the yaml config based on the key.
         
@@ -101,7 +107,7 @@ class ConfigReader:
         for data_map in self._dataMaps:
             try:
                 if "." in key:
-                    #this is a multi levl string
+                    # this is a multi levl string
                     namespaces = key.split(".")
                     temp_var = data_map
                     for name in namespaces:
@@ -114,25 +120,24 @@ class ConfigReader:
                 pass
             
         if default_value == self.__NoDefaultSpecified__:
-            raise KeyError("Key '{0}' does not exist".format(key))
+            raise KeyError(u("Key '{0}' does not exist").format(key))
         else:
             return default_value
 
 
     def __load_config_file(self, file_name):
         try:
-            config_file_location = os.path.join(ProjectUtils.get_project_root() +
-                                                ConfigReader.CONFIG_LOCATION + 
-                                                file_name + 
-                                                ConfigReader.CONFIG_EXT)
-            print "locating config file:", config_file_location
+            config_file_location = os.path.join(ProjectUtils.get_project_root(),
+                                                ConfigReader.CONFIG_LOCATION,
+                                                file_name + ConfigReader.CONFIG_EXT)
+            _wtflog.debug(u("locating config file: %s"), config_file_location)
             config_yaml = open(config_file_location, 'r')
             dataMap = yaml.load(config_yaml)
             self._dataMaps.insert(0, dataMap)
             config_yaml.close()
         except Exception as e:
-            print "Error loading config file " + file_name
-            raise ConfigFileReadError("Error reading config file " + file_name, e)
+            _wtflog.error(u("Error loading config file: %s"), file_name)
+            raise ConfigFileReadError(u("Error reading config file {0}").format(file_name), e)
 
 
 class ConfigFileReadError(RuntimeError):
@@ -164,7 +169,7 @@ class TimeOutManager(object):
     """
     _config = None
     
-    def __init__(self, config_reader = None):
+    def __init__(self, config_reader=None):
         """
         Constructor
         

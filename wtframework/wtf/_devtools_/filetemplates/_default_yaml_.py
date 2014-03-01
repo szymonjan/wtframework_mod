@@ -1,4 +1,7 @@
-contents = """
+from six import u
+
+
+contents = u("""
 #########################################################################
 # WTF Settings file.  Specify settings using yaml format.
 # ex:
@@ -26,8 +29,9 @@ selenium:
   shutdown_hook: true
 
   # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
-  # instance each time.  If set to a number, this  would determine whether the browser 
-  # session should be discarded after a certain time peroid.  
+  # instance each time.  Setting it to false is generally better for more consistent 
+  # results, but will incur the startup time for the browser to start up for each 
+  # test.
   # Default is 'true'
   reusebrowser: true
 
@@ -64,7 +68,10 @@ selenium:
     # Name you'd like to label your sessions. (useful for labeling on sauce)
     name: YourTestProjectName
 
-
+  # Multi Process
+  # Enabling this setting will spawn a unique webdriver per thread, so no 2 threads 
+  # Default is False
+  #threaded: true
 
 
 # Default wait timeout settings. Timeout settings are specified in seconds.
@@ -81,4 +88,4 @@ timeout:
   epic: 300
 
 
-"""
+""")

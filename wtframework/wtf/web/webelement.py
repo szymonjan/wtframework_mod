@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,12 +15,14 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from datetime import datetime, timedelta
+import time
+
 from selenium.common.exceptions import ElementNotSelectableException, \
     TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+from six import u
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
-import time
 
 
 class WebElementSelector():
@@ -32,6 +34,7 @@ class WebElementSelector():
         """
         Utility method makes it easier to find an element using multiple selectors. This is 
         useful for problematic elements what might works with one browser, but fail in another.
+        (Like different page elements being served up for different browsers)
         
         Args:
             selectors - var arg if N number of selectors to match against.  Each selector should 
@@ -44,24 +47,24 @@ class WebElementSelector():
 
 
         """
-        #perform initial check to verify selectors are valid by statements.
+        # perform initial check to verify selectors are valid by statements.
         for selector in selectors:
             (by_method, value) = selector
             if not WebElementSelector.__is_valid_by_type(by_method):
-                raise BadSelectorError("Selectors should be of type selenium.webdriver.common.by.By")
+                raise BadSelectorError(u("Selectors should be of type selenium.webdriver.common.by.By"))
             if type(value) != str:
-                raise BadSelectorError("Selectors should be of type selenium.webdriver.common.by.By")
-        
+                raise BadSelectorError(u("Selectors should be of type selenium.webdriver.common.by.By"))
+
         selectors_used = []
         for selector in selectors:
             (by_method, value) = selector
-            selectors_used.append("{by}:{value}".format(by=by_method, value=value))
+            selectors_used.append(u("{by}:{value}").format(by=by_method, value=value))
             try:
                 return webdriver.find_element(by=by_method, value=value)
             except:
                 pass
         
-        raise ElementNotSelectableException("Unable to find elements using:" + ",".join(selectors_used))
+        raise ElementNotSelectableException(u("Unable to find elements using:") + u(",").join(selectors_used))
 
     @staticmethod
     def __is_valid_by_type(by_type):
@@ -117,12 +120,12 @@ class WebElementUtils():
             webelement (WebElement) - WebDriver web element to validate.
 
         '''
-        script = "return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" " +\
-                 "&& arguments[0].naturalWidth > 0"
+        script = u("return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" ") + \
+                 u("&& arguments[0].naturalWidth > 0")
         try:
             return webdriver.execute_script(script, webelement)
         except:
-            return False #Img Tag Element is not on page.
+            return False  # Img Tag Element is not on page.
 
 
 class BadSelectorError(Exception):

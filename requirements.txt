@@ -39,4 +39,5 @@ pyyaml>=3.10
 # Selenium WebDriver for driving browsers.
 selenium>=2.37.2
 
-
+# Python 2/3 compatibility lib.
+six>=1.5.2

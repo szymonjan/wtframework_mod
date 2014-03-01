@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from wtframework.wtf import _wtflog
+from six import u
 """
 This module defines some wrapper functions.
 """
@@ -49,7 +51,10 @@ def do_and_ignore(lambda_func):
     try:
         return lambda_func()
     except Exception as e:
-        print e
+        try:
+            print e
+        except:
+            _wtflog.debug("unknown error")
         return None
 
 
@@ -84,7 +89,7 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 
     """
     if message is None:
-        message = "Unable to find matching item in " + str(iterator)
+        message = u("Unable to find matching item in {0}").format(iterator)
 
     for item in iterator:
         if matching_lambda_expr(item):

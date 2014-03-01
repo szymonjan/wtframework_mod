@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,10 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
 import sys
-import unittest2
+from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
 import warnings
+
+from six import u
+import unittest2
+
 
 class WatchedTestCase(unittest2.TestCase):
     '''
@@ -31,7 +34,7 @@ class WatchedTestCase(unittest2.TestCase):
 
 
     # '_' prefix is added to hide it form nosetest
-    def _register_watcher(self, watcher, position = -1):
+    def _register_watcher(self, watcher, position=-1):
         """
         Register a test watcher.
 
@@ -84,7 +87,7 @@ class WatchedTestCase(unittest2.TestCase):
             if startTestRun is not None:
                 startTestRun()
 
-        did_tear_down_execute = False # Track if clean up was run, so we can run clean up if setup failed.
+        did_tear_down_execute = False  # Track if clean up was run, so we can run clean up if setup failed.
 
         self._resultForDoCleanups = result
         result.startTest(self)
@@ -139,7 +142,7 @@ class WatchedTestCase(unittest2.TestCase):
                     if addExpectedFailure is not None:
                         addExpectedFailure(self, e.exc_info)
                     else: 
-                        warnings.warn("Use of a TestResult without an addExpectedFailure method is deprecated", 
+                        warnings.warn(u("Use of a TestResult without an addExpectedFailure method is deprecated"),
                                       DeprecationWarning)
                         result.addSuccess(self)
                 except _UnexpectedSuccess:
@@ -147,7 +150,7 @@ class WatchedTestCase(unittest2.TestCase):
                     if addUnexpectedSuccess is not None:
                         addUnexpectedSuccess(self)
                     else:
-                        warnings.warn("Use of a TestResult without an addUnexpectedSuccess method is deprecated", 
+                        warnings.warn(u("Use of a TestResult without an addUnexpectedSuccess method is deprecated"),
                                       DeprecationWarning)
                         result.addFailure(self, sys.exc_info())
                 except SkipTest, e:
@@ -173,7 +176,7 @@ class WatchedTestCase(unittest2.TestCase):
                     result.addError(self, sys.exc_info())
                     success = False
                     
-                finally: # Run our test watcher actions for after tear down..
+                finally:  # Run our test watcher actions for after tear down..
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_teardown(self, result)
 
@@ -190,8 +193,8 @@ class WatchedTestCase(unittest2.TestCase):
                         test_watcher.after_test(self, result)
                     self.tearDown()
                 except:
-                    pass # do nothing, test case would already failed and failure is already handled.
-                finally: # Run our test watcher actions for after tear down..
+                    pass  # do nothing, test case would already failed and failure is already handled.
+                finally:  # Run our test watcher actions for after tear down..
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_teardown(self, result)
 

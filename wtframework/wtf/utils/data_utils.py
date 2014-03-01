@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ can be used in tests.
 from datetime import datetime
 import random
 import string
+
+from six import u
 
 
 def generate_timestamped_string(subject="test", number_of_random_chars=4):
@@ -44,8 +46,8 @@ def generate_timestamped_string(subject="test", number_of_random_chars=4):
     """
     random_str = generate_random_string(number_of_random_chars)
     timestamp = generate_timestamp()
-    return "{timestamp}_{subject}_{random_str}".format(timestamp=timestamp, 
-                                                       subject=subject,
+    return u"{timestamp}_{subject}_{random_str}".format(timestamp=timestamp,
+                                                        subject=subject,
                                                         random_str=random_str)
 
 
@@ -68,6 +70,6 @@ def generate_random_string(number_of_random_chars=8, character_set=string.ascii_
         number_of_random_chars (int) : Number of characters long
         character_set (str): Specify a character set.  Default is ASCII
     """
-    return ''.join(random.choice(character_set) \
+    return u('').join(random.choice(character_set) \
             for _ in range(number_of_random_chars))
 

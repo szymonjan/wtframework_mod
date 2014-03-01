@@ -15,14 +15,16 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+import os
 from threading import current_thread
 import time
+import urllib2
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from wtframework.wtf.config import WTF_CONFIG_READER
-from wtframework.wtf.utils.debug_utils import print_debug
-import os
+from six import u
+from wtframework.wtf import _wtflog
+from wtframework.wtf.config import WTF_CONFIG_READER, WTF_TIMEOUT_MANAGER
 
 
 class WebDriverFactory(object):
@@ -52,7 +54,7 @@ class WebDriverFactory(object):
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
     PHANTOMEJS_EXEC_PATH = "selenium.phantomjs_path"
     SELENIUM_SERVER_LOCATION = "selenium.selenium_server_path"
-
+    LOG_REMOTEDRIVER_PROPS = "selenium.log_remote_webdriver_props"
 
     # BROWSER CONSTANTS #
     HTMLUNIT = "HTMLUNIT"
@@ -107,7 +109,7 @@ class WebDriverFactory(object):
         try:
             driver_type = self._config_reader.get(WebDriverFactory.DRIVER_TYPE_CONFIG)
         except:
-            print WebDriverFactory.DRIVER_TYPE_CONFIG + " setting is missing from config. Using defaults"
+            _wtflog.warn("%s setting is missing from config. Using defaults", WebDriverFactory.DRIVER_TYPE_CONFIG)
             driver_type = "LOCAL"
 
         if driver_type == "REMOTE":
@@ -121,11 +123,13 @@ class WebDriverFactory(object):
             self.webdriver.maximize_window()
         except:
             # wait a short period and try again.
-            time.sleep(5000)
+            time.sleep(WTF_TIMEOUT_MANAGER.BRIEF)
             try:
                 self.webdriver.maximize_window()
             except Exception as e:
-                print "Unable to maxmize browser window. It may be possible the browser did not instantiate correctly.", e
+                _wtflog.warn("Unable to maxmize browser window. " + \
+                             "It may be possible the browser did not instantiate correctly. % s",
+                              e)
 
         return self.webdriver
 
@@ -138,7 +142,7 @@ class WebDriverFactory(object):
         try:
             browser_type = self._config_reader.get(WebDriverFactory.BROWSER_TYPE_CONFIG)
         except KeyError:
-            print WebDriverFactory.BROWSER_TYPE_CONFIG + " missing is missing from config file. Using defaults"
+            _wtflog("%s missing is missing from config file. Using defaults", WebDriverFactory.BROWSER_TYPE_CONFIG)
             browser_type = WebDriverFactory.FIREFOX
 
         browser_type_dict = {\
@@ -153,7 +157,7 @@ class WebDriverFactory(object):
         try:
             return browser_type_dict[browser_type]()
         except KeyError:
-            raise TypeError("Unsupported Browser Type {0}".format(browser_type))
+            raise TypeError(u("Unsupported Browser Type {0}").format(browser_type))
         # End of method.
 
     def __create_safari_driver(self):
@@ -162,12 +166,12 @@ class WebDriverFactory(object):
         '''
         # Check for selenium jar env file needed for safari driver.
         if not os.getenv(self.__SELENIUM_SERVER_JAR_ENV):
-            #If not set, check if we have a config setting for it.
+            # If not set, check if we have a config setting for it.
             try:
                 selenium_server_path = self._config_reader.get(self.SELENIUM_SERVER_LOCATION)
                 os.environ[self.__SELENIUM_SERVER_JAR_ENV] = selenium_server_path
             except KeyError:
-                raise RuntimeError("Missing selenium server path config {0}.".format(self.SELENIUM_SERVER_LOCATION))
+                raise RuntimeError(u("Missing selenium server path config {0}.").format(self.SELENIUM_SERVER_LOCATION))
 
         return  webdriver.Safari()
 
@@ -202,9 +206,10 @@ class WebDriverFactory(object):
                                  WebDriverFactory.PHANTOMJS:DesiredCapabilities.PHANTOMJS}
 
         try:
-            desired_capabilities = browser_constant_dict[browser_type]
+            # Get a copy of the desired capabilities object. (to avoid overwriting the global.)
+            desired_capabilities = browser_constant_dict[browser_type].copy()
         except KeyError:
-            raise TypeError("Unsupported Browser Type {0}".format(browser_type))
+            raise TypeError(u("Unsupported Browser Type {0}").format(browser_type))
 
         # Get additional desired properties from config file and add them in.
         other_desired_capabilities = self._config_reader.get(WebDriverFactory.DESIRED_CAPABILITIES_CONFIG)
@@ -234,13 +239,36 @@ class WebDriverFactory(object):
 
         # Append optional testname postfix if supplied.
         if testname:
-            desired_capabilities['name'] += "-" + testname
-            
+            if desired_capabilities['name']:
+                desired_capabilities['name'] += "-" + testname
+            else:
+                # handle case where name is not specified.
+                desired_capabilities['name'] = testname
+
         # Instantiate remote webdriver.
-        return webdriver.Remote(
+        driver = webdriver.Remote(
             desired_capabilities=desired_capabilities,
             command_executor=remote_url
         )
+
+        # Log IP Address of node if configured, so it can be used to troubleshoot issues if they occur.
+        log_driver_props = \
+            self._config_reader.get(\
+                WebDriverFactory.LOG_REMOTEDRIVER_PROPS, default_value=False\
+            ) in [True, "true", "TRUE", "True"] 
+        if "wd/hub" in remote_url and log_driver_props:
+            try:
+                grid_addr = remote_url[:remote_url.index("wd/hub")]
+                info_request_response = urllib2.urlopen(grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)
+                node_info = info_request_response.read()
+                _wtflog.info(u("RemoteWebdriver using node: ") + u(node_info).strip())
+            except:
+                # Unable to get IP Address of remote webdriver.
+                # This happens with many 3rd party grid providers as they don't want you accessing info on nodes on 
+                # their internal network.
+                pass 
+
+        return driver
         # End of method.
 
     def __flatten_capabilities(self, desired_capabilities, prefix, setting_group):
@@ -281,7 +309,7 @@ class WebDriverManager(object):
     def __init__(self, webdriver_factory=None, config=None):
         '''
         Initializer
-        
+
         Kwargs:
             webdriver_factory (WebDriverFactory): Override default webdriver factory. 
             config (ConfigReader): Override default config reader.
@@ -309,13 +337,13 @@ class WebDriverManager(object):
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
-        print_debug("WebdriverManager : Cleaning up webdrivers")
+        _wtflog.info("WebdriverManager : Cleaning up webdrivers")
         try:
             if self.__use_shutdown_hook:
                 for key in self.__registered_drivers.keys():
                     for driver in self.__registered_drivers[key]:
                         try:
-                            print_debug("Closing webdriver for thread: ", key)
+                            _wtflog.debug("Closing webdriver for thread: %s", key)
                             driver.quit()
                         except:
                             pass

@@ -56,6 +56,11 @@ selenium:
   # Path of Selenium server Jar file.  This is needed for Safari Driver.
   #selenium_server_path: /path/to/selenium-server-standalone-2.37.0.jar
 
+  # Set to true to enable logging of RemoteWebdriver properties (like internal ids, ip address, etc..)
+  # when connecting to a remote webdriver. 
+  # true/false (default - false)
+  # selenium.log_remote_webdriver_props: false
+
   # Desired capabilities to pass to Selenium Grid.
   # Required if using selenium Grid.
   desired_capabilities:

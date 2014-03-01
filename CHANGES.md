@@ -1,3 +1,32 @@
+## ???
+- Fix runtests.py script to avoid instantiating ConfigReader before config options are 
+  processed.
+
+## v0.4.4
+- Config setting for max file length of screen capture on error.
+- Add optional recipient filter to email searches
+
+## v0.4.2
+- Embed exceptions raised in wait_until()
+- Create screenshots directory if not exists at the time of screen capture.
+- Fixes to the project generator scripts.
+
+## v0.4.1
+- Changes to make library python 2/3 compatible.  Many underhood changes to logging and 
+  string handling.
+- Ensure screenshots directory exists before trying to save screenshots.
+
+## v0.4.0
+- Convert all strings to use unicode.  You can now use unicode data within your tests
+  now.
+
+## v0.3.12
+- Log the node info of the remote webdriver if possible. (to help debugging)
+- Copy desired capabilities to prevent any unintended side effects.
+
+## v0.3.11
+- Fixed screenshot capture for non-unix systems. (thanks Hellspam)
+
 ## v0.3.10
 - Resolve merge issues in v0.3.9
 

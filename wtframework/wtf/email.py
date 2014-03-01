@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,12 +15,15 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-#This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
+# This is required to avoid the namespace conflict of this 'email' module with the 'email' lib.
 from __future__ import absolute_import
-from email.parser import HeaderParser
+
 import email
 import imaplib
 import re
+
+from wtframework.wtf import _wtflog
+
 
 class IMapEmailAccountObject(object):
     """
@@ -51,18 +54,21 @@ class IMapEmailAccountObject(object):
             password (str): Password
 
         """
-        print "connecting to {0}, using {1},{2}".format(server_address, username, password)
+        _wtflog.info("connecting to %s, using %s:%s", server_address, username, password)
         self._mail = imaplib.IMAP4_SSL(server_address)
         self._mail.login(username, password)
-        print "connected."
+        _wtflog.info("connected.")
 
 
-    def check_email_exists_by_subject(self, subject):
+    def check_email_exists_by_subject(self, subject, match_recipient=None):
         """
         Searches for Email by Subject.  Returns True or False.
         
         Args:
             subject (str): Subject to search for.
+        
+        Kwargs:
+            match_recipient (str) : Recipient to match exactly. (don't care if not specified)
         
         Returns: 
             True - email found, False - email not found
@@ -72,7 +78,7 @@ class IMapEmailAccountObject(object):
         self._mail.select("inbox")
         
         try:
-            matches = self.__search_email_by_subject(subject)
+            matches = self.__search_email_by_subject(subject, match_recipient)
             if len(matches) <= 0:
                 return False
             else:
@@ -80,7 +86,7 @@ class IMapEmailAccountObject(object):
         except Exception as e:
             raise e
 
-    def find_emails_by_subject(self, subject, limit=50):
+    def find_emails_by_subject(self, subject, limit=50, match_recipient=None):
         """
         Searches for Email by Subject.  Returns email's imap message IDs 
         as a list if matching subjects is found.
@@ -90,6 +96,7 @@ class IMapEmailAccountObject(object):
 
         Kwargs:
             limit (int) - Limit search to X number of matches, default 50
+            match_recipient (str) - Recipient to exactly (don't care if not specified)
 
         Returns:
             list - List of Integers representing imap message UIDs.
@@ -97,21 +104,10 @@ class IMapEmailAccountObject(object):
         """
         # Select inbox to fetch the latest mail on server.
         self._mail.select("inbox")
-        
-        matches = []
-        parser = HeaderParser()
-        
-        matching_msg_nums = self.__search_email_by_subject(subject)
 
-        for msg_num in matching_msg_nums[-limit:]:
-            _, msg_data = self._mail.fetch(msg_num, '(RFC822)')
-            raw_msg = msg_data[0][1]
-            msg_headers = parser.parsestr(raw_msg, True)
-            if msg_headers['subject'] == subject:
-                uid = re.search("UID\\D*(\\d+)\\D*", self._mail.fetch(msg_num, 'UID')[1][0]).group(1)
-                matches.append(uid)
+        matching_uids = self.__search_email_by_subject(subject, match_recipient)
 
-        return matches
+        return matching_uids
 
 
 
@@ -131,12 +127,12 @@ class IMapEmailAccountObject(object):
         msg = email.message_from_string(result[1][0][1])
 
         try:
-            #Try to handle as multipart message first.
+            # Try to handle as multipart message first.
             for part in msg.walk():
                 if part.get_content_type() == message_type :
                     return part.get_payload()
         except:
-            #handle as plain text email
+            # handle as plain text email
             return msg.get_payload()
 
 
@@ -163,7 +159,7 @@ class IMapEmailAccountObject(object):
         # Get first X messages.
         self._mail.select("inbox")
 
-        #apply date filter.
+        # apply date filter.
         try:
             date = kwargs['date']
             date_str = date.strftime("%d-%b-%Y")
@@ -171,7 +167,7 @@ class IMapEmailAccountObject(object):
         except KeyError:
             _, email_ids = self._mail.search(None, 'ALL')
         
-        email_ids = email_ids[0].split() #Above call returns email IDs as an array containing 1 str
+        email_ids = email_ids[0].split()  # Above call returns email IDs as an array containing 1 str
         
         matching_uids = []
         for _ in range(1, min(limit, len(email_ids))):
@@ -192,10 +188,36 @@ class IMapEmailAccountObject(object):
 
 
 
-    def __search_email_by_subject(self, subject):
+    def __search_email_by_subject(self, subject, match_recipient):
         "Get a list of message numbers"
-        _, data = self._mail.search(None, 'SUBJECT', subject)
-        return data[0].split()
+        if match_recipient is None:
+            _, data = self._mail.search(None, 'SUBJECT', subject)
+            _, data = self._mail.uid('search',
+                                     None, 
+                                     '(HEADER SUBJECT "{subject}")'\
+                                     .format(subject=subject))
+
+            uid_list = data[0].split()
+            return uid_list
+        else:
+            _, data = self._mail.uid('search',
+                                     None, 
+                                     '(HEADER SUBJECT "{subject}" TO "{recipient}")'\
+                                     .format(subject=subject, recipient=match_recipient))
+
+            filtered_list = []
+            uid_list = data[0].split()
+            for uid in uid_list:
+                # Those hard coded indexes [1][0][1] is a hard reference to the message email message headers
+                # that's burried in all those wrapper objects that's associated with fetching a message.
+                to_addr = re.search("[^-]To: (.*)",self._mail.uid('fetch', uid, "(RFC822)")[1][0][1]).group(1).strip()
+
+                if (to_addr == match_recipient or to_addr == "<{0}>".format(match_recipient)):
+                    # Add matching entry to the list.
+                    filtered_list.append(uid)
+
+            return filtered_list
+
 
     def __del__(self):
         "Destructor - disconnect from imap when we're done."
@@ -203,6 +225,6 @@ class IMapEmailAccountObject(object):
             # Disconnect email.
             self._mail.logout()
         except Exception as e:
-            print e
+            _wtflog.debug(e)
         self._mail = None
 

@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework. 
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,12 +15,16 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from wtframework.wtf.config import WTF_CONFIG_READER
-from wtframework.wtf.web.capture import WebScreenShotUtil
-from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 import abc
 import datetime
 import re
+
+from six import u
+
+from wtframework.wtf import _wtflog
+from wtframework.wtf.config import WTF_CONFIG_READER
+from wtframework.wtf.web.capture import WebScreenShotUtil
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class TestWatcher(object):
@@ -152,7 +156,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
 
         """
         try:
-            #run assertion.
+            # run assertion.
             function()
 
             return None
@@ -161,7 +165,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
             if not additional_debug_info:
                 self.exception_list.append(e)
             else:
-                self.exception_list.append((e,additional_debug_info))
+                self.exception_list.append((e, additional_debug_info))
             return e
 
 
@@ -181,15 +185,21 @@ class DelayedTestFailure(AssertionError):
         super(DelayedTestFailure, self).__init__(*args, **kwargs)
         self.exception_list = args
     
-    #Overriding __str__ to make the error message easier to read.
+    # Overriding __str__ to make the error message easier to read.
     def __str__(self, *args, **kwargs):
+        try:
+            return unicode(self).encode('utf-8')
+        except:
+            return self.__unicode__()
+    
+    def __unicode__(self, *args, **kwargs):
         exception_string = ""
         count = 0
         for exception_entry in self.exception_list:
             count += 1
-            exception_string += "\nError {0}: ".format(count) + exception_entry.__str__()
+            exception_string += u("\nError {0}: ").format(count) + exception_entry.__str__()
         
-        return AssertionError.__str__(self, *args, **kwargs) + exception_string
+        return u(AssertionError.__str__(self, *args, **kwargs)) + exception_string
 
 
 
@@ -204,6 +214,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     
     
     '''
+    CAPTURE_SCREENSHOT_SETTING = "selenium.take_screenshot"
+    MAX_SCREENSHOT_NAME_LEN_SETTING = "selenium.screenshot_name_max_length"
 
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
@@ -214,11 +226,12 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             screenshot_util: Override the default screenshot util method.
 
         '''
-        if WTF_CONFIG_READER.get("selenium.take_screenshot", True):
+        if WTF_CONFIG_READER.get(self.CAPTURE_SCREENSHOT_SETTING, True):
             self.capture_screenshot = True
         else:
             self.capture_screenshot = False
-        
+        self.max_screenshot_name_len = int(WTF_CONFIG_READER.get(self.MAX_SCREENSHOT_NAME_LEN_SETTING, 20))
+
         if webdriver_provider == None:
             self._webdriver_provider = WTF_WEBDRIVER_MANAGER
         else:
@@ -252,18 +265,18 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             str - File Name.
 
         '''
-        fname = type(testcase).__name__ + "_" + testcase._testMethodName
-        fname = re.sub("[^a-zA-Z_]+", "_", fname)
-        #Trim test case name incase it's too long.
-        fname = fname[:20]
-        fmt='%y-%m-%d_%H.%M.%S_{fname}'
+        fname = unicode(type(testcase).__name__) + u"_" + unicode(testcase._testMethodName)
+        fname = re.sub(u"[^a-zA-Z_]+", u("_"), fname)
+        # Trim test case name incase it's too long.
+        fname = fname[:self.max_screenshot_name_len]
+        fmt = u('%y-%m-%d_%H.%M.%S_{fname}')
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
 
 
     def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
         Take a screenshot if webdriver is open.
-        
+
         Args:
             testcase: TestCase
 
@@ -272,7 +285,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             try:
                 name = self.__generate_screenshot_filename__(testcase)
                 self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
-                print "Screenshot taken:" + name
+                _wtflog.warning("Screenshot taken: %s", name)
             except Exception as e:
-                print "Unable to take screenshot. Reason: " + e.message + str(type(e))
+                _wtflog.warning("Unable to take screenshot. Reason: %s", e.message)
 

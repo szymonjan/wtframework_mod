@@ -1,15 +1,13 @@
-WTF - Web Test Framework
+WTF - Web Test Framework  [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
 ======
 https://github.com/wiredrive/wtframework
 
-Selenium does a good job at providing APIs for automating the browser.  What the Web Test 
-Framework (referred to as WTF for short) is to take that base, and build on it to provide 
-a structured test framework for testing a Web Applications in a maintainable manner.  The 
-goal is to provide the project structures and tools to help QA/SDET professionals quickly 
-setup and develop acceptance level web tests which are configurable, robust, and easy to 
-use.  The ultimate goal is to build a common framework on top of Selenium to provide test 
-professionals the tools to build web tests as easily as how Rails and Django makes it easy
-to build web applications.
+Web Test Framework's (referred to as WTF for short) goal is to build on top of Selenium 
+Webdriver tools and and libraries to provide a structured test framework for testing a 
+Web Applications in a maintainable manner.  The goal is to provide the project structures 
+and tools to help QA/SDET professionals quickly setup and develop acceptance level web 
+tests which are configurable, robust, and easy to use.  The ultimate goal is to build a 
+common framework that is highly configurable, maintainable, and easy to use.
 
 
 Installation
@@ -176,9 +174,9 @@ locally on your machine
 
 WTFBaseTest
 -----------
-WTF framework adds some functionality to Python's unittest that are helpful for more end 
-to end level tests.  In order to leverage this functionality, your tests should extend 
-the `WTFBaseTest` base class.  
+WTF framework adds some extensions to Python's unittest that are helpful for more end 
+to end tests functional tests.  In order to leverage this functionality, your tests should 
+extend the `WTFBaseTest` base class.  
 
 WTFBaseTest comes with a ScreenCaptureTestWatcher.  You may also implement your own 
 test watcher by extending `TestWatcher` class, and overriding it's methods.  This is 
@@ -277,9 +275,9 @@ you to specify a timeout period (in seconds) to wait for this page to finish loa
 	slow_loading_page = PageUtils.wait_until_page_loaded(YourPageClass, timeout=60)
 
 Note: This will use the PageObject's `_validate_page()` to check if the page is 
-matching the expected page.  It's good to not use a web element in addition to URL or 
-title validation, that way the page validation does not happen until page content appears 
-on the screen.
+matching the expected page.  It's good to use a web element on the page in addition to URL 
+or title validation, that way the page validation does not succeed until page content 
+appears on the screen.
 
 Once you have created a PageOjbect, you'll want to go in and edit the file and make any 
 changes to the mappings and page verification routines.  As a good practice, it's good 
@@ -292,8 +290,8 @@ See: http://engineeringquality.blogspot.com/2012/12/python-quick-and-dirty-pageo
 Getting Help
 ====
 * WTFramework Wiki - https://github.com/wiredrive/wtframework/wiki
-* Documentation https://wtframework.readthedocs.org/en/latest/
-* email - David Lai <david@wiredrive.com>
+* Documentation - https://wtframework.readthedocs.org/en/latest/
+* Google Groups - https://groups.google.com/forum/#!forum/wtframework
 
 
 Misc
@@ -309,7 +307,8 @@ How to Contribute
 You can fork this repository.  To get the unit tests not marked as skipped running, 
 you'll need to edit or supply your own config file with values for the selenium settings.
 
-Development on this project is currently done using NVIE branching model.  
+Development on this project is currently done using NVIE branching model.
+Please __do not__ submit pull requests directly to __master__ (submit pulls against /dev)  
 http://nvie.com/posts/a-successful-git-branching-model/
 
 CI Scripts are running on Travis, 
