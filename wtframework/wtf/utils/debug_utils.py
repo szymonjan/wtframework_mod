@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ from wtframework.wtf.config import WTF_CONFIG_READER
 
 
 class TimeDebugger(object):
+
     "Object to keeps track of time and has utility methods to print it"
-    
 
     def start_timer(self):
         """
@@ -36,11 +36,10 @@ class TimeDebugger(object):
         """
         self.start_time = datetime.now()
 
-
     def print_time(self, message="Time is now: ", print_frame_info=True):
         """
         Print the current elapsed time.
-        
+
         Kwargs:
             message (str) : Message to prefix the time stamp.
             print_frame_info (bool) : Add frame info to the print message.
@@ -52,11 +51,10 @@ class TimeDebugger(object):
         else:
             print(message, (datetime.now() - self.start_time))
 
-
     def get_split(self):
         """
         Returns the current ellapsed time.
-        
+
         Returns:
             timedelta - current ellapsed time.
         """
@@ -66,7 +64,7 @@ class TimeDebugger(object):
 def print_debug(*args, **kwargs):
     """
     Print if and only if the debug flag is set true in the config.yaml file.
-    
+
     Args:
         args : var args of print arguments.
 

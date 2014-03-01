@@ -1,8 +1,8 @@
 from six import u
 
 
-contents = u(\
-'''
+contents = u(
+    '''
 """
 Created on {date}
 

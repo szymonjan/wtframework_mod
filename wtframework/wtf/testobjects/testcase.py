@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,15 +23,15 @@ import unittest2
 
 
 class WatchedTestCase(unittest2.TestCase):
+
     '''
     This test case extends the unittest.TestCase to add support for 
     registering TestWatchers for listening on TestEvents.
     '''
-    
+
     def __init__(self, *args, **kwargs):
         self.__wtf_test_watchers__ = []
         super(WatchedTestCase, self).__init__(*args, **kwargs)
-
 
     # '_' prefix is added to hide it form nosetest
     def _register_watcher(self, watcher, position=-1):
@@ -40,28 +40,26 @@ class WatchedTestCase(unittest2.TestCase):
 
         Args:
             watcher: A test watcher to register.
-        
+
         Kwargs:
             position: position in execution queue to insert this watcher.
         """
         self.__wtf_test_watchers__.insert(position, watcher)
 
-
     # '_' prefix is added to hide it form nosetest
     def _unregister_watcher(self, watcher):
         """"
         Unregister a test watcher.
-        
+
         Args:
             watcher : Reference to TestWatcher to unregister.
         """
         self.__wtf_test_watchers__.remove(watcher)
 
-
     def get_log(self):
         """
         Get a log of events fired.
-        
+
         Returns:
             list - list of string names of events fired.
         """
@@ -70,13 +68,12 @@ class WatchedTestCase(unittest2.TestCase):
             log = watcher.get_log() + log
         return log
 
-
     def run(self, result=None):
         """
         Overriding the run() method to insert calls to our TestWatcher call-backs.
 
         Most of this method is a copy of the unittest.TestCase.run() method source.
-        
+
         Kwargs:
             result: TestResult object.
         """
@@ -87,15 +84,16 @@ class WatchedTestCase(unittest2.TestCase):
             if startTestRun is not None:
                 startTestRun()
 
-        did_tear_down_execute = False  # Track if clean up was run, so we can run clean up if setup failed.
+        # Track if clean up was run, so we can run clean up if setup failed.
+        did_tear_down_execute = False
 
         self._resultForDoCleanups = result
         result.startTest(self)
-        
+
         testMethod = getattr(self, self._testMethodName)
-        
-        if (getattr(self.__class__, "__unittest_skip__", False) or 
-            getattr(testMethod, "__unittest_skip__", False)):
+
+        if (getattr(self.__class__, "__unittest_skip__", False) or
+                getattr(testMethod, "__unittest_skip__", False)):
             # If the class or method was skipped.
             try:
                 skip_why = (getattr(self.__class__, '__unittest_skip_why__', '')
@@ -125,28 +123,30 @@ class WatchedTestCase(unittest2.TestCase):
 
                     # Run our test
                     testMethod()
-                    
+
                     # Run our test watcher post test actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_pass(self, result)
 
                 except self.failureException as e:
                     result.addFailure(self, sys.exc_info())
-                    
+
                     # Run our test watcher on fail actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_failure(self, result, e)
 
                 except _ExpectedFailure, e:
-                    addExpectedFailure = getattr(result, 'addExpectedFailure', None)
+                    addExpectedFailure = getattr(
+                        result, 'addExpectedFailure', None)
                     if addExpectedFailure is not None:
                         addExpectedFailure(self, e.exc_info)
-                    else: 
+                    else:
                         warnings.warn(u("Use of a TestResult without an addExpectedFailure method is deprecated"),
                                       DeprecationWarning)
                         result.addSuccess(self)
                 except _UnexpectedSuccess:
-                    addUnexpectedSuccess = getattr(result, 'addUnexpectedSuccess', None)
+                    addUnexpectedSuccess = getattr(
+                        result, 'addUnexpectedSuccess', None)
                     if addUnexpectedSuccess is not None:
                         addUnexpectedSuccess(self)
                     else:
@@ -157,7 +157,7 @@ class WatchedTestCase(unittest2.TestCase):
                     self._addSkip(result, str(e))
                 except Exception as e:
                     result.addError(self, sys.exc_info())
-                    
+
                     # Run our test watcher on error actions.
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_error(self, result, e)
@@ -175,7 +175,7 @@ class WatchedTestCase(unittest2.TestCase):
                 except Exception:
                     result.addError(self, sys.exc_info())
                     success = False
-                    
+
                 finally:  # Run our test watcher actions for after tear down..
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_teardown(self, result)
@@ -193,13 +193,16 @@ class WatchedTestCase(unittest2.TestCase):
                         test_watcher.after_test(self, result)
                     self.tearDown()
                 except:
-                    pass  # do nothing, test case would already failed and failure is already handled.
+                    # do nothing, test case would already failed and failure is
+                    # already handled.
+                    pass
                 finally:  # Run our test watcher actions for after tear down..
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.after_teardown(self, result)
 
-            # Remove test watchers.  For some strange reason these apply to all test 
-            # cases, not just the currently running one.  So we remove them here.
+            # Remove test watchers.  For some strange reason these apply to all test
+            # cases, not just the currently running one.  So we remove them
+            # here.
             self.__wtf_test_watchers__ = []
 
             result.stopTest(self)

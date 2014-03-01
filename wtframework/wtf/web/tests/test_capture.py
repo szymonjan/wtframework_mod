@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework.
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,16 +25,19 @@ from wtframework.wtf.utils.project_utils import ProjectUtils
 
 
 class TestCapture(unittest2.TestCase):
+
     def tearDown(self):
-        #tear down any webdrivers we create.
+        # tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
 
     def test_capture_file_created_and_valid_png(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_capture_file_created_and_valid_png")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageUtils.test_capture_file_created_and_valid_png")
         self.driver.get("http://www.yahoo.com")
         fname = "test"
         prj_root = ProjectUtils.get_project_root()
-        fpath = os.path.join(prj_root, WebScreenShotUtil.SCREEN_SHOT_LOCATION, fname + ".png")
+        fpath = os.path.join(
+            prj_root, WebScreenShotUtil.SCREEN_SHOT_LOCATION, fname + ".png")
         try:
             WebScreenShotUtil.take_screenshot(self.driver, fname)
             self.assertTrue(os.path.isfile(fpath))
@@ -44,5 +47,3 @@ class TestCapture(unittest2.TestCase):
                 os.remove(fpath)
             except OSError:
                 pass
-
-

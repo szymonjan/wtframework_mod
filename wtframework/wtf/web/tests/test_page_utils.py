@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,21 +25,20 @@ import threading
 import time
 import unittest2
 
+
 class GoogleSearch(PageObject):
-    
+
     def _validate_page(self, webdriver):
         if not "google.com" in webdriver.current_url:
             raise InvalidPageError("Not google.")
-
 
 
 class TestPageUtils(unittest2.TestCase):
 
     def tearDown(self):
 
-        #tear down any webdrivers we create.
+        # tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
-
 
     def __load_google_later(self):
         print "load google later thread started."
@@ -47,38 +46,39 @@ class TestPageUtils(unittest2.TestCase):
         self.driver.get("http://www.google.com")
         print "load google later thread now loading google."
 
-
     @timeout(60)
     def test_wait_for_page_to_load(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_to_load")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageUtils.test_wait_for_page_to_load")
         start_time = datetime.now()
-        
+
         # create a separate thread to load yahoo 10 seconds later.
         t = threading.Thread(target=self.__load_google_later)
         t.start()
 
-        self.page_obj = page.PageUtils.wait_until_page_loaded(GoogleSearch, self.driver, 60, sleep=5)
+        self.page_obj = page.PageUtils.wait_until_page_loaded(
+            GoogleSearch, self.driver, 60, sleep=5)
         t.join()
         end_time = datetime.now()
-        
+
         # check we get a page object pack.
         self.assertTrue(isinstance(self.page_obj, GoogleSearch))
         # check that the instantiation happened later when the page was loaded.
         self.assertGreater(end_time - start_time, timedelta(seconds=10))
 
-   
     def test_wait_for_page_loads_times_out_on_bad_page(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page")
         self.driver.get("http://www.yahoo.com")
-        self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, GoogleSearch, self.driver, 1)
-
+        self.assertRaises(
+            PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, GoogleSearch, self.driver, 1)
 
     def test_wait_for_page_loads_times_out_on_bad_page_list(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page_list")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageUtils.test_wait_for_page_loads_times_out_on_bad_page_list")
         self.driver.get("http://www.yahoo.com")
-        self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded, 
+        self.assertRaises(PageLoadTimeoutError, page.PageUtils.wait_until_page_loaded,
                           [GoogleSearch], self.driver, 1)
-
 
 
 if __name__ == "__main__":

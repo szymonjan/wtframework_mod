@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 
 
 class OperationTimeoutError(Exception):
+
     """
     Timeout Error
     This error is thrown when a wait function times out.
@@ -36,10 +37,10 @@ class OperationTimeoutError(Exception):
 def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_exceptions=False, message=None):
     '''
     Waits wrapper that'll wait for the condition to become true.
-    
+
     Args:
         condition (lambda) - Lambda expression to wait for to evaluate to True.
-    
+
     Kwargs:
         timeout (number) : Maximum number of seconds to wait.
         sleep (number) : Sleep time to wait between iterations.
@@ -50,7 +51,7 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
     Example::
 
         wait_until(lambda: driver.find_element_by_id("success").is_displayed(), timeout=30)
-    
+
     is equivalent to::
 
         end_time = datetime.now() + timedelta(seconds=30)
@@ -64,7 +65,7 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 
     '''
     if not hasattr(condition, '__call__'):
-        raise RuntimeError(u("Condition argument does not appear to be a callable function.") + 
+        raise RuntimeError(u("Condition argument does not appear to be a callable function.") +
                            u("Please check if this is a properly formatted lambda/function statement."),
                            condition)
 
@@ -96,22 +97,22 @@ def wait_until(condition, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, pass_ex
 def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message=None):
     '''
     A retry wrapper that'll keep performing the action until it succeeds.
-    
+
     Args:
         lambda_expr (lambda) : Expression to evaluate.
-    
+
     Kwargs: 
         timeout (number): Timeout period in seconds.
         sleep (number) : Sleep time to wait between iterations
         message (str) : Provide a message for TimeoutError raised.
-    
+
     Returns:
         The value of the evaluated lambda expression.
 
     Usage::
 
         do_until(lambda: driver.find_element_by_id("save").click())
-    
+
     Is equivalent to:
 
         end_time = datetime.now() + timedelta(seconds=30)
@@ -137,4 +138,3 @@ def do_until(lambda_expr, timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5, message
         raise OperationTimeoutError(message, last_exception)
     else:
         raise OperationTimeoutError("Operation timed out.", last_exception)
-

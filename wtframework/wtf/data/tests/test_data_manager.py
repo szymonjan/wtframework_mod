@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,21 +22,19 @@ import unittest2
 
 class TestDataManager(unittest2.TestCase):
 
-
     def test_data_manager_returns_filepath(self):
         file_path = DataManager().get_data_path("testdata.csv", "testenv")
-        self.assertTrue(os.path.exists(file_path), \
+        self.assertTrue(os.path.exists(file_path),
                         "Expecting 'testdata.csv' to be under /data/testenv folder.")
 
     def test_data_manager_returns_filepath_without_env(self):
         file_path = DataManager().get_data_path("testdata1.csv")
-        self.assertTrue(os.path.exists(file_path), \
+        self.assertTrue(os.path.exists(file_path),
                         "Expecting 'testdata1.csv' to be under /data/ folder.")
 
-
     def test_data_manager_throws_error_when_data_not_found(self):
-        self.assertRaises(RuntimeError, DataManager().get_data_path, "testnodata.csv", "testenv")
-        
+        self.assertRaises(
+            RuntimeError, DataManager().get_data_path, "testnodata.csv", "testenv")
 
 
 if __name__ == "__main__":

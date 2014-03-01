@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,24 +26,24 @@ def do_and_ignore(lambda_func):
     Perform the given function, but only log the error that's printed out.
     Use this function to wrap method calls you would normally do in a try/raise 
     block, but do not care about the results.
-    
+
     Args:
         lambda_func (function) : Lambda function to execute.
-    
+
     Returns:
         Returns same return as the lambda statement.  Otherwise returns None
-    
+
     Usage::
 
         do_and_ignore(lambda: driver.find_element_by_id("logoutButton").click())
-        
+
     is equivalent to::
-        
+
         try:
             driver.find_element_by_id("logoutButton").click()
         except Exception as e:
             print e
-    
+
     This function is useful for wrapping cleanup calls, since it'll ignore any errors 
     and keeps the test moving along.
 
@@ -58,11 +58,10 @@ def do_and_ignore(lambda_func):
         return None
 
 
-
 def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None):
     """
     Loops through an iterator, and for each matching lambda, perform the action associated.
-    
+
     Args:
         iterator: Iterator to loop through.
         matching_lambda_expr (lambda): Lamba expression for matching. Lambda should be in the 
@@ -71,15 +70,15 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
                                         Returns true if match, false otherwise.
         lambda_to_perform: Lambda expression to perform if a match is found, it should take an item 
                             from the iterator as a parameter.
-    
-                            
+
+
     Example::
 
         numbers = [1, 2, 3, 4, 5, 6]
         matcher = lambda num: num % 2 == 0
         action = lambda num: print num
         do_if_match(numbers, matcher, action) # prints 2
-    
+
     Is equivalent to:
 
         numbers = [1, 2, 3, 4, 5, 6]
@@ -98,8 +97,7 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
     raise NoMatchError(message)
 
 
-
 class NoMatchError(RuntimeError):
+
     "Raised if no match is found."
     pass
-

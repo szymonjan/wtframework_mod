@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,10 +21,11 @@ import unittest
 
 
 class TestScreenCaptureOnFail(WTFBaseTest):
+
     """"
     These test cases are expected to fail.  They are here to test 
     the screen capture on failure.
-    
+
     To see these running, comment out the 'expectedFailure' 
     decorators, then run them.  Upon failures, you should see 
     screenshots generated in the /screenshots folder.
@@ -36,7 +37,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
         driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         self.fail()
-        #Check your /screenshots folder for a screenshot.
+        # Check your /screenshots folder for a screenshot.
 
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
@@ -44,7 +45,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
         driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         self.assertEqual(1, 2)
-        #Check your /screenshots folder for a screenshot.
+        # Check your /screenshots folder for a screenshot.
 
     # Comment out decorator to manually test the screen capture.
     @unittest.expectedFailure
@@ -52,7 +53,7 @@ class TestScreenCaptureOnFail(WTFBaseTest):
         driver = WTF_WEBDRIVER_MANAGER.new_driver()
         driver.get('http://www.google.com')
         raise RuntimeError()
-        #Check your /screenshots folder for a screenshot.
+        # Check your /screenshots folder for a screenshot.
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

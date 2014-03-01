@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,12 +23,16 @@ import abc
 import unittest2
 
 # Interface for the other 2 search pages to implement.
+
+
 class SearchPage(PageObject):
-    #abstract class.
-    __metaclass__ = abc.ABCMeta #needed to make this an abstract class in Python 2.7
+    # abstract class.
+    # needed to make this an abstract class in Python 2.7
+    __metaclass__ = abc.ABCMeta
+
 
 class GoogleSearch(SearchPage):
-    
+
     def _validate_page(self, webdriver):
         if not "google.com" in webdriver.current_url:
             raise InvalidPageError("Not google.")
@@ -38,40 +42,39 @@ class GoogleSearch(SearchPage):
 
 
 class YahooSearch(SearchPage):
-    
+
     def _validate_page(self, webdriver):
         if not "yahoo.com" in webdriver.current_url:
             raise InvalidPageError("Not yahoo.")
 
 
 class GoogleSearch2(PageObject):
-    
+
     def _validate_page(self, webdriver):
         if not "google.com" in webdriver.current_url:
             raise InvalidPageError("Not google.")
+
     def __cmp__(self, other):
-        return 1;
-
-
+        return 1
 
 
 class TestPageFactory(unittest2.TestCase):
+
     '''
     Test the WebDriverFactory creates webdriver based on config.
-    
+
     Note: most of these tests will be commented out because they many call physical browsers 
     or call external services that may bill us.
     '''
 
-
     def tearDown(self):
-        #tear down any webdrivers we create.
+        # tear down any webdrivers we create.
         do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
         self.driver = None
 
-
     def test_create_page_createsPageWhenExists(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_createsPageWhenExists")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageFactor.test_create_page_createsPageWhenExists")
         self.driver.get("http://www.google.com")
         google = PageFactory.create_page(SearchPage, self.driver)
         self.assertTrue(type(google) == GoogleSearch)
@@ -79,32 +82,34 @@ class TestPageFactory(unittest2.TestCase):
         yahoo = PageFactory.create_page(SearchPage, self.driver)
         self.assertTrue(type(yahoo) == YahooSearch)
 
-
     def test_create_page_raiseExceptionWhenNoMatch(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_raiseExceptionWhenNoMatch")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageFactor.test_create_page_raiseExceptionWhenNoMatch")
         self.driver.get("http://www.amazon.com")
-        self.assertRaises(NoMatchingPageError, PageFactory.create_page, SearchPage, self.driver)
-
+        self.assertRaises(
+            NoMatchingPageError, PageFactory.create_page, SearchPage, self.driver)
 
     def test_create_page_with_list(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_with_list")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageFactor.test_create_page_with_list")
         self.driver.get("http://www.google.com")
-        google = PageFactory.create_page([GoogleSearch, YahooSearch], self.driver)
+        google = PageFactory.create_page(
+            [GoogleSearch, YahooSearch], self.driver)
         self.assertTrue(type(google) == GoogleSearch)
         self.driver.get("http://www.yahoo.com")
-        yahoo = PageFactory.create_page([GoogleSearch, YahooSearch], self.driver)
+        yahoo = PageFactory.create_page(
+            [GoogleSearch, YahooSearch], self.driver)
         self.assertTrue(type(yahoo) == YahooSearch)
 
     def test_create_page_uses_page_rank(self):
-        self.driver = WTF_WEBDRIVER_MANAGER.new_driver("TestPageFactor.test_create_page_uses_page_rank")
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageFactor.test_create_page_uses_page_rank")
         self.driver.get("http://www.google.com")
-        google_page = PageFactory.create_page([GoogleSearch, GoogleSearch2], self.driver)
+        google_page = PageFactory.create_page(
+            [GoogleSearch, GoogleSearch2], self.driver)
         self.assertTrue(isinstance(google_page, GoogleSearch2))
-
 
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()
-    
-    

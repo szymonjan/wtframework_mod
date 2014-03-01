@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ import unittest2
 
 class TestConfigReader(unittest2.TestCase):
 
-
     def test_get_returns_string_config_value(self):
         '''
         Test config value returned is expected value
@@ -32,8 +31,10 @@ class TestConfigReader(unittest2.TestCase):
     def test_get_with_default_value(self):
         "Test the get method returns value if available or the the default."
         config = ConfigReader("tests/TestConfigReaderData")
-        self.assertEqual("some value", config.get("string_test", "default value"))
-        self.assertEqual("default value", config.get("i_dont_exist", "default value"))
+        self.assertEqual(
+            "some value", config.get("string_test", "default value"))
+        self.assertEqual(
+            "default value", config.get("i_dont_exist", "default value"))
 
     def test_get_handles_namespaced_keys(self):
         '''
@@ -42,7 +43,6 @@ class TestConfigReader(unittest2.TestCase):
         config = ConfigReader("tests/TestConfigReaderData")
         value = config.get("bill-to.given")
         self.assertEqual(value, "Chris", "Value did not match expected.")
-
 
     def test_get_handles_yaml_arrays(self):
         '''
@@ -66,7 +66,6 @@ class TestConfigReader(unittest2.TestCase):
         self.assertEqual("beautiful", config.get("overwrite_setting"))
         # this will take the setting form config2.
         self.assertEqual("hi", config.get("setting_from_config2"))
-        
 
     def test_get_with_missing_key_and_no_default(self):
         "An error should be thrown if the key is missing and no default provided."
@@ -74,12 +73,11 @@ class TestConfigReader(unittest2.TestCase):
         # should take config from config1
         self.assertRaises(KeyError, config.get, "setting_that_doesnt_exist")
 
-
     def test_specifying_bad_config_file(self):
         "Test error is thrown when invalid config file is specified."
-        self.assertRaises(ConfigFileReadError, ConfigReader, "tests/TestConfig1,NOSUCHFILE")
+        self.assertRaises(
+            ConfigFileReadError, ConfigReader, "tests/TestConfig1,NOSUCHFILE")
 
-        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

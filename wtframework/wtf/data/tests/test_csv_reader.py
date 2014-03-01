@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ import unittest2
 
 class TestCsvReader(unittest2.TestCase):
 
-
     def test_csv_reader_reads_csv_file(self):
-        csvreader = CsvReader(WTF_DATA_MANAGER.get_data_path("testdata.csv", "testenv"))
+        csvreader = CsvReader(
+            WTF_DATA_MANAGER.get_data_path("testdata.csv", "testenv"))
         first_row = csvreader.next()
         self.assertEqual("Dog", first_row['Animal'])
         self.assertEqual("3.0", first_row['Size'])
@@ -37,8 +37,6 @@ class TestCsvReader(unittest2.TestCase):
         self.assertEqual("2.0", third_row['Size'])
 
         self.assertRaises(StopIteration, csvreader.next)
-
-
 
 
 if __name__ == "__main__":

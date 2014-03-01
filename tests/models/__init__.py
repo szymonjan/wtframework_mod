@@ -1,1 +1,1 @@
-'Put models like database abstractions here.'
+"""Put models like database abstractions here."""
