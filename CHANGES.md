@@ -1,3 +1,8 @@
+## v0.4.5
+- Fix runtests.py script to avoid instantiating ConfigReader before config options are 
+  processed.
+- Files formatted to be PEP8 compliant.
+
 ## v0.4.4
 - Config setting for max file length of screen capture on error.
 - Add optional recipient filter to email searches

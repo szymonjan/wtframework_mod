@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 
 
 class WebElementSelector():
-    "Utiltiy class for selecting elements."
 
+    "Utiltiy class for selecting elements."
 
     @staticmethod
     def find_element_by_selectors(webdriver, *selectors):
@@ -35,36 +35,39 @@ class WebElementSelector():
         Utility method makes it easier to find an element using multiple selectors. This is 
         useful for problematic elements what might works with one browser, but fail in another.
         (Like different page elements being served up for different browsers)
-        
+
         Args:
             selectors - var arg if N number of selectors to match against.  Each selector should 
                         be a Selenium 'By' object.
-        
+
         Usage::
             my_element = WebElementSelector.find_element_by_selectors(webdriver,
                                                                     (By.ID, "MyElementID"),
                                                                     (By.CSS, "MyClassSelector") )
-
 
         """
         # perform initial check to verify selectors are valid by statements.
         for selector in selectors:
             (by_method, value) = selector
             if not WebElementSelector.__is_valid_by_type(by_method):
-                raise BadSelectorError(u("Selectors should be of type selenium.webdriver.common.by.By"))
+                raise BadSelectorError(
+                    u("Selectors should be of type selenium.webdriver.common.by.By"))
             if type(value) != str:
-                raise BadSelectorError(u("Selectors should be of type selenium.webdriver.common.by.By"))
+                raise BadSelectorError(
+                    u("Selectors should be of type selenium.webdriver.common.by.By"))
 
         selectors_used = []
         for selector in selectors:
             (by_method, value) = selector
-            selectors_used.append(u("{by}:{value}").format(by=by_method, value=value))
+            selectors_used.append(
+                u("{by}:{value}").format(by=by_method, value=value))
             try:
                 return webdriver.find_element(by=by_method, value=value)
             except:
                 pass
-        
-        raise ElementNotSelectableException(u("Unable to find elements using:") + u(",").join(selectors_used))
+
+        raise ElementNotSelectableException(
+            u("Unable to find elements using:") + u(",").join(selectors_used))
 
     @staticmethod
     def __is_valid_by_type(by_type):
@@ -72,22 +75,22 @@ class WebElementSelector():
             if "__" not in attr:
                 if by_type == value:
                     return True
-        
-        return False
-    
 
-class WebElementUtils():    
+        return False
+
+
+class WebElementUtils():
+
     """
     Utility methods for working with web pages and web elements.
     """
 
-
     @staticmethod
-    def wait_until_element_not_visible(webdriver, locator_lambda_expression, \
+    def wait_until_element_not_visible(webdriver, locator_lambda_expression,
                                        timeout=WTF_TIMEOUT_MANAGER.NORMAL, sleep=0.5):
         """
         Wait for a WebElement to disappear.
-        
+
         Args:
             webdriver (Webdriver) - Selenium Webdriver
             locator (lambda) - Locator lambda expression.
@@ -101,14 +104,14 @@ class WebElementUtils():
         try:
             stoptime = datetime.now() + timedelta(seconds=timeout)
             while datetime.now() < stoptime:
-                element = WebDriverWait(webdriver, WTF_TIMEOUT_MANAGER.BRIEF).until(locator_lambda_expression)
+                element = WebDriverWait(webdriver, WTF_TIMEOUT_MANAGER.BRIEF).until(
+                    locator_lambda_expression)
                 if element.is_displayed():
                     time.sleep(sleep)
                 else:
                     break
         except TimeoutException:
             pass
-
 
     @staticmethod
     def is_image_loaded(webdriver, webelement):
@@ -120,8 +123,8 @@ class WebElementUtils():
             webelement (WebElement) - WebDriver web element to validate.
 
         '''
-        script = u("return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" ") + \
-                 u("&& arguments[0].naturalWidth > 0")
+        script = (u("return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" ") + 
+                 u("&& arguments[0].naturalWidth > 0"))
         try:
             return webdriver.execute_script(script, webelement)
         except:
@@ -129,6 +132,6 @@ class WebElementUtils():
 
 
 class BadSelectorError(Exception):
+
     "Raised when a bad selector is passed into a WebElementSelector() method."
     pass
-

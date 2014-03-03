@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,16 +21,16 @@ import unittest2
 
 class TestAssetManager(unittest2.TestCase):
 
-
     def test_asset_manager_returns_filepath(self):
         "Test the correct file path is returned when given an asset file name."
         file_path = AssetManager().get_asset_path("a_test_file.txt")
-        self.assertTrue(os.path.exists(file_path), \
+        self.assertTrue(os.path.exists(file_path),
                         "Expecting 'a_test_file.txt to be under /assets folder.")
 
     def test_get_asset_path_throws_error_if_file_not_exist(self):
         "Test we throw an error if the asset file is not found."
-        self.assertRaises(Exception, AssetManager().get_asset_path, "i_do_not_exist_.text")
+        self.assertRaises(
+            Exception, AssetManager().get_asset_path, "i_do_not_exist_.text")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

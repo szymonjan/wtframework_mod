@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,9 @@ from wtframework.wtf.utils.project_utils import ProjectUtils
 import base64
 import os
 
+
 class WebScreenShotUtil():
+
     '''
     Utilities for taking screenshots in Selenium Webdriver.
     '''
@@ -32,43 +34,45 @@ class WebScreenShotUtil():
     def take_screenshot(webdriver, file_name):
         """
         Captures a screenshot.
-        
+
         Args:
             webdriver (WebDriver) - Selenium webdriver.
             file_name (str) - File name to save screenshot as.
 
         """
         folder_location = os.path.join(ProjectUtils.get_project_root(),
-                                            WebScreenShotUtil.SCREEN_SHOT_LOCATION)
+                                       WebScreenShotUtil.SCREEN_SHOT_LOCATION)
 
-        WebScreenShotUtil.__capture_screenshot(webdriver, folder_location, file_name + ".png")
+        WebScreenShotUtil.__capture_screenshot(
+            webdriver, folder_location, file_name + ".png")
 
     @staticmethod
     def take_reference_screenshot(webdriver, file_name):
         """
         Captures a screenshot as a reference screenshot.
-        
+
         Args:
             webdriver (WebDriver) - Selenium webdriver.
             file_name (str) - File name to save screenshot as.
         """
         folder_location = os.path.join(ProjectUtils.get_project_root(),
-                                    WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION)
+                                       WebScreenShotUtil.REFERENCE_SCREEN_SHOT_LOCATION)
 
-        WebScreenShotUtil.__capture_screenshot(webdriver, folder_location, file_name + ".png")
-
+        WebScreenShotUtil.__capture_screenshot(
+            webdriver, folder_location, file_name + ".png")
 
     @staticmethod
     def __capture_screenshot(webdriver, folder_location, file_name):
         "Capture a screenshot"
         # Check folder location exists.
-        if not os.path.exists(folder_location) : os.makedirs(folder_location)
+        if not os.path.exists(folder_location):
+            os.makedirs(folder_location)
 
         file_location = os.path.join(folder_location, file_name)
 
         if isinstance(webdriver, remote.webdriver.WebDriver):
-            # If this is a remote webdriver.  We need to transmit the image data 
-            # back across system boundries as a base 64 encoded string so it can 
+            # If this is a remote webdriver.  We need to transmit the image data
+            # back across system boundries as a base 64 encoded string so it can
             # be decoded back on the local system and written to disk.
             base64_data = webdriver.get_screenshot_as_base64()
             screenshot_data = base64.decodestring(base64_data)

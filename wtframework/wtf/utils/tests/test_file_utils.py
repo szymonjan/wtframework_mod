@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@ import unittest2
 
 class TestFileUtils(unittest2.TestCase):
 
-
     def test_generate_temp_path(self):
         "Tests creating a file in temp directory."
         temp_name = file_utils.temp_path("blah")
-        self.assertTrue( tempfile.gettempdir() in temp_name)
+        self.assertTrue(tempfile.gettempdir() in temp_name)
 
     def test_create_temp_file_creates_file_with_desired_content(self):
         "Tests tempfile is created with desired contents."
-        temp_file = file_utils.create_temp_file(string_or_another_file="hello world")
+        temp_file = file_utils.create_temp_file(
+            string_or_another_file="hello world")
         temp_file_contents = open(temp_file).read()
         self.assertEqual("hello world", temp_file_contents)
 
@@ -38,13 +38,11 @@ class TestFileUtils(unittest2.TestCase):
         "Test file is downloaded to temp file correctly"
         # This is a data URI that has a URL encoded text "hello world"
         hello_world_data_uri = "data:text/plain;charset=utf-8;base64,aGVsbG8gd29ybGQ="
-        
+
         temp_file = file_utils.download_to_tempfile(hello_world_data_uri)
         temp_file_contents = open(temp_file).read()
-        
-        self.assertEqual("hello world", temp_file_contents) 
 
-
+        self.assertEqual("hello world", temp_file_contents)
 
 
 if __name__ == "__main__":

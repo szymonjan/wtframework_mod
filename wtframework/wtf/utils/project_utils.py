@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,9 +22,10 @@ from six import u
 
 
 class ProjectUtils(object):
+
     """
     Utility methods for working with the project.
-    
+
     """
 
     WTF_HOME_CONFIG_ENV_VAR = "WTF_HOME"
@@ -40,7 +41,7 @@ class ProjectUtils(object):
         However, for data, it's recommended you use WTF_DATA_MANAGER and for assets it's recommended 
         to use WTF_ASSET_MANAGER, which are already singleton instances that manger the /data, and /assets 
         folder for you.
-        
+
         Returns:
             str - path of project root directory.
         '''
@@ -54,7 +55,7 @@ class ProjectUtils(object):
             # Means WTF_HOME override isn't specified.
             pass
 
-        # Search starting from the current working directory and traverse up parent directories for the 
+        # Search starting from the current working directory and traverse up parent directories for the
         # hidden file denoting the project root folder.
         path = os.getcwd()
         seperator_matches = re.finditer(u("/|\\\\"), path)
@@ -70,6 +71,5 @@ class ProjectUtils(object):
                 cls.__root_folder__ = path
                 return cls.__root_folder__
 
-        raise RuntimeError(u("Missing root project folder locator file '.wtf_root_folder'.") \
+        raise RuntimeError(u("Missing root project folder locator file '.wtf_root_folder'.")
                            + u("Check to make sure this file is located in your project directory."))
-

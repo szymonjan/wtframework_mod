@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -30,10 +30,11 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class PageObject(object):
+
     """Base class for PageObjects.  The goal of PageObjects is to allow a logical 
     encapsulation of page recognition, mapping of page elements, and exposing logical 
     services provided by the page on a higher level for high level tests to consume.
-    
+
     Basic Usage:
 
     #. define '_validate_page(webdriver)' method.  This method will check to make sure 
@@ -48,11 +49,10 @@ class PageObject(object):
 
     __names_of_classes_we_already_took_screen_caps_of__ = {}
 
-
     def __init__(self, webdriver, *args, **kwargs):
         """Constructor.  It's better to not call this directly, instead use PageFactory 
         to instantiate PageObjects.
-        
+
         Ars: 
             webdriver (Webdriver): Selenium Webdriver instance.
 
@@ -62,11 +62,10 @@ class PageObject(object):
         except KeyError:
             config_reader = WTF_CONFIG_READER
 
-        
         self._validate_page(webdriver)
-        
-        # Assign webdriver to PageObject. 
-        # Each page object has an instance of "webdriver" referencing the webdriver 
+
+        # Assign webdriver to PageObject.
+        # Each page object has an instance of "webdriver" referencing the webdriver
         # driving this page.
         self.webdriver = webdriver
 
@@ -77,18 +76,21 @@ class PageObject(object):
                 pass
             else:
                 try:
-                    WebScreenShotUtil.take_reference_screenshot(webdriver, class_name)
-                    PageObject.__names_of_classes_we_already_took_screen_caps_of__[class_name] = True
+                    WebScreenShotUtil.take_reference_screenshot(
+                        webdriver, class_name)
+                    PageObject.__names_of_classes_we_already_took_screen_caps_of__[
+                        class_name] = True
                 except Exception as e:
-                    _wtflog.error(e)  # Some WebDrivers such as head-less drivers does not take screenshots.
+                    # Some WebDrivers such as head-less drivers does not take
+                    # screenshots.
+                    _wtflog.error(e)
         else:
             pass
-
 
     @abc.abstractmethod
     def _validate_page(self, webdriver):
         """Perform checks to validate this page is the correct target page.
-        
+
         All PageObjects must implement this method.
 
         Args:
@@ -97,22 +99,21 @@ class PageObject(object):
             InvalidPageError: Raised when we try to assign the wrong page 
             to this page object.  This exception should be raised when a page match 
             fails.  Any other exception type would be consider a code failure.
-            
+
         """
         return
-
 
     @classmethod
     def create_page(cls, webdriver=None, **kwargs):
         """Class method short cut to call PageFactory on itself.  Use it to instantiate 
         this PageObject using a webdriver.
-        
+
         Args:
             webdriver (Webdriver): Instance of Selenium Webdriver.
-        
+
         Returns:
             PageObject
-        
+
         Raises:
             InvalidPageError
 
@@ -121,16 +122,15 @@ class PageObject(object):
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
         return PageFactory.create_page(cls, webdriver=webdriver, **kwargs)
 
-
     # Magic methods for enabling comparisons.
     def __cmp__(self, other):
         """Override this to implement PageObject ranking.  This is used by PageObjectFactory
         when it finds multiple pages that qualify to map to the current page.  The 
         PageObjectFactory will check which page object is preferable.
-        
+
         Args:
             other (PageObject) : Other page object to compare it against.
-        
+
         Returns:
             int ::
                 postive number - this page is prioritized over the other page.
@@ -139,24 +139,25 @@ class PageObject(object):
         """
         if not isinstance(other, PageObject):
             # By default page object will rank itself over non page objects.
-            return 1;
+            return 1
         else:
             return 0
 
 
 class InvalidPageError(Exception):
+
     '''Thrown when we have tried to instantiate the incorrect page to a PageObject.'''
     pass
 
 
-
 class PageFactory():
+
     """Page Factory class for constructing PageObjects.
-    
+
     """
 
     @staticmethod
-    def create_page(page_object_class_or_interface, \
+    def create_page(page_object_class_or_interface,
                     webdriver=None, **kwargs):
         """
         Instantiate a page object from a given Interface or Abstract class.
@@ -164,72 +165,73 @@ class PageFactory():
         Args:
             page_object_class_or_interface (Class): PageObject class, AbstractBaseClass, or 
             Interface to attempt to consturct.
-        
+
         Kwargs:
             webdriver (WebDriver): Selenium Webdriver to use to instantiate the page.
-        
+
         Returns:
             PageObject
-        
+
         Raises:
             NoMatchingPageError
-        
+
         Instantiating a Page from PageObject from class usage::
-        
+
             my_page_instance = PageFactory.create_page(MyPageClass)
-            
-        
+
+
         Instantiating a Page from an Interface or base class::
-        
+
             import pages.mysite.*  # Make sure you import classes first, or else PageFactory will not know about it.
             my_page_instance = PageFactory.create_page(MyPageInterfaceClass)
-            
-        
+
+
         Instantiating a Page from a list of classes.::
-        
+
             my_page_instance = PageFactory.create_page([PossiblePage1, PossiblePage2])
-            
-        
+
+
         Note: It'll only be able to detect pages that are imported.  To it's best to 
         do an import of all pages implementing a base class or the interface inside the 
         __init__.py of the package directory.  
-        
+
         """
-        
+
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
-        
+
         # will be used later when tracking best matched page.
         current_matched_page = None
-        
-        
-        # Walk through all classes of this sub class 
+
+        # Walk through all classes of this sub class
         if type(page_object_class_or_interface) == list:
             subclasses = []
             for page_class in page_object_class_or_interface:
                 # attempt to instantiate class.
-                page = PageFactory.__instantiate_page_object(page_class, \
-                                                             webdriver, \
+                page = PageFactory.__instantiate_page_object(page_class,
+                                                             webdriver,
                                                              **kwargs)
                 if isinstance(page, PageObject) and (current_matched_page == None or page > current_matched_page):
                     current_matched_page = page
-                
+
                 # check for subclasses
                 subclasses += PageFactory.__itersubclasses(page_class)
         else:
             # Try the original class
             page_class = page_object_class_or_interface
-            page = PageFactory.__instantiate_page_object(page_class, \
-                                                         webdriver, \
+            page = PageFactory.__instantiate_page_object(page_class,
+                                                         webdriver,
                                                          **kwargs)
             if isinstance(page, PageObject):
                 current_matched_page = page
 
             # check for subclasses
-            subclasses = PageFactory.__itersubclasses(page_object_class_or_interface)
+            subclasses = PageFactory.__itersubclasses(
+                page_object_class_or_interface)
 
-        # Iterate over subclasses of the passed in classes to see if we have a better match.
-        for pageClass in subclasses :
+        # Iterate over subclasses of the passed in classes to see if we have a
+        # better match.
+        for pageClass in subclasses:
             try:
                 page = pageClass(webdriver, **kwargs)
                 if current_matched_page == None or page > current_matched_page:
@@ -239,7 +241,9 @@ class PageFactory():
                 pass  # This happens when the page fails check.
             except TypeError as e:
                 _wtflog.debug("TypeError: %s", e)
-                pass  # this happens when it tries to instantiate the original abstract class.
+                # this happens when it tries to instantiate the original
+                # abstract class.
+                pass
             except Exception as e:
                 _wtflog.debug("Exception: %s", e)
                 # Unexpected exception.
@@ -247,7 +251,7 @@ class PageFactory():
 
         # If no matching classes.
         if not isinstance(current_matched_page, PageObject):
-            raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}") \
+            raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}")
                                       .format(webdriver.current_url))
         else:
             return current_matched_page
@@ -260,7 +264,9 @@ class PageFactory():
         except InvalidPageError:
             pass  # This happens when the page fails check.
         except TypeError:
-            pass  # this happens when it tries to instantiate the original abstract class.
+            # this happens when it tries to instantiate the original abstract
+            # class.
+            pass
         except Exception as e:
             # Unexpected exception.
             raise e
@@ -269,11 +275,11 @@ class PageFactory():
     def __itersubclasses(cls, _seen=None):
         """
         Credit goes to: http://code.activestate.com/recipes/576949-find-all-subclasses-of-a-given-class/
-        
+
         itersubclasses(cls)
-    
+
         Generator over all subclasses of a given class, in depth first order.
-    
+
         >>> list(itersubclasses(int)) == [bool]
         True
         >>> class A(object): pass
@@ -293,9 +299,10 @@ class PageFactory():
         ['type', ...'tuple', ...]
         """
         if not isinstance(cls, type):
-            raise TypeError(u('Argument ({0}) passed to PageFactory does not appear to be a valid Class.').format(cls), \
+            raise TypeError(u('Argument ({0}) passed to PageFactory does not appear to be a valid Class.').format(cls),
                             "Check to make sure the first parameter is an PageObject class, interface, or mixin.")
-        if _seen is None: _seen = set()
+        if _seen is None:
+            _seen = set()
         try:
             subs = cls.__subclasses__()
         except TypeError:  # fails only when cls is type
@@ -308,13 +315,14 @@ class PageFactory():
                     yield sub
 
 
-
 class NoMatchingPageError(RuntimeError):
+
     "Raised when no matching page object is not found."
     pass
 
 
 class PageObjectUtils():
+
     '''
     Offers utility methods that are useful for use within PageObjects..
     '''
@@ -323,16 +331,16 @@ class PageObjectUtils():
     def check_css_selectors(webdriver, *selectors):
         """Returns true if all CSS selectors passed in is found.  This can be used 
         to quickly validate a page.
-        
+
         Args:
             webdriver (Webdriver) : Selenium Webdriver instance
             selectors (str) : N number of CSS selectors strings to match against the page.
-        
+
         Returns:
             True, False - if the page matches all selectors.
-        
+
         Usage Example::
-        
+
             # Checks for a Form with id='loginForm' and a button with class 'login'
             if not PageObjectUtils.check_css_selectors("form#loginForm", "button.login"):
                 raise InvalidPageError("This is not the login page.")
@@ -349,11 +357,11 @@ class PageObjectUtils():
         return True  # All selectors succeeded
 
 
-
 class PageUtils():
+
     '''Offers utility methods that operate on a page level.
     '''
-    
+
     @staticmethod
     def wait_until_page_loaded(page_obj_class,
                                webdriver=None,
@@ -364,59 +372,61 @@ class PageUtils():
                                **kwargs):
         """
         Waits until the page is loaded.
-        
+
         Args:
             page_obj_class (Class) : PageObject class
-        
+
         Kwargs:
             webdriver (Webdriver) : Selenium Webdriver.  Default uses WTF_WEBDRIVER_MANAGER's instance.
             timeout (number) : Number of seconds to wait to allow the page to load.
             sleep (number) : Number of seconds to wait between polling.
             bad_page_classes (list) : List of PageObject classes to fail if matched.  For example, ServerError page.
             message (string) : Use your own message with PageLoadTimeoutError raised.
-        
+
         Returns:
             PageObject
-        
+
         Raises:
             PageUtilOperationTimeoutError : Timeout occurred before the desired PageObject was matched.
             BadPageEncounteredError : One or more of the PageObject in the specified 'bad_page_classes' list 
             was matched.
-            
-        
+
+
         Usage Example:: 
             webdriver.get("http://www.mysite.com/login")
             # Wait up to 60 seconds for the page to load.
             login_page = wait_until_page_loaded(LoginPage, timeout=60, [ServerErrorPage])
-        
+
         This will wait for the login_page to load, then return a LoginPage() PageObject.
 
         """
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
-        
+
         # convert this param to list if not already.
         if type(bad_page_classes) != list:
             bad_page_classes = [bad_page_classes]
-        
+
         end_time = datetime.now() + timedelta(seconds=timeout)
         last_exception = None
         while datetime.now() < end_time:
             # Check to see if we're at our target page.
             try:
-                page = PageFactory.create_page(page_obj_class, webdriver=webdriver, **kwargs)
+                page = PageFactory.create_page(
+                    page_obj_class, webdriver=webdriver, **kwargs)
                 return page
             except Exception as e:
                 _wtflog.debug("Encountered exception: %s ", e)
                 last_exception = e
 
-
             # Check to see if we're at one of those labled 'Bad' pages.
             for bad_page_class in bad_page_classes:
                 try:
-                    PageFactory.create_page(bad_page_class, webdriver=webdriver, **kwargs)
+                    PageFactory.create_page(
+                        bad_page_class, webdriver=webdriver, **kwargs)
                     # if the if/else statement succeeds, than we have an error.
-                    raise BadPageEncounteredError(u("Encountered a bad page. ") + bad_page_class.__name__)
+                    raise BadPageEncounteredError(
+                        u("Encountered a bad page. ") + bad_page_class.__name__)
                 except BadPageEncounteredError as e:
                     raise e
                 except:
@@ -427,32 +437,30 @@ class PageUtils():
         print "Unable to construct page, last exception", last_exception
         if message:
             err_msg = u(message) + u("{page}:{url}")\
-            .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                                     url=webdriver.current_url)
+                .format(page=PageUtils.__get_name_for_class__(page_obj_class),
+                        url=webdriver.current_url)
         else:
             err_msg = u("Timed out while waiting for {page} to load. Url:{url}")\
-            .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                                     url=webdriver.current_url)
+                .format(page=PageUtils.__get_name_for_class__(page_obj_class),
+                        url=webdriver.current_url)
         raise PageLoadTimeoutError(err_msg)
-
 
     @staticmethod
     def wait_until_page_ready(page_object, timeout=WTF_TIMEOUT_MANAGER.NORMAL):
         """Waits until document.readyState == Complete (e.g. ready to execute javascript commands)
-        
+
         Args:
             page_object (PageObject) : PageObject class
-        
+
         Kwargs:
             timeout (number) : timeout period
         """
         try:
-            do_until(lambda: page_object.webdriver.execute_script("return document.readyState").lower() \
+            do_until(lambda: page_object.webdriver.execute_script("return document.readyState").lower()
                      == 'complete', timeout)
         except wait_utils.OperationTimeoutError:
-            raise PageUtilOperationTimeoutError("Timeout occurred while waiting for page to be ready.")
-        
-
+            raise PageUtilOperationTimeoutError(
+                "Timeout occurred while waiting for page to be ready.")
 
     @staticmethod
     def __get_name_for_class__(class_or_list):
@@ -470,15 +478,18 @@ class PageUtils():
 
 
 class PageUtilOperationTimeoutError(Exception):
+
     "Timed out while waiting for a WebUtil action"
     pass
 
 
 class BadPageEncounteredError(Exception):
+
     "Raised when a bad page is encountered."
     pass
 
 
 class PageLoadTimeoutError(PageUtilOperationTimeoutError):
+
     "Timeout while waiting for page to load."
     pass

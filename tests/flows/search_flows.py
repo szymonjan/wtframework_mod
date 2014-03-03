@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ from tests.pages.search_page import ISearchPage
 from wtframework.wtf.web.page import PageFactory
 
 
-# You can use flow functions to group together a set of calls you make frequently 
+# You can use flow functions to group together a set of calls you make frequently
 # so you can reuse them between tests.
 
 def perform_search(search_term, webdriver):

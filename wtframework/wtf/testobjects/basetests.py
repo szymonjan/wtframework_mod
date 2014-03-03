@@ -1,5 +1,5 @@
 ##########################################################################
-#This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,15 +22,16 @@ import inspect
 
 
 class WTFBaseTest(WatchedTestCase):
+
     '''
     Test can extend this basetest to add additional unit test functionality such as 
     take screenshot on failure.
-    
+
     Example::
-    
+
         from wtframework.wtf.testobjects.basetests import WTFBaseTest
         from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
-        
+
         class TestScreenCaptureOnFail(WTFBaseTest):
             """"
             These test cases are expected to fail.  They are here to test 
@@ -49,7 +50,7 @@ class WTFBaseTest(WatchedTestCase):
     For the screen capture to work, you need to make sure you use WTF_WEBDRIVER_MANAGER for 
     getting your webdriver instance. This is used for getting the current instance of webdriver 
     when a test fails in order to take a screenshot.
-    
+
     WTFBaseTest is also an instance of WatchedTestCase, which you can use to add additional 
     call backs you wish to use for handling errors or other test events.
     '''
@@ -66,14 +67,13 @@ class WTFBaseTest(WatchedTestCase):
 
         """
         super(WTFBaseTest, self).__init__(methodName)
-        self._register_watcher(CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
-        
+        self._register_watcher(
+            CaptureScreenShotOnErrorTestWatcher(webdriver_provider, screenshot_util))
 
-        # Note this watcher should be registered after all other watchers that use 
+        # Note this watcher should be registered after all other watchers that use
         # on_test_passed() event.
         self._delayed_test_watcher = DelayedTestFailTestWatcher()
         self._register_watcher(self._delayed_test_watcher)
-
 
     def assertWithDelayedFailure(self, assert_method, *args, **kwargs):
         """
@@ -82,7 +82,7 @@ class WTFBaseTest(WatchedTestCase):
         fails, and do addtional assertions.  At the end of the test, it will 
         pool all the test failures into 1 failed assert with a summary of 
         all the test failures that occurred during the test.
-        
+
         Args:
             assert_method (function) - Assert method to run.
             args - arguments to pass into the assert method.
@@ -92,24 +92,24 @@ class WTFBaseTest(WatchedTestCase):
 
 
         Will assert if percent == 100 at the end of the test.::
-        
+
             self.assertWithDelayedFailure(self.AssertEquals, 100, percent)
 
         """
         frame = None
         try:
-            #attempt to get parent frames
+            # attempt to get parent frames
             frame = inspect.getouterframes(inspect.currentframe())[1]
         except:
-            pass #oh well, we couldn't get it.
-        
-        assert_func = lambda: assert_method(*args, **kwargs)
-        generated_exception = self._delayed_test_watcher.delay_failure(assert_func, frame)
+            pass  # oh well, we couldn't get it.
 
+        assert_func = lambda: assert_method(*args, **kwargs)
+        generated_exception = self._delayed_test_watcher.delay_failure(
+            assert_func, frame)
 
         if generated_exception:
-            # Call our on_fail for our test watchers.  So we can trigger our screen 
+            # Call our on_fail for our test watchers.  So we can trigger our screen
             # capture at moment of failure.
             for test_watcher in self.__wtf_test_watchers__:
-                test_watcher.on_test_failure(self, self._resultForDoCleanups, generated_exception)
-
+                test_watcher.on_test_failure(
+                    self, self._resultForDoCleanups, generated_exception)

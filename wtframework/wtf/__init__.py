@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,4 +18,3 @@ import logging
 
 logging.basicConfig(level=logging.WARNING)
 _wtflog = logging.getLogger('wtframework')
-

@@ -16,10 +16,13 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from __future__ import print_function
 from optparse import OptionParser
-from wtframework.wtf.config import ConfigReader
+from wtframework.wtf.constants import WTF_CONFIG_LOCATION, WTF_CONFIG_EXT, \
+    WTF_ENV_VARS
 from wtframework.wtf.utils.project_utils import ProjectUtils
 import os
+import re
 
 
 if __name__ == '__main__':
@@ -34,15 +37,25 @@ if __name__ == '__main__':
 
 
     if options.config:
-        # check if config exists.
-        expected_path = os.path.join(ProjectUtils.get_project_root(),
-                          ConfigReader.CONFIG_LOCATION,
-                           options.config + ConfigReader.CONFIG_EXT)
-        if os.path.exists(expected_path):
-            print u"Setting config WTF_ENV to:", options.config
-            os.putenv(ConfigReader.ENV_VARS, options.config)
+        configs = re.split(",|;", options.config)
+        configs_valid = True
+        for config in configs:
+            # check if config exists.
+            expected_path = os.path.join(ProjectUtils.get_project_root(),
+                                         WTF_CONFIG_LOCATION,
+                                         config + WTF_CONFIG_EXT)
+            if os.path.exists(expected_path):
+                pass  # config exists.
+            else:
+                configs_valid = False
+                print("Cannot find config: ", expected_path)
+        
+        if configs_valid:
+            os.putenv(WTF_ENV_VARS, options.config)
+            print("Setting config WTF_ENV to:", options.config)
         else:
-            print "Cannot find config: ", expected_path
+            exit(1)  # one or more errors was found in the configs.
+        
 
     # Set PYTHONPATH if not set.
     try:

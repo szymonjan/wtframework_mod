@@ -1,5 +1,5 @@
 ##########################################################################
-# This file is part of WTFramework. 
+# This file is part of WTFramework.
 #
 #    WTFramework is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,16 +28,17 @@ from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
 
 class TestWatcher(object):
+
     '''
     TestWatcher classes are classes that can be registered to a test 
     case and listen to events in the TestCase such as a test failing 
     or a test succeeding, and perform actions.
-    
+
     To use TestWatcher, extend this test watcher.  Override the methods 
     corresponding to the events you are interested in.  Then you can 
     attach it to a wtframework.wtf.testobjects.TestCase using the 
     'register_test_watcher() method.
-    
+
     Note: Exceptions in TestWatcher are not caught by the test runner.
     So it is possible to use the TestWatcher to trigger a failure.  This 
     is useful if you want to create a rule that triggered a failre if 
@@ -48,52 +49,50 @@ class TestWatcher(object):
     def before_setup(self, test_case, test_result):
         """
         Callback runs before setup. (will always get called)
-        
+
         Args:
             test_case (TestCase) : TestCase instance associated with watched test
             test_result (TestResult) : TestReslt instance associated with watched test
         """
         pass
-    
-        
+
     def before_test(self, test_case, test_result):
         """
         Callback runs before test, but after setup. (will get called if setup succeeds)
-        
+
         Args:
             test_case: TestCase instance associated with watched test
             test_result: TestResult instance associated with watched test
 
         """
         pass
-    
+
     def after_test(self, test_case, test_result):
         """
         Callback runs after test, but before teardown (will always get called if test runs)
-        
+
         Args:
             test_case: TestCase instance associated with watched test
             test_result: TestResult associated with watched test
 
         """
         pass
-    
-    
+
     def after_teardown(self, test_case, test_result):
         """
         Callback runs after tearDown. (will always get called)
-        
+
         Args:
             test_case: TestCase associated with watched test
             test_result: TestResult associated with watched test
 
         """
         pass
-    
+
     def on_test_failure(self, test_case, test_result, exception):
         """
         Runs when an unexpected test failure occurs
-        
+
         Args:
             test_case: TestCase associated with watched test
             test_result: TestResult associated with watched test
@@ -102,35 +101,33 @@ class TestWatcher(object):
         """
         pass
 
-
     def on_test_error(self, test_case, test_result, exception):
         """
         Callback runs when a test error occurs.
-        
+
         @param test_case: TestCase associated with watched test.
         @param test_result: TestResult associated with watched test.
         @param exception: Exception raised by the test error.
         """
         pass
 
-
     def on_test_pass(self, test_case, test_result):
         """
         Callback runs when a test has passed.
-        
+
         @param test_case: TestCase associated with watched test.
         @param test_result: TestResult associated with watched test.
         """
         pass
 
 
-
 class DelayedTestFailTestWatcher(TestWatcher):
+
     '''
     Delayed test fail test watcher allows for the ability to call wrapped assertions.
     Assertions fails will be stored in a list, then on_test_pass(), any failures stored 
     in the list will immediately be thrown causing the test to fail.
-    
+
     Note: this will immediately throw an exception on_test_pass(), any actions that use 
     on_test_pass() that you would like to execute should be added before this test watcher.
     '''
@@ -141,7 +138,6 @@ class DelayedTestFailTestWatcher(TestWatcher):
         '''
         self.exception_list = []
 
-
     def delay_failure(self, function, additional_debug_info):
         """
         Wrap a assertion call to delay test failure till after the test.
@@ -150,7 +146,7 @@ class DelayedTestFailTestWatcher(TestWatcher):
         Args:
             function (function) : Function to evaluate. 
             additional_debug_info : Execution frame reference to the failure.
-            
+
         Return: 
             None if succeeds.  Returns a reference the exception if failed.
 
@@ -168,7 +164,6 @@ class DelayedTestFailTestWatcher(TestWatcher):
                 self.exception_list.append((e, additional_debug_info))
             return e
 
-
     def on_test_pass(self, test_case, test_result):
         """
         Call back method implementation of this test watcher.
@@ -177,42 +172,43 @@ class DelayedTestFailTestWatcher(TestWatcher):
             raise DelayedTestFailure(*tuple(self.exception_list))
 
 
-
 class DelayedTestFailure(AssertionError):
+
     "Thrown at the end of a test if there are test failure."
-    
+
     def __init__(self, *args, **kwargs):
         super(DelayedTestFailure, self).__init__(*args, **kwargs)
         self.exception_list = args
-    
+
     # Overriding __str__ to make the error message easier to read.
     def __str__(self, *args, **kwargs):
         try:
             return unicode(self).encode('utf-8')
         except:
             return self.__unicode__()
-    
+
     def __unicode__(self, *args, **kwargs):
         exception_string = ""
         count = 0
         for exception_entry in self.exception_list:
             count += 1
-            exception_string += u("\nError {0}: ").format(count) + exception_entry.__str__()
-        
+            exception_string += u("\nError {0}: ").format(count) + \
+                exception_entry.__str__()
+
         return u(AssertionError.__str__(self, *args, **kwargs)) + exception_string
 
 
-
 class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
+
     '''
     Catures screenshot on error if the config setting is enabled.
-    
+
     To enable this, you'll need to set in your config.yaml::
-    
+
         selenium:
             take_screenshot: true
-    
-    
+
+
     '''
     CAPTURE_SCREENSHOT_SETTING = "selenium.take_screenshot"
     MAX_SCREENSHOT_NAME_LEN_SETTING = "selenium.screenshot_name_max_length"
@@ -220,7 +216,7 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
     def __init__(self, webdriver_provider=None, screenshot_util=None):
         '''
         Constructor.
-        
+
         Kwargs:
             webdriver_provider: Override the default WebdriverManager instance.
             screenshot_util: Override the default screenshot util method.
@@ -230,7 +226,8 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
             self.capture_screenshot = True
         else:
             self.capture_screenshot = False
-        self.max_screenshot_name_len = int(WTF_CONFIG_READER.get(self.MAX_SCREENSHOT_NAME_LEN_SETTING, 20))
+        self.max_screenshot_name_len = int(
+            WTF_CONFIG_READER.get(self.MAX_SCREENSHOT_NAME_LEN_SETTING, 20))
 
         if webdriver_provider == None:
             self._webdriver_provider = WTF_WEBDRIVER_MANAGER
@@ -240,38 +237,37 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         if screenshot_util == None:
             self._screenshot_util = WebScreenShotUtil
         else:
-            self._screenshot_util = screenshot_util 
-
+            self._screenshot_util = screenshot_util
 
     def on_test_failure(self, test_case, test_result, exception):
         """
         On test failure capture screenshot handler.
         """
-        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
-
+        if self.capture_screenshot:
+            self.__take_screenshot_if_webdriver_open__(test_case)
 
     def on_test_error(self, test_case, test_result, exception):
         """
         On test error, capture screenshot handler.
         """
-        if self.capture_screenshot: self.__take_screenshot_if_webdriver_open__(test_case)
-
+        if self.capture_screenshot:
+            self.__take_screenshot_if_webdriver_open__(test_case)
 
     def __generate_screenshot_filename__(self, testcase):
         '''
         Get the class name and timestamp for generating filenames
-        
+
         Return: 
             str - File Name.
 
         '''
-        fname = unicode(type(testcase).__name__) + u"_" + unicode(testcase._testMethodName)
+        fname = unicode(type(testcase).__name__) + u"_" + \
+            unicode(testcase._testMethodName)
         fname = re.sub(u"[^a-zA-Z_]+", u("_"), fname)
         # Trim test case name incase it's too long.
         fname = fname[:self.max_screenshot_name_len]
         fmt = u('%y-%m-%d_%H.%M.%S_{fname}')
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
-
 
     def __take_screenshot_if_webdriver_open__(self, testcase):
         '''
@@ -284,8 +280,9 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
         if self._webdriver_provider.is_driver_available():
             try:
                 name = self.__generate_screenshot_filename__(testcase)
-                self._screenshot_util.take_screenshot(self._webdriver_provider.get_driver(), name)
+                self._screenshot_util.take_screenshot(
+                    self._webdriver_provider.get_driver(), name)
                 _wtflog.warning("Screenshot taken: %s", name)
             except Exception as e:
-                _wtflog.warning("Unable to take screenshot. Reason: %s", e.message)
-
+                _wtflog.warning(
+                    "Unable to take screenshot. Reason: %s", e.message)
