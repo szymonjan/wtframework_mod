@@ -1,4 +1,4 @@
-## ???
+## v0.4.5
 - Fix runtests.py script to avoid instantiating ConfigReader before config options are 
   processed.
 - Files formatted to be PEP8 compliant.

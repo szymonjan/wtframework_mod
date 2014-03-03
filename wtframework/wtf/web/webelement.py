@@ -45,7 +45,6 @@ class WebElementSelector():
                                                                     (By.ID, "MyElementID"),
                                                                     (By.CSS, "MyClassSelector") )
 
-
         """
         # perform initial check to verify selectors are valid by statements.
         for selector in selectors:
@@ -124,8 +123,8 @@ class WebElementUtils():
             webelement (WebElement) - WebDriver web element to validate.
 
         '''
-        script = u("return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" ") + \
-                 u("&& arguments[0].naturalWidth > 0")
+        script = (u("return arguments[0].complete && type of arguments[0].naturalWidth != \"undefined\" ") + 
+                 u("&& arguments[0].naturalWidth > 0"))
         try:
             return webdriver.execute_script(script, webelement)
         except:
