@@ -221,8 +221,7 @@ class BrowserStandBy(object):
         return self
 
     def __stand_by_loop(self):
-        _wtflog.info("Browser keep alive loop: ", self._keep_running)
-        while datetime.now() < self._end_time and self._keep_running:
+        while (datetime.now() < self._end_time and self._keep_running):
             # Just performing current_url to keep this alive.
             self.webdriver.current_url
             time.sleep(self._sleep_time)
