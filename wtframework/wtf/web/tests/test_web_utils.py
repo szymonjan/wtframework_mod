@@ -14,12 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
-from wtframework.wtf.web.web_utils import BrowserStandBy
 import time
+
 import unittest2
+from wtframework.wtf.web.web_utils import BrowserStandBy
 
 
-class TestWebUtils(unittest2.TestCase):
+class TestWebBrowserStandBy(unittest2.TestCase):
 
     def test_browserstandby(self):
         fakedriver = WebdriverCallCounterTestStub()
@@ -57,11 +58,13 @@ class WebdriverCallCounterTestStub(object):
     def __init__(self):
         self.counter = 0
 
+    # Note: This bit of code is tied to the implementation details, since we 
+    # we're using the current_url as the keep alive mechanism.
     @property
     def current_url(self):
         self.counter += 1
         return ""
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()

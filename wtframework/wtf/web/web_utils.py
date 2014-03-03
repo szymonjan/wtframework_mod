@@ -14,6 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+
 from datetime import datetime, timedelta
 import re
 from threading import Thread
@@ -22,6 +23,7 @@ from urllib2 import urlopen
 import urllib2
 
 from six import u
+from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageFactory
@@ -86,8 +88,8 @@ class WebUtils(object):
         """
         browser = webdriver.capabilities['browserName']
 
-        if browser == u('iPhone') or \
-                browser == u('android'):
+        if (browser == u('iPhone') or 
+            browser == u('android')):
             return True
         else:
             return False
@@ -103,8 +105,8 @@ class WebUtils(object):
         """
         browser = webdriver.capabilities['browserName']
 
-        if browser == u('iPhone') or \
-                browser == u('iPad'):
+        if (browser == u('iPhone') or 
+            browser == u('iPad')):
             return True
         else:
             return False
@@ -171,6 +173,8 @@ class BrowserStandBy(object):
         self._sleep_time = sleep
         self._max_time = max_time
 
+        # This is used by the shortcut method 'start_standby', which is used 
+        # with the 'with' statement.
         self._autostart = False
         try:
             if kwargs['_autostart']:
@@ -217,7 +221,7 @@ class BrowserStandBy(object):
         return self
 
     def __stand_by_loop(self):
-        print self._keep_running
+        _wtflog.info("Browser keep alive loop: ", self._keep_running)
         while datetime.now() < self._end_time and self._keep_running:
             # Just performing current_url to keep this alive.
             self.webdriver.current_url
