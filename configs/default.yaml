@@ -43,7 +43,7 @@ selenium:
   # Browser can be the following options.
   # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
   # INTERNETEXPLORER, IPAD, IPHONE, OPERA, SAFARI, PHANTOMJS
-  browser: PHANTOMJS
+  browser: FIREFOX
 
   # Required if browser is set to CROME.  This should point to the chrome driver path 
   # relative to root '/'.
@@ -51,7 +51,7 @@ selenium:
 
   # Specify path to phantomjs if different than the default location expected by selenium.
   # relative to root '/'
-  phantomjs_path: /usr/local/bin/phantomjs
+  #phantomjs_path: /usr/local/bin/phantomjs
   
   # Path of Selenium server Jar file.  This is needed for Safari Driver.
   #selenium_server_path: /path/to/selenium-server-standalone-2.37.0.jar

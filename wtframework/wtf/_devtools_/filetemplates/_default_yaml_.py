@@ -69,14 +69,15 @@ selenium:
     name: YourTestProjectName
 
   # Multi Process
-  # Enabling this setting will spawn a unique webdriver per thread, so no 2 threads 
+  # Enabling this setting will spawn a unique webdriver per thread, so no 2 threads
+  # share the same webdriver when instantiated using WTF_WEBDRIVER_MANAGER 
   # Default is False
   #threaded: true
 
 
 # Default wait timeout settings. Timeout settings are specified in seconds.
 timeout:
-  # Timeout for quick things that would normally not need any sort of interstitial.
+  # Timeout for quick things that would normally happen near instantly.
   brief: 5
   # Timeout for something short like a typical ajax response.
   short: 10
@@ -84,7 +85,8 @@ timeout:
   normal: 30
   # Timeout for something considerably long, such waiting for something to process.
   long: 60
-  # Timeout for something extremely long, which a user would normally get up and take a break.
+  # Timeout for something extremely long, which a user would normally get 
+  # up and take a break.  For example, transcoding an uploaded movie.
   epic: 300
 
 
