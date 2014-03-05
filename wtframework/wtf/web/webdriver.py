@@ -21,11 +21,11 @@ import time
 import urllib2
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from six import u
 from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_CONFIG_READER, WTF_TIMEOUT_MANAGER
-from selenium.common.exceptions import WebDriverException
 
 
 class WebDriverFactory(object):
