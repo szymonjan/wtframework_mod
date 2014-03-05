@@ -25,6 +25,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from six import u
 from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_CONFIG_READER, WTF_TIMEOUT_MANAGER
+from selenium.common.exceptions import WebDriverException
 
 
 class WebDriverFactory(object):
@@ -127,9 +128,13 @@ class WebDriverFactory(object):
             try:
                 self.webdriver.maximize_window()
             except Exception as e:
-                _wtflog.warn("Unable to maxmize browser window. " +
-                             "It may be possible the browser did not instantiate correctly. % s",
-                             e)
+                if (isinstance(e, WebDriverException) and
+                    "implemented" in e.message.lower()):
+                    pass  # Maximizing window not supported by this webdriver.
+                else:
+                    _wtflog.warn("Unable to maxmize browser window. " + 
+                                 "It may be possible the browser did not instantiate correctly. % s",
+                                 e)
 
         return self.webdriver
 
@@ -422,11 +427,13 @@ class WebDriverManager(object):
 
     def new_driver(self, testname=None):
         '''
-        Used at a start of a test to get a new instance of webdriver.  If the 
-        'resuebrowser' setting is true, it will use a recycled webdriver instance.
+        Used at a start of a test to get a new instance of WebDriver.  If the 
+        'resuebrowser' setting is true, it will use a recycled WebDriver instance
+        with delete_all_cookies() called.
 
         Kwargs:
-            testname (str) - Optional test name to pass to Selenium Grid.
+            testname (str) - Optional test name to pass to Selenium Grid.  Helpful for 
+                             labeling tests on 3rd party WebDriver cloud providers.
 
         Returns:
             Webdriver - Selenium Webdriver instance.
