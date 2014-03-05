@@ -23,7 +23,6 @@ from urllib2 import urlopen
 import urllib2
 
 from six import u
-from wtframework.wtf import _wtflog
 from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageFactory
@@ -59,14 +58,15 @@ class WebUtils(object):
         Get the current base URL.
 
         Args:
-            webdriver: Selenium webdriver.
+            webdriver: Selenium WebDriver instance.
 
         Returns:
             str - base URL. 
 
-        usage::
+        Usage::
 
-            WebUtils.get_base_url("http://www.google.com/?q=blah")
+            driver.get("http://www.google.com/?q=hello+world")
+            WebUtils.get_base_url(driver)
             #returns 'http://www.google.com'
 
         """
@@ -76,6 +76,43 @@ class WebUtils(object):
         except:
             raise RuntimeError(
                 u("Unable to process base url: {0}").format(current_url))
+
+    @staticmethod
+    def get_browser_datetime(webdriver):
+        """
+        Get the current date/time on the web browser as a Python datetime object.
+        This date matches 'new Date();' when ran in JavaScript console.
+        Args:
+            webdriver: Selenium WebDriver instance
+        
+        Returns: 
+            datetime - Python datetime object.
+
+        Usage::
+        
+            browser_datetime = WebUtils.get_browser_datetime(driver)
+            local_datetime = datetime.now()
+            print("Difference time difference between browser and your local machine is:",
+                   local_datetime - browser_datetime)
+        """
+        js_stmt = """
+            var wtf_get_date = new Date();
+            return {'month':wtf_get_date.getMonth(), 
+                    'day':wtf_get_date.getDate(), 
+                    'year':wtf_get_date.getFullYear(),
+                    'hours':wtf_get_date.getHours(),
+                    'minutes':wtf_get_date.getMinutes(),
+                    'seconds':wtf_get_date.getSeconds(),
+                    'milliseconds':wtf_get_date.getMilliseconds()};
+        """
+        browser_date = webdriver.execute_script(js_stmt)
+        return datetime(int(browser_date['year']),
+                        int(browser_date['month']) + 1,  # javascript months start at 0 
+                        int(browser_date['day']),
+                        int(browser_date['hours']),
+                        int(browser_date['minutes']),
+                        int(browser_date['seconds']),
+                        int(browser_date['milliseconds']))
 
     @staticmethod
     def is_webdriver_mobile(webdriver):
@@ -121,7 +158,7 @@ class WebUtils(object):
             page_class (PageObject): Page class to search for/instantiate.
             webdriver (WebDriver): Selenium webdriver.
 
-        usage::
+        Usage::
 
             WebUtils.switch_to_window(DetailsPopUpPage, driver) # switches to the pop up window.
 
