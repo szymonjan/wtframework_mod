@@ -1,3 +1,7 @@
+## v????
+- Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
+  browser.
+
 ## v0.4.5
 - Fix runtests.py script to avoid instantiating ConfigReader before config options are 
   processed.
