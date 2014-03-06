@@ -1,4 +1,10 @@
-WTF - Web Test Framework  [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
+WTF - Web Test Framework  (Framework for configurable web tests)
+
+Master (stable) - [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
+Develop - [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework)
+(Please submit pull requests against develop, do not submit pulls against master.)
+
+
 ======
 https://github.com/wiredrive/wtframework
 
