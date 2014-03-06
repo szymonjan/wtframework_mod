@@ -1,11 +1,4 @@
-# WTF - Web Test Framework  (Framework for configurable web tests)
-
-[![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework) - Master (stable)
-[![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework) - Develop
-
-(Please submit pull requests against develop, do not submit pulls against master.)
-
-
+WTF - Web Test Framework [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
 ======
 https://github.com/wiredrive/wtframework
 
@@ -318,9 +311,11 @@ Development on this project is currently done using NVIE branching model.
 Please __do not__ submit pull requests directly to __master__ 
 (submit pulls against /develop)  
 http://nvie.com/posts/a-successful-git-branching-model/
-* /master - contains latest release / stable code.
-* /develop - contains work in progress and features queued up for the next release.
+* /master [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework) - contains latest release / stable code. 
+* /develop [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework) - contains work in progress and features queued up for the next release.
 * /feature/name-of-feature - feature branch for work in progress on a long project.
+
+
 
 
 CI Scripts are running on Travis, 
