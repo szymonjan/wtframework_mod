@@ -1,8 +1,7 @@
-WTF - Web Test Framework  (Framework for configurable web tests)
+# WTF - Web Test Framework  (Framework for configurable web tests)
 
-Master (stable) - [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
-
-Develop - [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework)
+[![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework) - Master (stable)
+[![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework) - Develop
 
 (Please submit pull requests against develop, do not submit pulls against master.)
 
@@ -316,8 +315,13 @@ You can fork this repository.  To get the unit tests not marked as skipped runni
 you'll need to edit or supply your own config file with values for the selenium settings.
 
 Development on this project is currently done using NVIE branching model.
-Please __do not__ submit pull requests directly to __master__ (submit pulls against /dev)  
+Please __do not__ submit pull requests directly to __master__ 
+(submit pulls against /develop)  
 http://nvie.com/posts/a-successful-git-branching-model/
+* /master - contains latest release / stable code.
+* /develop - contains work in progress and features queued up for the next release.
+* /feature/name-of-feature - feature branch for work in progress on a long project.
+
 
 CI Scripts are running on Travis, 
 https://travis-ci.org/wiredrive/wtframework
