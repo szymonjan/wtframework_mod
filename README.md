@@ -31,6 +31,7 @@ Run the following command to initialize an empty project structure for a WTF tes
 
 Windows Note: .py files may not be executable, you may have to prefix these commands 
 with the python command. 
+
 	python wtf_init.py YourProject --withexamples
 	
 This will create an the folders and packages of your project.  You'll see something like:
@@ -57,7 +58,7 @@ Now the directory structure and your python path is setup to run tests in WTF fr
 Running your tests
 ==================
 
-Run your tests using nosetests.
+Run your tests.
 
 	./runtests.py [-c ConfigFile]
 
