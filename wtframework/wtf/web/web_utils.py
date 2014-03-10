@@ -27,6 +27,7 @@ from wtframework.wtf.config import WTF_TIMEOUT_MANAGER
 from wtframework.wtf.utils.test_utils import do_and_ignore
 from wtframework.wtf.web.page import PageFactory
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+from selenium.common.exceptions import WebDriverException
 
 
 class WebUtils(object):
@@ -258,9 +259,19 @@ class BrowserStandBy(object):
         return self
 
     def __stand_by_loop(self):
+        # This is the body of the loop that'll call a webdriver method periodically 
+        # when the standby is running.
         while (datetime.now() < self._end_time and self._keep_running):
             # Just performing current_url to keep this alive.
-            self.webdriver.current_url
+            try:
+                self.webdriver.current_url
+            except WebDriverException as e:
+                # Check for 'not implemented' exception in message.
+                if "implemented" in e.message.lower():
+                    pass  # Current URL not supported by this webdriver. May be a mobile view or 
+                            # a webdriver for a non-webpage object.
+                else:
+                    raise e
             time.sleep(self._sleep_time)
 
     def __del__(self):

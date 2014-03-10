@@ -251,8 +251,12 @@ class PageFactory():
 
         # If no matching classes.
         if not isinstance(current_matched_page, PageObject):
-            raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}")
-                                      .format(webdriver.current_url))
+            try:
+                current_url = webdriver.current_url
+                raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}")
+                                          .format(current_url))
+            except:
+                raise NoMatchingPageError(u("There's, no matching classes to this page. "))
         else:
             return current_matched_page
 
@@ -435,14 +439,22 @@ class PageUtils():
             time.sleep(sleep)
 
         print "Unable to construct page, last exception", last_exception
+
+        # Attempt to get current URL to assist in debugging
+        try:
+            current_url = webdriver.current_url
+        except:
+            # unable to get current URL, could be a webdriver for a non-webpage like mobile app.
+            current_url = None
+
         if message:
             err_msg = u(message) + u("{page}:{url}")\
                 .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                        url=webdriver.current_url)
+                        url=current_url)
         else:
             err_msg = u("Timed out while waiting for {page} to load. Url:{url}")\
                 .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                        url=webdriver.current_url)
+                        url=current_url)
         raise PageLoadTimeoutError(err_msg)
 
     @staticmethod
