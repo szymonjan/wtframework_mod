@@ -51,7 +51,7 @@ class TestWebDriverFactory(unittest2.TestCase):
     def test_createWebDriver_WithLocalBrowser(self):
         '''
         This will test this by opening firefox and trying to fetch Google with it.
- 
+
         This test will normally be commented out since it spawns annoying browser windows.
         When making changes to WebDriverFactory, please run this test manually.
         '''
@@ -60,25 +60,25 @@ class TestWebDriverFactory(unittest2.TestCase):
             WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
         when(config_reader).get(
             WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
- 
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
- 
+
         # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
- 
+
         # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q')  # google's famous q element.
- 
+
     def test_createWebDriver_WithGrid(self):
         '''
         This will test a grid setup by making a connection to Sauce Labs.
- 
+
         This test will normally be commented out since it will use billable automation hours 
         on sauce labs.
         '''
         config_reader = MockConfigWithSauceLabs()
- 
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver("test_createWebDriver_WithGrid")
         exception = None
@@ -95,7 +95,7 @@ class TestWebDriverFactory(unittest2.TestCase):
                 self._driver.quit()
             except:
                 pass
- 
+
         if exception != None:
             raise e
 
@@ -132,7 +132,7 @@ class TestWebDriverFactory(unittest2.TestCase):
             WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
         when(config_reader).get(
             WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
- 
+
         # Check if the person running this test has a config specified for
         # phantom JS, otherwise use default.
         try:
@@ -142,13 +142,13 @@ class TestWebDriverFactory(unittest2.TestCase):
         except KeyError:
             when(config_reader).get(
                 WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
- 
+
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
- 
+
         # This whould open a local instance of Firefox.
         self._driver.get("http://www.google.com")
- 
+
         # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q')  # google's famous q element.
 
