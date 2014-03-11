@@ -53,7 +53,7 @@ class PageObject(object):
         """Constructor.  It's better to not call this directly, instead use PageFactory 
         to instantiate PageObjects.
 
-        Ars: 
+        Args: 
             webdriver (Webdriver): Selenium Webdriver instance.
 
         """
@@ -62,7 +62,14 @@ class PageObject(object):
         except KeyError:
             config_reader = WTF_CONFIG_READER
 
-        self._validate_page(webdriver)
+        try:
+            self._validate_page(webdriver)
+        except TypeError as e:
+            _wtflog.error("PageObjects need to implement '_validate_page(self, webdriver)' method", e)
+            raise e
+        except Exception as e:
+            _wtflog.debug("Unable to instantiate page", e)
+            raise e
 
         # Assign webdriver to PageObject.
         # Each page object has an instance of "webdriver" referencing the webdriver
