@@ -267,7 +267,7 @@ class BrowserStandBy(object):
                 self.webdriver.current_url
             except WebDriverException as e:
                 # Check for 'not implemented' exception in message.
-                if "implemented" in e.message.lower():
+                if "implemented" in e.msg.lower():
                     pass  # Current URL not supported by this webdriver. May be a mobile view or 
                             # a webdriver for a non-webpage object.
                 else:

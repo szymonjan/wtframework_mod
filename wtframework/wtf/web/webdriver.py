@@ -69,6 +69,7 @@ class WebDriverFactory(object):
     OPERA = "OPERA"
     PHANTOMJS = "PHANTOMJS"
     SAFARI = "SAFARI"
+    OTHER = "OTHER" #Use a blank desired capabilities as a base for RemoteWebdriver.
 
     # ENV vars that are used by selenium.
     __SELENIUM_SERVER_JAR_ENV = "SELENIUM_SERVER_JAR"
@@ -129,7 +130,7 @@ class WebDriverFactory(object):
                 self.webdriver.maximize_window()
             except Exception as e:
                 if (isinstance(e, WebDriverException) and
-                    "implemented" in e.message.lower()):
+                    "implemented" in e.msg.lower()):
                     pass  # Maximizing window not supported by this webdriver.
                 else:
                     _wtflog.warn("Unable to maxmize browser window. " + 
@@ -151,12 +152,12 @@ class WebDriverFactory(object):
             browser_type = WebDriverFactory.FIREFOX
 
         browser_type_dict = {
-            WebDriverFactory.CHROME: lambda: webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),
-            WebDriverFactory.FIREFOX: lambda: webdriver.Firefox(),
-            WebDriverFactory.INTERNETEXPLORER: lambda: webdriver.Ie(),
-            WebDriverFactory.OPERA: lambda: webdriver.Opera(),
-            WebDriverFactory.PHANTOMJS: lambda: self.__create_phantom_js_driver(),
-            WebDriverFactory.SAFARI: lambda: self.__create_safari_driver()
+            self.CHROME: lambda: webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),
+            self.FIREFOX: lambda: webdriver.Firefox(),
+            self.INTERNETEXPLORER: lambda: webdriver.Ie(),
+            self.OPERA: lambda: webdriver.Opera(),
+            self.PHANTOMJS: lambda: self.__create_phantom_js_driver(),
+            self.SAFARI: lambda: self.__create_safari_driver()
         }
 
         try:
@@ -203,17 +204,19 @@ class WebDriverFactory(object):
         remote_url = self._config_reader.get(
             WebDriverFactory.REMOTE_URL_CONFIG)
 
-        browser_constant_dict = {WebDriverFactory.HTMLUNIT: DesiredCapabilities.HTMLUNIT,
-                                 WebDriverFactory.HTMLUNITWITHJS: DesiredCapabilities.HTMLUNITWITHJS,
-                                 WebDriverFactory.ANDROID: DesiredCapabilities.ANDROID,
-                                 WebDriverFactory.CHROME: DesiredCapabilities.CHROME,
-                                 WebDriverFactory.FIREFOX: DesiredCapabilities.FIREFOX,
-                                 WebDriverFactory.INTERNETEXPLORER: DesiredCapabilities.INTERNETEXPLORER,
-                                 WebDriverFactory.IPAD: DesiredCapabilities.IPAD,
-                                 WebDriverFactory.IPHONE: DesiredCapabilities.IPHONE,
-                                 WebDriverFactory.OPERA: DesiredCapabilities.OPERA,
-                                 WebDriverFactory.SAFARI: DesiredCapabilities.SAFARI,
-                                 WebDriverFactory.PHANTOMJS: DesiredCapabilities.PHANTOMJS}
+        browser_constant_dict = {self.HTMLUNIT: DesiredCapabilities.HTMLUNIT,
+                                 self.HTMLUNITWITHJS: DesiredCapabilities.HTMLUNITWITHJS,
+                                 self.ANDROID: DesiredCapabilities.ANDROID,
+                                 self.CHROME: DesiredCapabilities.CHROME,
+                                 self.FIREFOX: DesiredCapabilities.FIREFOX,
+                                 self.INTERNETEXPLORER: DesiredCapabilities.INTERNETEXPLORER,
+                                 self.IPAD: DesiredCapabilities.IPAD,
+                                 self.IPHONE: DesiredCapabilities.IPHONE,
+                                 self.OPERA: DesiredCapabilities.OPERA,
+                                 self.SAFARI: DesiredCapabilities.SAFARI,
+                                 self.PHANTOMJS: DesiredCapabilities.PHANTOMJS,
+                                 self.OTHER: {'browserName': ''} # Blank Desired Capabilities.
+                                 }
 
         try:
             # Get a copy of the desired capabilities object. (to avoid
