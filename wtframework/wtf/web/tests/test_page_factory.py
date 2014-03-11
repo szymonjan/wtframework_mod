@@ -58,6 +58,10 @@ class GoogleSearch2(PageObject):
         return 1
 
 
+class ValidateNotImplementedPageObject(PageObject):
+    pass
+
+
 class TestPageFactory(unittest2.TestCase):
 
     '''
@@ -86,7 +90,7 @@ class TestPageFactory(unittest2.TestCase):
     def test_create_page_raiseExceptionWhenNoMatch(self):
         self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
             "TestPageFactory.test_create_page_raiseExceptionWhenNoMatch")
-        self.driver.get("http://www.amazon.com")
+        self.driver.get("http://the-internet.herokuapp.com")
         self.assertRaises(
             NoMatchingPageError, PageFactory.create_page, SearchPage, self.driver)
 
@@ -110,7 +114,14 @@ class TestPageFactory(unittest2.TestCase):
             [GoogleSearch, GoogleSearch2], self.driver)
         self.assertTrue(isinstance(google_page, GoogleSearch2))
 
+    def test_create_page_handles_pageobject_with_no_validation(self):
+        self.driver = WTF_WEBDRIVER_MANAGER.new_driver(
+            "TestPageFactory.test_create_page_handles_pageobject_with_no_validation")
+        self.assertRaises(TypeError,
+                          PageFactory.create_page,
+                          ValidateNotImplementedPageObject,
+                          self.driver)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()
