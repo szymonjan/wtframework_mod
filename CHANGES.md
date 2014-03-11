@@ -1,6 +1,8 @@
 ## v????
 - Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
   browser.
+- Tweaks to exception handling in WebdriverFactory and PageFactory to make it more 
+  Appium friendly.
 
 ## v0.4.5
 - Fix runtests.py script to avoid instantiating ConfigReader before config options are 
