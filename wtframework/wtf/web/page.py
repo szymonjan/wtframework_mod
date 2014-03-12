@@ -273,6 +273,8 @@ class PageFactory():
             except Exception as e:
                 _wtflog.debug("Exception: %s", e)
                 # Unexpected exception.
+                was_validate_called = True  # Give it the benefit of the doubt and assume exception 
+                                            # could of occurred during validate.
                 raise e
 
         # If no matching classes.
