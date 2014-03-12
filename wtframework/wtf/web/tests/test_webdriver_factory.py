@@ -80,11 +80,37 @@ class TestWebDriverFactory(unittest2.TestCase):
         config_reader = MockConfigWithSauceLabs()
 
         driver_factory = WebDriverFactory(config_reader)
-        self._driver = driver_factory.create_webdriver(
-            "test_createWebDriver_WithGrid")
+        self._driver = driver_factory.create_webdriver("test_createWebDriver_WithGrid")
         exception = None
         try:
             self._driver.get('http://saucelabs.com/test/guinea-pig')
+            self.assertGreater(
+                self._driver.session_id, 0, "Did not get a return session id from Sauce.")
+        except Exception as e:
+            exception = e
+        finally:
+            # Make sure we quit sauce labs webdriver to avoid getting billed
+            # additonal hours.
+            try:
+                self._driver.quit()
+            except:
+                pass
+
+        if exception != None:
+            raise e
+
+    def test_createWebDriver_WithAppium(self):
+        '''
+        This will test a grid setup with Appium by making a connection to Sauce Labs.
+
+        This test will normally be commented out since it will use billable automation hours 
+        on sauce labs.
+        '''
+        config_reader = MockAppiumConfigWithSauceLabs()
+        driver_factory = WebDriverFactory(config_reader)
+        exception = None
+        try:
+            self._driver = driver_factory.create_webdriver("test_createWebDriver_WithAppium")
             self.assertGreater(
                 self._driver.session_id, 0, "Did not get a return session id from Sauce.")
         except Exception as e:
@@ -144,8 +170,8 @@ class MockConfigWithSauceLabs(object):
                 platform: WINDOWS
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
         """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
-        # TODO: Might be good to replace this with a local grid to avoid using
-        # up SauceLab automation hours.
+        # Currently using free open source sauce account loaded from encrpyed env var to test this
+        # on Travis CI.
         self.map = yaml.load(config)
 
     def get(self, key, default_value=None):
@@ -157,7 +183,7 @@ class MockConfigWithSauceLabs(object):
         '''
         try:
             if "." in key:
-                # this is a multi levl string
+                # this is a multi level string
                 namespaces = key.split(".")
                 temp_var = self.map
                 for name in namespaces:
@@ -170,6 +196,54 @@ class MockConfigWithSauceLabs(object):
             return default_value
 
 
+class MockAppiumConfigWithSauceLabs(object):
+
+    '''
+    Mock config that returns sauce labs connection string with Appium.
+    '''
+    map = None
+
+    def __init__(self):
+        config = """
+        selenium:
+            type: REMOTE
+            remote_url: {0}
+            browser: OTHER
+            desired_capabilities:
+                platform: OS X 10.9
+                version: 7
+                device-orientation: portrait
+                app: http://appium.s3.amazonaws.com/TestApp6.0.app.zip
+                device: iPhone Simulator
+                name: Unit Testing WD-acceptance-tests WebDriverFactory
+        """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
+        # Currently using free open source sauce account loaded from encrpyed env var to test this
+        # on Travis CI.
+        self.map = yaml.load(config)
+
+    def get(self, key, default_value=None):
+        '''
+        Gets the value from the yaml config based on the key.
+
+        No type casting is performed, any type casting should be 
+        performed by the caller.
+        '''
+        try:
+            if "." in key:
+                # this is a multi level string
+                namespaces = key.split(".")
+                temp_var = self.map
+                for name in namespaces:
+                    temp_var = temp_var[name]
+                return temp_var
+            else:
+                value = self.map[key]
+                return value
+        except:
+            return default_value
+
+
+
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()

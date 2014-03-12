@@ -93,10 +93,17 @@ class TestPageObject(unittest2.TestCase):
         google_page.enter_query("hello world")
         driver.close()
 
+    def test_handle_validate_not_implemented(self):
+        driver = mock(WebDriver)
+        self.assertRaises(TypeError, ValidateNotImplementedPageObject, driver)
+
+
+
+class ValidateNotImplementedPageObject(PageObject):
+    pass
+
 
 class GoogleTestPageObj(PageObject):
-
-    "test page"
 
     def _validate_page(self, webdriver):
 
@@ -133,5 +140,5 @@ class YahooSearch(SearchPage):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest2.main()

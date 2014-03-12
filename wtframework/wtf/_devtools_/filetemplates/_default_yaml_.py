@@ -23,23 +23,6 @@ selenium:
   type: LOCAL
   #type: REMOTE
 
-  # Terminate Selenium after all tests have run. Disabling this can be helpful
-  # during debugging.  In operation you normally want to keep this to clean up 
-  # after tests.
-  shutdown_hook: true
-
-  # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
-  # instance each time.  Setting it to false is generally better for more consistent 
-  # results, but will incur the startup time for the browser to start up for each 
-  # test.
-  # Default is 'true'
-  reusebrowser: true
-
-  # Take screenshot of browser on error.
-  take_screenshot: true
-  # Take reference screenshot upon encountering a new page.
-  take_reference_screenshot: true
-
   # remote_url is required if type=REMOTE.  Set this to point at the Remote Webdriver 
   # connection string.
   #remote_url: http://url.to.seleniumgrid:4444/wd/hub
@@ -47,6 +30,7 @@ selenium:
   # Browser can be the following options.
   # ANDROID, CHROME, FIREFOX, HTMLUNIT, HTMLUNITWITHJS, 
   # INTERNETEXPLORER, IPAD, IPHONE, OPERA, SAFARI
+  # OTHER - use other for non-browser tests like Appium
   browser: FIREFOX
 
   # Required if browser is set to CROME.  This should point to the chrome driver path 
@@ -67,6 +51,23 @@ selenium:
     
     # Name you'd like to label your sessions. (useful for labeling on sauce)
     name: YourTestProjectName
+
+  # Terminate Selenium after all tests have run. Disabling this can be helpful
+  # during debugging.  In operation you normally want to keep this to clean up 
+  # after tests.
+  shutdown_hook: true
+
+  # Set to true, to reuse the same browser.  Set to false, to use a fresh browser 
+  # instance each time.  Setting it to false is generally better for more consistent 
+  # results, but will incur the startup time for the browser to start up for each 
+  # test.
+  # Default is 'true'
+  reusebrowser: true
+
+  # Take screenshot of browser on error.
+  take_screenshot: true
+  # Take reference screenshot upon encountering a new page.
+  take_reference_screenshot: true
 
   # Multi Process
   # Enabling this setting will spawn a unique webdriver per thread, so no 2 threads
