@@ -105,8 +105,6 @@ class ValidateNotImplementedPageObject(PageObject):
 
 class GoogleTestPageObj(PageObject):
 
-    "test page"
-
     def _validate_page(self, webdriver):
 
         current_url = webdriver.current_url

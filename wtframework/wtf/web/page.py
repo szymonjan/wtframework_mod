@@ -221,9 +221,11 @@ class PageFactory():
                                                              webdriver,
                                                              **kwargs)
 
-                if isinstance(page, PageObject) and (current_matched_page == None or page > current_matched_page):
+                if isinstance(page, PageObject):
                     was_validate_called = True
-                    current_matched_page = page
+                    if (current_matched_page == None or page > current_matched_page):
+                        current_matched_page = page
+
                 elif page is True:
                     was_validate_called = True
 
@@ -271,7 +273,7 @@ class PageFactory():
                 # abstract class.
                 pass
             except Exception as e:
-                _wtflog.debug("Exception: %s", e)
+                _wtflog.debug("Exception during page instantiation: %s", e)
                 # Unexpected exception.
                 raise e
 
