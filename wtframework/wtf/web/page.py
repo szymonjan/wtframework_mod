@@ -212,7 +212,7 @@ class PageFactory():
         # used to track if there is a valid page object within the set of PageObjects searched.
         was_validate_called = False
 
-        # Walk through all classes of this sub class
+        # Walk through all classes if a list was passed.
         if type(page_object_class_or_interface) == list:
             subclasses = []
             for page_class in page_object_class_or_interface:
@@ -230,7 +230,7 @@ class PageFactory():
                 # check for subclasses
                 subclasses += PageFactory.__itersubclasses(page_class)
         else:
-            # Try the original class
+            # A single class was passed in, try to instantiate the class.
             page_class = page_object_class_or_interface
             page = PageFactory.__instantiate_page_object(page_class,
                                                          webdriver,
@@ -273,8 +273,6 @@ class PageFactory():
             except Exception as e:
                 _wtflog.debug("Exception: %s", e)
                 # Unexpected exception.
-                was_validate_called = True  # Give it the benefit of the doubt and assume exception 
-                                            # could of occurred during validate.
                 raise e
 
         # If no matching classes.
