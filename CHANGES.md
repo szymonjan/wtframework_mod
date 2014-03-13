@@ -3,6 +3,8 @@
   browser.
 - Tweaks to exception handling in WebdriverFactory and PageFactory to make it more 
   Appium friendly.
+- Fix for new security measures implemented by Chrome that broke PageObject Chrome 
+  Extension tool
 
 ## v0.4.5
 - Fix runtests.py script to avoid instantiating ConfigReader before config options are 
