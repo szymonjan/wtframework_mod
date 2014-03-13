@@ -65,10 +65,10 @@ class PageObject(object):
         try:
             self._validate_page(webdriver)
         except TypeError as e:
-            _wtflog.error("PageObjects need to implement '_validate_page(self, webdriver)' method", e)
+            _wtflog.error("PageObjects need to implement '_validate_page(self, webdriver)' method: %s", e)
             raise e
         except Exception as e:
-            _wtflog.debug("Unable to instantiate page", e)
+            _wtflog.debug("Unable to instantiate page: %s", e)
             raise e
 
         # Assign webdriver to PageObject.

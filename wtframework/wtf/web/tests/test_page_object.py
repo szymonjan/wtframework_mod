@@ -79,7 +79,6 @@ class TestPageObject(unittest2.TestCase):
                 "Should throw an InvalidPageError, thrown was: " + str(type(e)))
 
         # Mock a WebDriver that looks like it's returning google.
-
         when(driver).get("http://www.google.com").thenReturn(None)
         driver.current_url = "http://www.google.com"
         element = mock(WebElement)
