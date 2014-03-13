@@ -1,8 +1,9 @@
-## v????
-- Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
-  browser.
+## v0.4.7
+- Fix broken map object in Chrome extension caused by increased Chrome security.
 - Tweaks to exception handling in WebdriverFactory and PageFactory to make it more 
   Appium friendly.
+- Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
+  browser.
 - Fix for new security measures implemented by Chrome that broke PageObject Chrome 
   Extension tool
 
