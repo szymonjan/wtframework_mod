@@ -14,8 +14,6 @@
    This is useful for passing additional capabilities that are dynamic via ENV vars.		
 - Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
   browser.
-- Fix for new security measures implemented by Chrome that broke PageObject Chrome 
-  Extension tool
 
 ## v0.4.5
 - Fix runtests.py script to avoid instantiating ConfigReader before config options are 
