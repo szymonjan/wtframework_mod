@@ -53,7 +53,7 @@ class PageObject(object):
         """Constructor.  It's better to not call this directly, instead use PageFactory 
         to instantiate PageObjects.
 
-        Ars: 
+        Args: 
             webdriver (Webdriver): Selenium Webdriver instance.
 
         """
@@ -62,7 +62,14 @@ class PageObject(object):
         except KeyError:
             config_reader = WTF_CONFIG_READER
 
-        self._validate_page(webdriver)
+        try:
+            self._validate_page(webdriver)
+        except TypeError as e:
+            _wtflog.error("PageObjects need to implement '_validate_page(self, webdriver)' method: %s", e)
+            raise e
+        except Exception as e:
+            _wtflog.debug("Unable to instantiate page: %s", e)
+            raise e
 
         # Assign webdriver to PageObject.
         # Each page object has an instance of "webdriver" referencing the webdriver
@@ -196,14 +203,16 @@ class PageFactory():
         __init__.py of the package directory.  
 
         """
-
         if not webdriver:
             webdriver = WTF_WEBDRIVER_MANAGER.get_driver()
 
         # will be used later when tracking best matched page.
         current_matched_page = None
 
-        # Walk through all classes of this sub class
+        # used to track if there is a valid page object within the set of PageObjects searched.
+        was_validate_called = False
+
+        # Walk through all classes if a list was passed.
         if type(page_object_class_or_interface) == list:
             subclasses = []
             for page_class in page_object_class_or_interface:
@@ -211,19 +220,29 @@ class PageFactory():
                 page = PageFactory.__instantiate_page_object(page_class,
                                                              webdriver,
                                                              **kwargs)
-                if isinstance(page, PageObject) and (current_matched_page == None or page > current_matched_page):
-                    current_matched_page = page
+
+                if isinstance(page, PageObject):
+                    was_validate_called = True
+                    if (current_matched_page == None or page > current_matched_page):
+                        current_matched_page = page
+
+                elif page is True:
+                    was_validate_called = True
 
                 # check for subclasses
                 subclasses += PageFactory.__itersubclasses(page_class)
         else:
-            # Try the original class
+            # A single class was passed in, try to instantiate the class.
             page_class = page_object_class_or_interface
             page = PageFactory.__instantiate_page_object(page_class,
                                                          webdriver,
                                                          **kwargs)
+            # Check if we got a valid PageObject back.
             if isinstance(page, PageObject):
+                was_validate_called = True
                 current_matched_page = page
+            elif page is True:
+                was_validate_called = True
 
             # check for subclasses
             subclasses = PageFactory.__itersubclasses(
@@ -233,9 +252,18 @@ class PageFactory():
         # better match.
         for pageClass in subclasses:
             try:
-                page = pageClass(webdriver, **kwargs)
-                if current_matched_page == None or page > current_matched_page:
-                    current_matched_page = page
+                page = PageFactory.__instantiate_page_object(pageClass,
+                                                      webdriver,
+                                                      **kwargs)
+                # If we get a valid PageObject match, check to see if the ranking is higher
+                # than our current PageObject.
+                if isinstance(page, PageObject):
+                    was_validate_called = True
+                    if current_matched_page == None or page > current_matched_page:
+                        current_matched_page = page
+                elif page is True:
+                    was_validate_called = True
+
             except InvalidPageError as e:
                 _wtflog.debug("InvalidPageError: %s", e)
                 pass  # This happens when the page fails check.
@@ -245,31 +273,56 @@ class PageFactory():
                 # abstract class.
                 pass
             except Exception as e:
-                _wtflog.debug("Exception: %s", e)
+                _wtflog.debug("Exception during page instantiation: %s", e)
                 # Unexpected exception.
                 raise e
 
         # If no matching classes.
         if not isinstance(current_matched_page, PageObject):
-            raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}")
-                                      .format(webdriver.current_url))
+            # Check that there is at least 1 valid page object that was passed in.
+            if was_validate_called is False:
+                raise TypeError("Neither the PageObjects nor it's subclasses have implemented " + 
+                                "'PageObject._validate(self, webdriver)'.")
+
+            try:
+                current_url = webdriver.current_url
+                raise NoMatchingPageError(u("There's, no matching classes to this page. URL:{0}")
+                                          .format(current_url))
+            except:
+                raise NoMatchingPageError(u("There's, no matching classes to this page. "))
         else:
             return current_matched_page
 
     @staticmethod
     def __instantiate_page_object(page_obj_class, webdriver, **kwargs):
+        """
+        Attempts to instantiate a page object.
+
+        Args:
+            page_obj_class (PageObject) - PageObject to instantiate.
+            webdriver (WebDriver) - Selenium webdriver to associate with the PageObject
+        
+        Returns:
+            PageObject - If page object instantiation succeeded.
+            True - If page object instantiation failed, but validation was called.
+            None - If validation did not occur.
+
+        """
         try:
             page = page_obj_class(webdriver, **kwargs)
             return page
         except InvalidPageError:
-            pass  # This happens when the page fails check.
+            # This happens when the page fails check.
+            # Means validate was implemented, but the check didn't pass.
+            return True
         except TypeError:
             # this happens when it tries to instantiate the original abstract
-            # class.
-            pass
+            # class, or a PageObject where _validate() was not implemented.
+            return False
         except Exception as e:
             # Unexpected exception.
             raise e
+
 
     @staticmethod
     def __itersubclasses(cls, _seen=None):
@@ -435,14 +488,22 @@ class PageUtils():
             time.sleep(sleep)
 
         print "Unable to construct page, last exception", last_exception
+
+        # Attempt to get current URL to assist in debugging
+        try:
+            current_url = webdriver.current_url
+        except:
+            # unable to get current URL, could be a webdriver for a non-webpage like mobile app.
+            current_url = None
+
         if message:
             err_msg = u(message) + u("{page}:{url}")\
                 .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                        url=webdriver.current_url)
+                        url=current_url)
         else:
             err_msg = u("Timed out while waiting for {page} to load. Url:{url}")\
                 .format(page=PageUtils.__get_name_for_class__(page_obj_class),
-                        url=webdriver.current_url)
+                        url=current_url)
         raise PageLoadTimeoutError(err_msg)
 
     @staticmethod

@@ -1,4 +1,4 @@
-WTF - Web Test Framework  [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
+WTF - Web Test Framework [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework)
 ======
 https://github.com/wiredrive/wtframework
 
@@ -31,6 +31,7 @@ Run the following command to initialize an empty project structure for a WTF tes
 
 Windows Note: .py files may not be executable, you may have to prefix these commands 
 with the python command. 
+
 	python wtf_init.py YourProject --withexamples
 	
 This will create an the folders and packages of your project.  You'll see something like:
@@ -57,7 +58,7 @@ Now the directory structure and your python path is setup to run tests in WTF fr
 Running your tests
 ==================
 
-Run your tests using nosetests.
+Run your tests.
 
 	./runtests.py [-c ConfigFile]
 
@@ -308,8 +309,15 @@ You can fork this repository.  To get the unit tests not marked as skipped runni
 you'll need to edit or supply your own config file with values for the selenium settings.
 
 Development on this project is currently done using NVIE branching model.
-Please __do not__ submit pull requests directly to __master__ (submit pulls against /dev)  
+Please __do not__ submit pull requests directly to __master__ 
+(submit pulls against /develop)  
 http://nvie.com/posts/a-successful-git-branching-model/
+* /master [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework) - contains latest release / stable code. 
+* /develop [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework) - contains work in progress and features queued up for the next release.
+* /feature/name-of-feature - feature branch for work in progress on a long project.
+
+
+
 
 CI Scripts are running on Travis, 
 https://travis-ci.org/wiredrive/wtframework

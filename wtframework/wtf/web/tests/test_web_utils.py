@@ -14,10 +14,45 @@
 #    You should have received a copy of the GNU General Public License
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
+from datetime import datetime, timedelta
 import time
 
 import unittest2
-from wtframework.wtf.web.web_utils import BrowserStandBy
+from wtframework.wtf.utils.test_utils import do_and_ignore
+from wtframework.wtf.web.web_utils import BrowserStandBy, WebUtils
+from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
+
+
+class TestWebUtils(unittest2.TestCase):
+
+    def setUp(self):
+        self.webdriver = WTF_WEBDRIVER_MANAGER.new_driver("TestWebUtils")
+
+    def tearDown(self):
+        do_and_ignore(lambda: WTF_WEBDRIVER_MANAGER.close_driver())
+
+    def test_check_url(self):
+        result, resp = WebUtils.check_url("http://the-internet.herokuapp.com/status_codes/200")
+        self.assertTrue(result)
+        self.assertEqual(200, resp)
+
+    def test_check_url_bad_url_case(self):
+        result, resp = WebUtils.check_url("http://the-internet.herokuapp.com/status_codes/404")
+        self.assertFalse(result)
+        self.assertEqual(404, resp)
+
+    def test_get_base_url(self):
+        self.webdriver.get("http://the-internet.herokuapp.com/status_codes/200")
+        base_url = WebUtils.get_base_url(self.webdriver)
+        self.assertEqual("http://the-internet.herokuapp.com", base_url)
+
+
+    def test_get_browser_datetime(self):
+        browser_time = WebUtils.get_browser_datetime(self.webdriver)
+        local_time = datetime.now()
+        # Assuming the browser date time is within a day of the local machine.
+        time_difference = abs(local_time - browser_time)
+        self.assertLess(time_difference, timedelta(days=1))
 
 
 class TestWebBrowserStandBy(unittest2.TestCase):

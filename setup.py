@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup(
     name='wtframework',
-    version='0.4.6',
+    version='0.4.7',
     author='David Lai',
     author_email='david@wiredrive.com',
     packages=['wtframework',
@@ -37,7 +37,7 @@ setup(
     description='WTF - Web Test Framework',
     long_description=open('README.md').read(),
     install_requires=[
-        "nose2>=0.4.6",
+        "nose2>=0.4.7",
         "unittest2>=0.5.1",
         "ddt>=0.2.0",
         "pyyaml>=3.10",
