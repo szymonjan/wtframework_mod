@@ -15,15 +15,15 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 from mockito import mock, when
-from nose.plugins.attrib import attr
 from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
 from wtframework.wtf.web.webdriver import WebDriverFactory
 import unittest2
 import yaml
+
 """
-NOTE:  These tests are all commented out.  These tests will not run over 
-our Travis-CI/Sauce setup.  Ideally these tests should be ran manually 
-before merging any code dealing with Webdriver Factory.
+NOTE:  Some tests are marked not to run on CI or are commented out.  
+These tests will not run over our Travis-CI/Sauce setup.  Please run these 
+tests should be ran manually before submitting a pull request or merging.
 """
 
 
@@ -45,9 +45,9 @@ class TestWebDriverFactory(unittest2.TestCase):
             pass
         self._driver = None
 
-    # Tests running on local are skipped by default so the full suit can run
-    # on Travis-CI"
-    @attr("noci")
+    # Note: We're using PhantomJS since this comes with Travis.  If this test 
+    # fails when running it locally, you may need to install PhantomJS or 
+    # configure the 'selenium.phantomjs_path' variable.
     def test_createWebDriver_WithLocalBrowser(self):
         '''
         This will test this by opening firefox and trying to fetch Google with it.
@@ -59,7 +59,15 @@ class TestWebDriverFactory(unittest2.TestCase):
         when(config_reader).get(
             WebDriverFactory.DRIVER_TYPE_CONFIG).thenReturn("LOCAL")
         when(config_reader).get(
-            WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("FIREFOX")
+            WebDriverFactory.BROWSER_TYPE_CONFIG).thenReturn("PHANTOMJS")
+
+        try:
+            phantom_js_path = WTF_CONFIG_READER.get(WebDriverFactory.PHANTOMEJS_EXEC_PATH)
+            when(config_reader).get(
+                WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenReturn(phantom_js_path)
+        except KeyError:
+            when(config_reader).get(
+                WebDriverFactory.PHANTOMEJS_EXEC_PATH).thenRaise(KeyError())
 
         driver_factory = WebDriverFactory(config_reader)
         self._driver = driver_factory.create_webdriver()
@@ -151,6 +159,17 @@ class TestWebDriverFactory(unittest2.TestCase):
 
         # Check if we can use this instance of webdriver.
         self._driver.find_element_by_name('q')  # google's famous q element.
+
+
+    def test_env_vars_folded_into_desired_capabilities(self):
+        config_reader = MockAppiumConfigWithSauceLabs()
+        path_to_app = "//:path_to_app"
+        env_vars_stub = {WebDriverFactory._DESIRED_CAPABILITIES_ENV_PREFIX + "app": path_to_app}
+        driver_factory = WebDriverFactory(config_reader=config_reader, env_vars=env_vars_stub)
+
+        # Set an env variable WTF_selenium_desired_capabilities_app
+        dc = driver_factory._generate_desired_capabilities("mytest")
+        self.assertEqual(path_to_app, dc['app'])
 
 
 class MockConfigWithSauceLabs(object):
