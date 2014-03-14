@@ -4,9 +4,13 @@
   Appium friendly.
 - Additional desired capabilities properties can be passed in via ENV variable, 
   for example:
-		export WTF_selenium_desired_capabilities_app=path/to/my/app
-   will set
-   		desirec_capabilities['app'] = "path/to/my/app"
+
+       #>export WTF_selenium_desired_capabilities_app=path/to/my/app
+		
+  will set:
+   
+       desired_capabilities['app'] = "path/to/my/app"
+   		
    This is useful for passing additional capabilities that are dynamic via ENV vars.		
 - Added `WebUtils.get_browser_datetime(driver)` for getting the date time local to the
   browser.
