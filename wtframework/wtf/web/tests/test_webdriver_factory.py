@@ -17,6 +17,7 @@
 from mockito import mock, when
 from wtframework.wtf.config import ConfigReader, WTF_CONFIG_READER
 from wtframework.wtf.web.webdriver import WebDriverFactory
+import os
 import unittest2
 import yaml
 
@@ -134,6 +135,35 @@ class TestWebDriverFactory(unittest2.TestCase):
         if exception != None:
             raise e
 
+    def test_createWebDriver_WithAppium_withAppProvidedByEnv(self):
+        '''
+        This will test a grid setup with Appium by making a connection to Sauce Labs.
+
+        This test will normally be commented out since it will use billable automation hours 
+        on sauce labs.
+        '''
+        config_reader = MockAppiumConfigWithSauceLabsNoApp()
+        os.environ[WebDriverFactory.DESIRED_CAPABILITIES_ENV_PREFIX + "app"] = \
+            "http://appium.s3.amazonaws.com/TestApp6.0.app.zip"
+        driver_factory = WebDriverFactory(config_reader)
+        exception = None
+        try:
+            self._driver = driver_factory.create_webdriver("test_createWebDriver_WithAppium")
+            self.assertGreater(
+                self._driver.session_id, 0, "Did not get a return session id from Sauce.")
+        except Exception as e:
+            exception = e
+        finally:
+            # Make sure we quit sauce labs webdriver to avoid getting billed
+            # additonal hours.
+            try:
+                self._driver.quit()
+            except:
+                pass
+
+        if exception != None:
+            raise e
+
     def test_create_phantomjs_driver(self):
         config_reader = mock(ConfigReader)
         when(config_reader).get(
@@ -164,7 +194,7 @@ class TestWebDriverFactory(unittest2.TestCase):
     def test_env_vars_folded_into_desired_capabilities(self):
         config_reader = MockAppiumConfigWithSauceLabs()
         path_to_app = "//:path_to_app"
-        env_vars_stub = {WebDriverFactory._DESIRED_CAPABILITIES_ENV_PREFIX + "app": path_to_app}
+        env_vars_stub = {WebDriverFactory.DESIRED_CAPABILITIES_ENV_PREFIX + "app": path_to_app}
         driver_factory = WebDriverFactory(config_reader=config_reader, env_vars=env_vars_stub)
 
         # Set an env variable WTF_selenium_desired_capabilities_app
@@ -172,27 +202,7 @@ class TestWebDriverFactory(unittest2.TestCase):
         self.assertEqual(path_to_app, dc['app'])
 
 
-class MockConfigWithSauceLabs(object):
-
-    '''
-    Mock config that returns sauce labs connection string.
-    '''
-    map = None
-
-    def __init__(self):
-        config = """
-        selenium:
-            type: REMOTE
-            remote_url: {0}
-            browser: FIREFOX
-            desired_capabilities:
-                platform: WINDOWS
-                name: Unit Testing WD-acceptance-tests WebDriverFactory
-        """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
-        # Currently using free open source sauce account loaded from encrpyed env var to test this
-        # on Travis CI.
-        self.map = yaml.load(config)
-
+class BaseMockConfig(object):
     def get(self, key, default_value=None):
         '''
         Gets the value from the yaml config based on the key.
@@ -214,8 +224,30 @@ class MockConfigWithSauceLabs(object):
         except:
             return default_value
 
+class MockConfigWithSauceLabs(BaseMockConfig):
 
-class MockAppiumConfigWithSauceLabs(object):
+    '''
+    Mock config that returns sauce labs connection string.
+    '''
+    map = None
+
+    def __init__(self):
+        config = """
+        selenium:
+            type: REMOTE
+            remote_url: {0}
+            browser: FIREFOX
+            desired_capabilities:
+                platform: WINDOWS
+                name: Unit Testing WD-acceptance-tests WebDriverFactory
+        """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
+        # Currently using free open source sauce account loaded from encrpyed env var to test this
+        # on Travis CI.
+        self.map = yaml.load(config)
+
+
+
+class MockAppiumConfigWithSauceLabs(BaseMockConfig):
 
     '''
     Mock config that returns sauce labs connection string with Appium.
@@ -240,27 +272,30 @@ class MockAppiumConfigWithSauceLabs(object):
         # on Travis CI.
         self.map = yaml.load(config)
 
-    def get(self, key, default_value=None):
-        '''
-        Gets the value from the yaml config based on the key.
 
-        No type casting is performed, any type casting should be 
-        performed by the caller.
-        '''
-        try:
-            if "." in key:
-                # this is a multi level string
-                namespaces = key.split(".")
-                temp_var = self.map
-                for name in namespaces:
-                    temp_var = temp_var[name]
-                return temp_var
-            else:
-                value = self.map[key]
-                return value
-        except:
-            return default_value
+class MockAppiumConfigWithSauceLabsNoApp(BaseMockConfig):
 
+    '''
+    Mock config that returns sauce labs connection string with Appium.
+    '''
+    map = None
+
+    def __init__(self):
+        config = """
+        selenium:
+            type: REMOTE
+            remote_url: {0}
+            browser: OTHER
+            desired_capabilities:
+                platform: OS X 10.9
+                version: 7
+                device-orientation: portrait
+                device: iPhone Simulator
+                name: Unit Testing WD-acceptance-tests WebDriverFactory
+        """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
+        # Currently using free open source sauce account loaded from encrpyed env var to test this
+        # on Travis CI.
+        self.map = yaml.load(config)
 
 
 if __name__ == "__main__":

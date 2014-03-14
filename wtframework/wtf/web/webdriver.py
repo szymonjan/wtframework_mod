@@ -75,7 +75,7 @@ class WebDriverFactory(object):
     __SELENIUM_SERVER_JAR_ENV = "SELENIUM_SERVER_JAR"
     
     # System ENV prefix for variables in desired capabilities.
-    _DESIRED_CAPABILITIES_ENV_PREFIX = "WTF_selenium_desired_capabilities_"
+    DESIRED_CAPABILITIES_ENV_PREFIX = "WTF_selenium_desired_capabilities_"
 
 
 
@@ -300,8 +300,8 @@ class WebDriverFactory(object):
         # If there is desired capabilities properties specified in the OS ENV vars,
         # override the desired capabilities value with those values.
         for key in self._env_vars.keys():
-            if key.startswith(self._DESIRED_CAPABILITIES_ENV_PREFIX):
-                dc_key = key[len(self._DESIRED_CAPABILITIES_ENV_PREFIX):]
+            if key.startswith(self.DESIRED_CAPABILITIES_ENV_PREFIX):
+                dc_key = key[len(self.DESIRED_CAPABILITIES_ENV_PREFIX):]
                 desired_capabilities[dc_key] = self._env_vars[key]
 
         # Append optional testname postfix if supplied.
