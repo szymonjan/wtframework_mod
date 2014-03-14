@@ -1,5 +1,9 @@
 #!/bin/sh
 
+## This script is just a handle shell script I use to keep the WTF version numbers 
+## in sync between version number in the framework, and the version number used in 
+## the chrome extension, and the version number used in the setup tools.
+
 echo "subsituting: $1 with $2"
 
 sed s/$1/$2/ setup.py > setup.pie && mv setup.pie setup.py
