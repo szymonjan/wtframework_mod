@@ -315,7 +315,8 @@ http://nvie.com/posts/a-successful-git-branching-model/
 * /master [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=master)](https://travis-ci.org/wiredrive/wtframework) - contains latest release / stable code. 
 * /develop [![Build Status](https://travis-ci.org/wiredrive/wtframework.png?branch=develop)](https://travis-ci.org/wiredrive/wtframework) - contains work in progress and features queued up for the next release.
 * /feature/name-of-feature - feature branch for work in progress on a long project.
-
+* /release/x.x.x - upcoming release currently under bug fixing/testing.
+* /hotfix/x.x.x - upcoming hotfix release currently under bug fixing/testing.
 
 
 
