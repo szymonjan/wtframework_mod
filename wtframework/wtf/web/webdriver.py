@@ -69,27 +69,34 @@ class WebDriverFactory(object):
     OPERA = "OPERA"
     PHANTOMJS = "PHANTOMJS"
     SAFARI = "SAFARI"
-    OTHER = "OTHER" #Use a blank desired capabilities as a base for RemoteWebdriver.
+    OTHER = "OTHER"  # Use a blank desired capabilities as a base for RemoteWebdriver.
 
     # ENV vars that are used by selenium.
     __SELENIUM_SERVER_JAR_ENV = "SELENIUM_SERVER_JAR"
+    
+    # System ENV prefix for variables in desired capabilities.
+    DESIRED_CAPABILITIES_ENV_PREFIX = "WTF_selenium_desired_capabilities_"
 
-    # Instance Variables#
-    _config_reader = None
 
-    def __init__(self, config_reader=None):
+
+    def __init__(self, config_reader=None, env_vars=None):
         '''
         Initializer.
 
         Kwargs:
             config_reader (ConfigReader) - Override the default config reader.
-
+            env_vars (Dictionary) - Override the default ENV vars provider.
         '''
 
         if config_reader != None:
             self._config_reader = config_reader
         else:
             self._config_reader = WTF_CONFIG_READER
+
+        if env_vars != None:
+            self._env_vars = env_vars
+        else:
+            self._env_vars = os.environ
 
     def create_webdriver(self, testname=None):
         '''
@@ -177,7 +184,7 @@ class WebDriverFactory(object):
             try:
                 selenium_server_path = self._config_reader.get(
                     self.SELENIUM_SERVER_LOCATION)
-                os.environ[
+                self._env_vars[
                     self.__SELENIUM_SERVER_JAR_ENV] = selenium_server_path
             except KeyError:
                 raise RuntimeError(u("Missing selenium server path config {0}.").format(
@@ -199,10 +206,44 @@ class WebDriverFactory(object):
         '''
         Reads the config value for browser type.
         '''
-        browser_type = self._config_reader.get(
-            WebDriverFactory.BROWSER_TYPE_CONFIG)
+        desired_capabilities = self._generate_desired_capabilities(testname)
+        
         remote_url = self._config_reader.get(
             WebDriverFactory.REMOTE_URL_CONFIG)
+
+        # Instantiate remote webdriver.
+        driver = webdriver.Remote(
+            desired_capabilities=desired_capabilities,
+            command_executor=remote_url
+        )
+
+        # Log IP Address of node if configured, so it can be used to
+        # troubleshoot issues if they occur.
+        log_driver_props = \
+            self._config_reader.get(
+                WebDriverFactory.LOG_REMOTEDRIVER_PROPS, default_value=False
+            ) in [True, "true", "TRUE", "True"]
+        if "wd/hub" in remote_url and log_driver_props:
+            try:
+                grid_addr = remote_url[:remote_url.index("wd/hub")]
+                info_request_response = urllib2.urlopen(
+                    grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)
+                node_info = info_request_response.read()
+                _wtflog.info(
+                    u("RemoteWebdriver using node: ") + u(node_info).strip())
+            except:
+                # Unable to get IP Address of remote webdriver.
+                # This happens with many 3rd party grid providers as they don't want you accessing info on nodes on
+                # their internal network.
+                pass
+
+        return driver
+        # End of method.
+
+    def _generate_desired_capabilities(self, testname):
+        # Generate desired capabilities object using config settings.
+        browser_type = self._config_reader.get(
+            WebDriverFactory.BROWSER_TYPE_CONFIG)
 
         browser_constant_dict = {self.HTMLUNIT: DesiredCapabilities.HTMLUNIT,
                                  self.HTMLUNITWITHJS: DesiredCapabilities.HTMLUNITWITHJS,
@@ -215,7 +256,7 @@ class WebDriverFactory(object):
                                  self.OPERA: DesiredCapabilities.OPERA,
                                  self.SAFARI: DesiredCapabilities.SAFARI,
                                  self.PHANTOMJS: DesiredCapabilities.PHANTOMJS,
-                                 self.OTHER: {'browserName': ''} # Blank Desired Capabilities.
+                                 self.OTHER: {'browserName': ''}  # Blank Desired Capabilities.
                                  }
 
         try:
@@ -256,6 +297,13 @@ class WebDriverFactory(object):
         except KeyError:
             pass  # No test name is specified, use the default.
 
+        # If there is desired capabilities properties specified in the OS ENV vars,
+        # override the desired capabilities value with those values.
+        for key in self._env_vars.keys():
+            if key.startswith(self.DESIRED_CAPABILITIES_ENV_PREFIX):
+                dc_key = key[len(self.DESIRED_CAPABILITIES_ENV_PREFIX):]
+                desired_capabilities[dc_key] = self._env_vars[key]
+
         # Append optional testname postfix if supplied.
         if testname:
             if desired_capabilities['name']:
@@ -264,34 +312,8 @@ class WebDriverFactory(object):
                 # handle case where name is not specified.
                 desired_capabilities['name'] = testname
 
-        # Instantiate remote webdriver.
-        driver = webdriver.Remote(
-            desired_capabilities=desired_capabilities,
-            command_executor=remote_url
-        )
+        return desired_capabilities
 
-        # Log IP Address of node if configured, so it can be used to
-        # troubleshoot issues if they occur.
-        log_driver_props = \
-            self._config_reader.get(
-                WebDriverFactory.LOG_REMOTEDRIVER_PROPS, default_value=False
-            ) in [True, "true", "TRUE", "True"]
-        if "wd/hub" in remote_url and log_driver_props:
-            try:
-                grid_addr = remote_url[:remote_url.index("wd/hub")]
-                info_request_response = urllib2.urlopen(
-                    grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)
-                node_info = info_request_response.read()
-                _wtflog.info(
-                    u("RemoteWebdriver using node: ") + u(node_info).strip())
-            except:
-                # Unable to get IP Address of remote webdriver.
-                # This happens with many 3rd party grid providers as they don't want you accessing info on nodes on
-                # their internal network.
-                pass
-
-        return driver
-        # End of method.
 
     def __flatten_capabilities(self, desired_capabilities, prefix, setting_group):
         for key in setting_group.keys():
