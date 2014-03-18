@@ -10,9 +10,10 @@ for the tests to run.
 2.  Download a copy of Selenium Server .jar file, http://docs.seleniumhq.org/download/
     and copy it to a known directory that's accessible.
 3.  Install PhantomJS, http://phantomjs.org/
-4.  Create a copy of /wtframework/configs/default.yaml, and fill in all the needed 
+4.  Create a copy of `/wtframework/configs/default.yaml`, and fill in all the needed 
     configuration settings, especially ones for PhantomJS, which is used by headless 
-    tests.
+    tests.  Then set your `WTF_ENV=yourconfig` (minus the .yaml) to point to your 
+    config.
    
 
 Release Process (Note: this is meant for the release engineer handling the release)
