@@ -1,5 +1,4 @@
 
-
 Getting UnitTests to work on your local machine.
 ====
 There are a few dependencies needed to get all unit tests working locally in your dev 
@@ -16,10 +15,12 @@ for the tests to run.
     config.
    
 
-Release Process (Note: this is meant for the release engineer handling the release)
+Release Process 
 ====
+(Note: this is meant for the release engineer handling the release)
 The release process is somewhat manual at the moment.  One day we may try to fully 
 automate it via Travis, but for now we do the following steps.
+
 1.  Using GitFlow, https://github.com/nvie/gitflow, start a release branch.  This will be 
 	where we'll do any final staging, version number bumps and last minute bug fixes.
 2.  Bump the version numbers, use the `./bump_build_number.sh oldver newversion` this 
