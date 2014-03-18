@@ -20,7 +20,7 @@ Release Process (Note: this is meant for the release engineer handling the relea
 ====
 The release process is somewhat manual at the moment.  One day we may try to fully 
 automate it via Travis, but for now we do the following steps.
-1.  Using GitFlow, https://github.com/nvie/gitflow, cut a release branch.  This will be 
+1.  Using GitFlow, https://github.com/nvie/gitflow, start a release branch.  This will be 
 	where we'll do any final staging, version number bumps and last minute bug fixes.
 2.  Bump the version numbers, use the `./bump_build_number.sh oldver newversion` this 
 	will replace the version numbers on all the files that contain the current version 
