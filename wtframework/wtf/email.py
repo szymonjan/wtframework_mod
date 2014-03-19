@@ -190,7 +190,6 @@ class IMapEmailAccountObject(object):
     def __search_email_by_subject(self, subject, match_recipient):
         "Get a list of message numbers"
         if match_recipient is None:
-            _, data = self._mail.search(None, 'SUBJECT', subject)
             _, data = self._mail.uid('search',
                                      None,
                                      '(HEADER SUBJECT "{subject}")'

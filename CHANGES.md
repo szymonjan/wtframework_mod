@@ -1,3 +1,6 @@
+## 0.4.8
+- Fix email searching without receiver specified.
+
 ## v0.4.7
 - Fix broken map object in Chrome extension caused by increased Chrome security.
 - Tweaks to exception handling in WebdriverFactory and PageFactory to make it more 
