@@ -1,4 +1,4 @@
-## xxx
+## 0.4.8
 - Fix email searching without receiver specified.
 
 ## v0.4.7
