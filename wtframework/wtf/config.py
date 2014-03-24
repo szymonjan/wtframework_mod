@@ -69,8 +69,7 @@ class ConfigReader:
                     self.__load_config_file(config)
 
         except Exception as e:
-            # Fall back to default.yaml file when no config settings are
-            # specified.
+            # Error loading config file.
             _wtflog.error(
                 u("An error occurred while loading config file: %s"), e)
             raise e

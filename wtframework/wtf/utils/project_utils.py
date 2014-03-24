@@ -58,7 +58,7 @@ class ProjectUtils(object):
         # Search starting from the current working directory and traverse up parent directories for the
         # hidden file denoting the project root folder.
         path = os.getcwd()
-        seperator_matches = re.finditer(u("/|\\\\"), path)
+        seperator_matches = re.finditer("/|\\\\", path)
 
         paths_to_search = [path]
         for match in seperator_matches:

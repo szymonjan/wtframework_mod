@@ -71,6 +71,10 @@ class WebDriverFactory(object):
     SAFARI = "SAFARI"
     OTHER = "OTHER"  # Use a blank desired capabilities as a base for RemoteWebdriver.
 
+    # Driver Type constants
+    DRIVER_TYPE_LOCAL   = "LOCAL"
+    DRIVER_TYPE_REMOTE  = "REMOTE"
+
     # ENV vars that are used by selenium.
     __SELENIUM_SERVER_JAR_ENV = "SELENIUM_SERVER_JAR"
     
@@ -116,11 +120,11 @@ class WebDriverFactory(object):
             driver_type = self._config_reader.get(
                 WebDriverFactory.DRIVER_TYPE_CONFIG)
         except:
-            _wtflog.warn("%s setting is missing from config. Using defaults",
-                         WebDriverFactory.DRIVER_TYPE_CONFIG)
-            driver_type = "LOCAL"
+            driver_type = self.DRIVER_TYPE_LOCAL
+            _wtflog.warn("%s setting is missing from config. Using default setting, %s",
+                         WebDriverFactory.DRIVER_TYPE_CONFIG, driver_type)
 
-        if driver_type == "REMOTE":
+        if driver_type == self.DRIVER_TYPE_REMOTE:
             # Create desired capabilities.
             self.webdriver = self.__create_remote_webdriver_from_config(
                 testname=testname)
