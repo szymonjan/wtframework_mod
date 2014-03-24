@@ -144,7 +144,7 @@ class TestWebDriverFactory(unittest2.TestCase):
         '''
         config_reader = MockAppiumConfigWithSauceLabsNoApp()
         os.environ[WebDriverFactory.DESIRED_CAPABILITIES_ENV_PREFIX + "app"] = \
-            "http://appium.s3.amazonaws.com/TestApp6.0.app.zip"
+            "http://github.com/wiredrive/wtframework/raw/gh-pages/binaries/TestApp6.0.app.zip"
         driver_factory = WebDriverFactory(config_reader)
         exception = None
         try:
@@ -264,7 +264,7 @@ class MockAppiumConfigWithSauceLabs(BaseMockConfig):
                 platform: OS X 10.9
                 version: 7
                 device-orientation: portrait
-                app: http://appium.s3.amazonaws.com/TestApp6.0.app.zip
+                app: http://github.com/wiredrive/wtframework/raw/gh-pages/binaries/TestApp6.0.app.zip
                 device: iPhone Simulator
                 name: Unit Testing WD-acceptance-tests WebDriverFactory
         """.format(WTF_CONFIG_READER.get("selenium.remote_url"))
