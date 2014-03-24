@@ -155,7 +155,7 @@ class InvalidPageError(Exception):
     '''Thrown when we have tried to instantiate the incorrect page to a PageObject.'''
     pass
 
-class PageNotFullyLoaded(InvalidPageError):
+class PageNotFullyLoadedError(InvalidPageError):
     '''Thrown when the page in question is not yet fully loaded.'''
     pass
 
@@ -175,7 +175,8 @@ class PageFactory():
 
         Kwargs:
             webdriver (WebDriver): Selenium Webdriver to use to instantiate the page. If none 
-                                   is provided, then it was use the default from WTF_WEBDRIVER_MANAGER
+                                   is provided, then it was use the default from 
+                                   WTF_WEBDRIVER_MANAGER
 
         Returns:
             PageObject
@@ -328,6 +329,7 @@ class PageFactory():
     @staticmethod
     def __itersubclasses(cls, _seen=None):
         """
+        
         Credit goes to: http://code.activestate.com/recipes/576949-find-all-subclasses-of-a-given-class/
 
         itersubclasses(cls)
