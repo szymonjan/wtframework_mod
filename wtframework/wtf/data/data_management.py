@@ -56,7 +56,7 @@ class DataManager(object):
 
         """
         self._data_path = os.path.join(
-            ProjectUtils.get_project_root(), DataManager._DATA_FOLDER_)
+            ProjectUtils.get_project_root(), self._DATA_FOLDER_)
 
         if not os.path.exists(self._data_path):
             raise RuntimeError(
