@@ -15,7 +15,8 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 import unittest2
-from wtframework.wtf.utils.test_utils import do_and_ignore, do_if_match
+from wtframework.wtf.utils.test_utils import do_and_ignore, do_if_match,\
+    find_dictonary_in
 
 class TestTestUtils(unittest2.TestCase):
 
@@ -40,6 +41,25 @@ class TestTestUtils(unittest2.TestCase):
         
         do_if_match(numbers, matcher, target_action)
         self.assertEqual(4, self.__magic_number)
+
+
+    def test_find_dictonary_in_item_in_haystack(self):
+        targets = [
+            {'first':'Sarah', 'last':'Connor', 'gender':'female'},
+            {'first':'John', 'last':'Connor', 'gender':'male'},
+            {'first':'Waldo', 'last':'Smith', 'gender':'male'},
+        ]
+        look_for = {'first':'John', 'last':'Connor'}
+        self.assertEqual({'first':'John', 'last':'Connor', 'gender':'male'}, 
+                         find_dictonary_in(look_for, targets))
+
+    def test_find_dictonary_in_item_not_in_haystack(self):
+        targets = [
+            {'first':'Sarah', 'last':'Connor', 'gender':'female'},
+            {'first':'Waldo', 'last':'Smith', 'gender':'male'},
+        ]
+        look_for = {'first':'John', 'last':'Connor'}
+        self.assertEqual(None, find_dictonary_in(look_for, targets))
 
 
 

@@ -102,6 +102,36 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
     raise NoMatchError(message)
 
 
+def find_dictonary_in(search_for_dictionary, haystack_of_dictionaries):
+    """
+    Searches a list or iterator of dictionaries for an entry that contains the matching matching entries 
+    to the search dictionary.
+    
+    Args:
+        search_for (dictionary): Dictionary contains key/value pairs to match.
+        haystack (iterator): An iterator of dictionaries
+    
+    Returns:
+        Returns the matching entry.  Otherwise returns None
+    """
+    for a_dictionary in haystack_of_dictionaries:
+        match_failed = False
+
+        for key in search_for_dictionary.keys():
+            try:
+                if a_dictionary[key] != search_for_dictionary[key]:
+                    match_failed = True
+            except:
+                # the entry in the haystack is missing the key.
+                match_failed = True
+
+        if not match_failed:
+            return a_dictionary
+
+    return None
+
+
+
 class NoMatchError(RuntimeError):
 
     "Raised if no match is found."

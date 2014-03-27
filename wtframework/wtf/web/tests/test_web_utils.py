@@ -50,9 +50,22 @@ class TestWebUtils(unittest2.TestCase):
     def test_get_browser_datetime(self):
         browser_time = WebUtils.get_browser_datetime(self.webdriver)
         local_time = datetime.now()
-        # Assuming the browser date time is within a day of the local machine.
         time_difference = abs(local_time - browser_time)
         self.assertLess(time_difference, timedelta(days=1))
+
+
+    def test_row_to_dictionary(self):
+        self.webdriver.get("http://the-internet.herokuapp.com/tables")
+
+        header = self.webdriver.find_element_by_css_selector("#table1 thead tr")
+        target_row = self.webdriver.find_element_by_css_selector("#table1 tbody tr")
+
+        row_values = WebUtils.row_to_dictionary(header, target_row)
+        self.assertEqual("Smith", row_values['Last Name'])
+        self.assertEqual("jsmith@gmail.com", row_values['Email'])
+        self.assertEqual("http://www.jsmith.com", row_values['Web Site'])
+
+
 
 
 class TestWebBrowserStandBy(unittest2.TestCase):
