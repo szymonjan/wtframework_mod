@@ -16,8 +16,9 @@
 ##########################################################################
 from datetime import datetime, timedelta
 from wtframework.wtf.utils.wait_utils import wait_until, OperationTimeoutError, \
-    do_until
+    do_until, wait_and_ignore
 import unittest2
+
 
 
 class TestWaitUtils(unittest2.TestCase):
@@ -70,6 +71,43 @@ class TestWaitUtils(unittest2.TestCase):
         self.__x = 0
         do_until(lambda: self.__wait_condition())
         self.assertEqual(2, self.__x)
+
+
+    def test_wait_and_ignore_successful(self):
+        """Test execution is halted when successful.
+        """
+        self.__test_wait_and_ignore_successful_counter = 0
+
+        def inner_func():
+            self.__test_wait_and_ignore_successful_counter += 1
+            return self.__test_wait_and_ignore_successful_counter
+
+        condition = lambda: inner_func() == 3
+        start_time = datetime.now()
+        wait_and_ignore(condition, timeout=6)
+        ellapsed_time = datetime.now() - start_time
+        self.assertLess(ellapsed_time, timedelta(seconds=4))
+        
+        self.assertEqual(3, self.__test_wait_and_ignore_successful_counter)
+
+    def test_wait_and_ignore_not_successful(self):
+        """Test that if not successful, it runs up to the timeout peroid if the 
+        condition does not succeed."""
+        self.__test_wait_and_ignore_successful_counter = 0
+        
+        def inner_func():
+            self.__test_wait_and_ignore_successful_counter += 1
+            return self.__test_wait_and_ignore_successful_counter
+
+        condition = lambda: inner_func() == -1
+        start_time = datetime.now()
+        wait_and_ignore(condition, timeout=3, sleep=1)
+        ellapsed_time = datetime.now() - start_time
+
+        # Assuming it should be incremented 1-3 times in the time limit.
+        self.assertIn(self.__test_wait_and_ignore_successful_counter, range(1,4))
+        self.assertGreater(ellapsed_time, timedelta(seconds=2))
+        self.assertLess(ellapsed_time, timedelta(seconds=4))
 
     def __wait_condition(self):
         self.__x += 1

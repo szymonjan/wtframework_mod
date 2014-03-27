@@ -1,3 +1,7 @@
+## 0.4.?
+- Added more documentation into the doc comments and code comments.
+- `wait_and_ignore()` wait_utils method for waiting and ignoring exceptions.
+
 ## 0.4.8
 - Fix email searching without receiver specified.
 
