@@ -164,6 +164,22 @@ class WebUtils(object):
         Returns:
             Returns a dictionary object containing keys consistenting of the column headers 
             and values consisting of the row contents.
+
+        Usage::
+
+            self.webdriver.get("http://the-internet.herokuapp.com/tables")
+
+            header = self.webdriver.find_element_by_css_selector("#table1 thead tr")
+            target_row = self.webdriver.find_element_by_css_selector("#table1 tbody tr")
+    
+            row_values = WebUtils.row_to_dictionary(header, target_row)
+            row_values ==    {'Last Name': 'Smith', 
+                              'Due': '$50.00',
+                              'First Name': 'John', 
+                              'Web Site': 'http://www.jsmith.com', 
+                              'Action': 'edit delete', 
+                              'Email': 'jsmith@gmail.com'}
+
         """
         headers = header_row_web_element.find_elements_by_tag_name("th")
         data_cells = row_webelement.find_elements_by_tag_name("td")
@@ -318,3 +334,4 @@ class BrowserStandBy(object):
 class WindowNotFoundError(RuntimeError):
 
     "Raised when window is not found by web_utils script."
+    pass

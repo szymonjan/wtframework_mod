@@ -113,6 +113,18 @@ def find_dictonary_in(search_for_dictionary, haystack_of_dictionaries):
     
     Returns:
         Returns the matching entry.  Otherwise returns None
+
+
+    Usage::
+    
+        targets = [
+            {'first':'Sarah', 'last':'Connor', 'gender':'female'},
+            {'first':'John', 'last':'Connor', 'gender':'male'},
+            {'first':'Waldo', 'last':'Smith', 'gender':'male'},
+        ]
+        look_for = {'first':'John', 'last':'Connor'}
+        find_dictonary_in(look_for, targets) # Returns {'first':'John', 'last':'Connor', 'gender':'male'}
+
     """
     for a_dictionary in haystack_of_dictionaries:
         match_failed = False

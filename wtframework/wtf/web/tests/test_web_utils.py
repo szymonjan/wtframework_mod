@@ -66,8 +66,6 @@ class TestWebUtils(unittest2.TestCase):
         self.assertEqual("http://www.jsmith.com", row_values['Web Site'])
 
 
-
-
 class TestWebBrowserStandBy(unittest2.TestCase):
 
     def test_browserstandby(self):
