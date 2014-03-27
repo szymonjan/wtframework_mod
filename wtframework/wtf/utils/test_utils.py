@@ -74,10 +74,15 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 
     Example::
 
-        numbers = [1, 2, 3, 4, 5, 6]
+        numbers = [1, 3, 4, 5, 6]
         matcher = lambda num: num % 2 == 0
-        action = lambda num: print num
-        do_if_match(numbers, matcher, action) # prints 2
+        
+        def target_action(item):
+            print("The magic number is", item)
+
+        do_if_match(numbers, matcher, target_action) # Prints "The magic number is 4"
+
+
 
     Is equivalent to:
 
