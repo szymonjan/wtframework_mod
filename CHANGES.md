@@ -1,4 +1,4 @@
-## 0.4.?
+## 0.4.10
 - Added more documentation into the doc comments and code comments.
 - `wait_and_ignore()` WaitUtils method for waiting and ignoring exceptions.
 - `row_to_dictionary()` WaitUtils method for converting row data into dictionary form.
