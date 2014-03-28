@@ -32,13 +32,15 @@ class WebDriverFactory(object):
 
     '''
     This class constructs a Selenium Webdriver using settings in the config file.
-    This allows you to substitute different webdrivers by changing the config settings 
-    while keeping your tests using the same webdriver interface.
+    This allows you to substitute different Webdrivers by changing the config settings 
+    while keeping your tests using the same Webdriver interface.
 
-    Ideally you will not use this directly.  You will normally use WTF_WEBDRIVER_MANAGER.new_driver() 
-    to create a new instance of webdriver.
+    Ideally you will not use this directly.  You will normally use the global instance, 
+    WTF_WEBDRIVER_MANAGER.new_driver(), to create a new instance of Webdriver.  This allows 
+    the framework to take screenshots during test failures.  When you're done with the 
+    Webdriver, call WTF_WEBDRIVER_MANAGER.close_driver().
 
-    You can extend this class for the purposes of adding support for webdrivers that are not 
+    You can extend this class for the purposes of adding support for Webdrivers that are not 
     currently supported.
     '''
 
@@ -83,7 +85,7 @@ class WebDriverFactory(object):
 
 
 
-    def __init__(self, config_reader=None, env_vars=None):
+    def __init__(self, config_reader=None, env_vars=None, timeout_mgr=None):
         '''
         Initializer.
 
@@ -91,16 +93,24 @@ class WebDriverFactory(object):
             config_reader (ConfigReader) - Override the default config reader.
             env_vars (Dictionary) - Override the default ENV vars provider.
         '''
-
-        if config_reader != None:
+        # Block of if/else statements setting dependencies.  If provided, 
+        # we'll use the provided (unit testing), other wise we'll use the 
+        # default for normal usage scenarios.
+        if config_reader is not None:
             self._config_reader = config_reader
         else:
             self._config_reader = WTF_CONFIG_READER
 
-        if env_vars != None:
+        if env_vars is not None:
             self._env_vars = env_vars
         else:
             self._env_vars = os.environ
+
+        if timeout_mgr is not None:
+            self._timeout_mgr = timeout_mgr
+        else:
+            self._timeout_mgr = WTF_TIMEOUT_MANAGER
+
 
     def create_webdriver(self, testname=None):
         '''
@@ -113,16 +123,16 @@ class WebDriverFactory(object):
                           sent to selenium grid.
 
             Returns:
-                WebDriver - Selenium webdriver instance.
+                WebDriver - Selenium Webdriver instance.
 
         '''
         try:
             driver_type = self._config_reader.get(
-                WebDriverFactory.DRIVER_TYPE_CONFIG)
+                self.DRIVER_TYPE_CONFIG)
         except:
             driver_type = self.DRIVER_TYPE_LOCAL
             _wtflog.warn("%s setting is missing from config. Using default setting, %s",
-                         WebDriverFactory.DRIVER_TYPE_CONFIG, driver_type)
+                         self.DRIVER_TYPE_CONFIG, driver_type)
 
         if driver_type == self.DRIVER_TYPE_REMOTE:
             # Create desired capabilities.
@@ -136,7 +146,7 @@ class WebDriverFactory(object):
             self.webdriver.maximize_window()
         except:
             # wait a short period and try again.
-            time.sleep(WTF_TIMEOUT_MANAGER.BRIEF)
+            time.sleep(self._timeout_mgr.BRIEF)
             try:
                 self.webdriver.maximize_window()
             except Exception as e:
@@ -366,32 +376,35 @@ class WebDriverManager(object):
         self.__webdriver = {}  # Object with channel as a key
         self.__registered_drivers = {}
 
+        # if/else blocks handling dependency injections.
         if config:
             self.__config = config
         else:
             self.__config = WTF_CONFIG_READER
 
-        self.__use_shutdown_hook = self.__config.get(
-            WebDriverManager.SHUTDOWN_HOOK_CONFIG, True)
-
-        if(webdriver_factory != None):
+        if(webdriver_factory is not None):
             self._webdriver_factory = webdriver_factory
         else:
             self._webdriver_factory = WebDriverFactory()
+
+        # Set shutdown hook flag.
+        self.__use_shutdown_hook = self.__config.get(
+            WebDriverManager.SHUTDOWN_HOOK_CONFIG, True)
+
 
     def clean_up_webdrivers(self):
         '''
         Clean up webdrivers created during execution.
         '''
         # Quit webdrivers.
-        _wtflog.info("WebdriverManager : Cleaning up webdrivers")
+        _wtflog.info("WebdriverManager: Cleaning up webdrivers")
         try:
             if self.__use_shutdown_hook:
                 for key in self.__registered_drivers.keys():
                     for driver in self.__registered_drivers[key]:
                         try:
                             _wtflog.debug(
-                                "Closing webdriver for thread: %s", key)
+                                "Shutdown hook closing Webdriver for thread: %s", key)
                             driver.quit()
                         except:
                             pass
@@ -400,11 +413,17 @@ class WebDriverManager(object):
 
     def close_driver(self):
         """
-        Close current instance of webdriver.
+        Close current running instance of Webdriver.
+
+        Usage::
+
+            driver = WTF_WEBDRIVER_MANAGER.new_driver()
+            driver.get("http://the-internet.herokuapp.com")
+            WTF_WEBDRIVER_MANAGER.close_driver()
         """
         channel = self.__get_channel()
         driver = self.__get_driver_for_channel(channel)
-        if self.__config.get(WebDriverManager.REUSE_BROWSER, True):
+        if self.__config.get(self.REUSE_BROWSER, True):
             # If reuse browser is set, we'll avoid closing it and just clear out the cookies,
             # and reset the location.
             try:
@@ -428,11 +447,17 @@ class WebDriverManager(object):
 
     def get_driver(self):
         '''
-        Get an already running instance of webdriver. If there is none, it will create one.
+        Get an already running instance of Webdriver. If there is none, it will create one.
 
         Returns:
-            WebDriver - Selenium Webdriver instance.
+            Webdriver - Selenium Webdriver instance.
 
+        Usage::
+
+            driver = WTF_WEBDRIVER_MANAGER.new_driver()
+            driver.get("http://the-internet.herokuapp.com")
+            same_driver = WTF_WEBDRIVER_MANAGER.get_driver()
+            print(driver is same_driver) # True
         '''
         driver = self.__get_driver_for_channel(self.__get_channel())
         if driver is None:
@@ -446,7 +471,6 @@ class WebDriverManager(object):
 
         Returns:
             bool - True, webdriver is available; False, webdriver not yet initialized.
-
         '''
         channel = self.__get_channel()
         try:
@@ -467,6 +491,10 @@ class WebDriverManager(object):
         Returns:
             Webdriver - Selenium Webdriver instance.
 
+        Usage::
+
+            driver = WTF_WEBDRIVER_MANAGER.new_driver()
+            driver.get("http://the-internet.herokuapp.com")
         '''
         channel = self.__get_channel()
 

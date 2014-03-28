@@ -115,11 +115,34 @@ specify using other config files by setting the `WTF_ENV` variable.  This is use
 have different config files for your different test environments.  Then in your CI 
 system, you can just specify which config file to use.
 
+in your `configs/default.yaml` or other config file...
+
+	baseurl: yourtestserver.com
+
 In your tests, you can pull the values you have stored in your config file using the 
 `WTF_CONFIG_READER` like this:
 
 	base_url = WTF_CONFIG_READER.get_value("baseurl")
 	webdriver.get( base_url + "/somelocation" )
+
+You can have serveral different copies of config file, like `configs/qa.yaml`, 
+`configs/staging.yaml`, `configs/production.yaml`, etc... for your different 
+deployment/testing environments.
+
+When you set the the `WTF_ENV` system variable, you can choose which config set 
+to use, or pass it into the command.
+
+	$> echo "run tests against QA"
+	$> WTF_ENV=qa ./runtests.py
+	$> echo "run tests against Staging"
+	$> WTF_ENV=stage ./runtests.py
+
+Alternatively, 
+
+	$> echo "run tests against QA"
+	$> ./runtests.py --config=qa
+	$> echo "run tests against Staging"
+	$> ./runtests.py --config=staging
 
 This allows you to make your test environment agnostic, runnable across multiple 
 configurations with just a switch of an environment variable.  This is good for storing 
@@ -128,7 +151,8 @@ strings, etc...
 
 You can also specify your selenium settings to which webdriver to use. Under `selenium` 
 settings, you can configure whether you want a local or remote/grid, and which browser 
-to use.
+to use.  So you can also run your tests against different configurations easily by 
+simply passing a different config file each time.
 
 	# Settings for Selenium WebDriver used for browser testing.
 	selenium:
@@ -166,8 +190,7 @@ to use.
 	
 Then when you want to get an instance of webdriver, use the `WTF_WEBDRIVER_MANAGER` to 
 get an instance of webdriver.  This allows your tests to be agnostic of which webdriver 
-it's instantiating.  You can use a different config file for running it on CI, vs. running
-locally on your machine
+it's instantiating.
 
 	# Get an instance of webdriver.
 	driver = WTF_WEBDRIVER_MANAGER.new_driver()

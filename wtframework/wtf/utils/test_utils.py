@@ -74,10 +74,15 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
 
     Example::
 
-        numbers = [1, 2, 3, 4, 5, 6]
+        numbers = [1, 3, 4, 5, 6]
         matcher = lambda num: num % 2 == 0
-        action = lambda num: print num
-        do_if_match(numbers, matcher, action) # prints 2
+        
+        def target_action(item):
+            print("The magic number is", item)
+
+        do_if_match(numbers, matcher, target_action) # Prints "The magic number is 4"
+
+
 
     Is equivalent to:
 
@@ -95,6 +100,48 @@ def do_if_match(iterator, matching_lambda_expr, lambda_to_perform, message=None)
             return lambda_to_perform(item)
 
     raise NoMatchError(message)
+
+
+def find_dictonary_in(search_for_dictionary, haystack_of_dictionaries):
+    """
+    Searches a list or iterator of dictionaries for an entry that contains the matching matching entries 
+    to the search dictionary.
+    
+    Args:
+        search_for (dictionary): Dictionary contains key/value pairs to match.
+        haystack (iterator): An iterator of dictionaries
+    
+    Returns:
+        Returns the matching entry.  Otherwise returns None
+
+
+    Usage::
+    
+        targets = [
+            {'first':'Sarah', 'last':'Connor', 'gender':'female'},
+            {'first':'John', 'last':'Connor', 'gender':'male'},
+            {'first':'Waldo', 'last':'Smith', 'gender':'male'},
+        ]
+        look_for = {'first':'John', 'last':'Connor'}
+        find_dictonary_in(look_for, targets) # Returns {'first':'John', 'last':'Connor', 'gender':'male'}
+
+    """
+    for a_dictionary in haystack_of_dictionaries:
+        match_failed = False
+
+        for key in search_for_dictionary.keys():
+            try:
+                if a_dictionary[key] != search_for_dictionary[key]:
+                    match_failed = True
+            except:
+                # the entry in the haystack is missing the key.
+                match_failed = True
+
+        if not match_failed:
+            return a_dictionary
+
+    return None
+
 
 
 class NoMatchError(RuntimeError):
