@@ -23,6 +23,7 @@ import os
 import tempfile
 from wtframework.wtf.utils.data_utils import generate_timestamped_string
 import urllib
+import codecs
 
 
 def temp_path(file_name=None):
@@ -70,7 +71,7 @@ def create_temp_file(file_name=None, string_or_another_file=""):
 
     """
     temp_file_path = temp_path(file_name)
-    temp_file = open(temp_file_path, "w+")
+    temp_file = codecs.open(temp_file_path, "w+", "utf-8")
 
     try:  # attempt to read it as a file.
         original_file = string_or_another_file
