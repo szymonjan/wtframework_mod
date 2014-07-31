@@ -131,10 +131,10 @@ class IMapEmailAccountObject(object):
             # Try to handle as multipart message first.
             for part in msg.walk():
                 if part.get_content_type() == message_type:
-                    return part.get_payload()
+                    return part.get_payload(decode=True)
         except:
             # handle as plain text email
-            return msg.get_payload()
+            return msg.get_payload(decode=True)
 
     def raw_search(self, *args, **kwargs):
         """
