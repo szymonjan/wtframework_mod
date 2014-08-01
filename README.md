@@ -122,7 +122,7 @@ in your `configs/default.yaml` or other config file...
 In your tests, you can pull the values you have stored in your config file using the 
 `WTF_CONFIG_READER` like this:
 
-	base_url = WTF_CONFIG_READER.get_value("baseurl")
+	base_url = WTF_CONFIG_READER.get("baseurl")
 	webdriver.get( base_url + "/somelocation" )
 
 You can have serveral different copies of config file, like `configs/qa.yaml`, 
