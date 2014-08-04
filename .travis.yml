@@ -1,19 +1,13 @@
---- 
 install: pip install -r requirements.txt
 language: python
-python: 
-- "2.7"
-
-# Run unit tests
-script: 
+python:
+- '2.7'
+script:
 - nosetests-2.7 wtframework/wtf/tests/ -a '!noci'
 - nosetests-2.7 wtframework/wtf/data/tests/ -a '!noci'
 - nosetests-2.7 wtframework/wtf/testobjects/tests/ -a '!noci'
 - nosetests-2.7 wtframework/wtf/utils/tests/ -a '!noci'
 - nosetests-2.7 wtframework/wtf/web/tests/ -a '!noci'
-
-# Encrypted ENV var that contains API key to Sauce open source account.
-env: 
-  global: 
-    secure: |-
-      dkb8kZrg453uE1N+rOYrxCaflDFxh74mfZIcrGS6iBpjlvtLqIVYswkBEPRDjUV21RjKzXh2bGRapW9kAVVDvyJoaB66B8suje+tF1Xhvz7QXep+Q3Qk+ompnX3HISk4c0oEdCi+tBUx5Mf2DyfbnDUzfJYAZuTJQL3yZMBGbds=
+env:
+  global:
+    secure: TMYE8WWHhYvefeRSAuKJtN/Yjm5uA7yAr/5zJwoLzSv9WHSqsLpwKaUjSw1sft8kwsga0/FNWck/BRmlVoDn1tolU6ojuMaRpJbN1k0eamYfwpuT8iDAiqfoVf56WQHULu9Ka8ECGAzxMYh55Rejow20rRT37vrdLWJIUHX/A1w=
