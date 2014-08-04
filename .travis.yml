@@ -10,4 +10,4 @@ script:
 - nosetests-2.7 wtframework/wtf/web/tests/ -a '!noci'
 env:
   global:
-    secure: TMYE8WWHhYvefeRSAuKJtN/Yjm5uA7yAr/5zJwoLzSv9WHSqsLpwKaUjSw1sft8kwsga0/FNWck/BRmlVoDn1tolU6ojuMaRpJbN1k0eamYfwpuT8iDAiqfoVf56WQHULu9Ka8ECGAzxMYh55Rejow20rRT37vrdLWJIUHX/A1w=
+    secure: F1wqiVnyDGaVc+QM/v7UduNv1PtNDCJ6NW8ph24QkaCbydS89hj66hp5rBYiNuqlsPiv3ETkzy6b0ouT06coKF5iSxRqiOBTETxOZ12Mn2UkhRvP9AbXyEyWNwTGe+unEEpHH+ecSjyE8d+kmqscF3xGYiuA0UyXC/quB+zYOZk=
