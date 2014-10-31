@@ -20,6 +20,7 @@ from threading import current_thread
 import time
 import urllib2
 
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -141,7 +142,6 @@ class WebDriverFactory(object):
         else:
             # handle as local webdriver
             self.webdriver = self.__create_driver_from_browser_config()
-
         try:
             self.webdriver.maximize_window()
         except:
@@ -172,8 +172,15 @@ class WebDriverFactory(object):
                     WebDriverFactory.BROWSER_TYPE_CONFIG)
             browser_type = WebDriverFactory.FIREFOX
 
+        # Special Chrome Sauce
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
+        options.add_argument("always-authorize-plugins")
+
         browser_type_dict = {
-            self.CHROME: lambda: webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),
+            self.CHROME: lambda: webdriver.Chrome(
+                self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH),
+                chrome_options=options),
             self.FIREFOX: lambda: webdriver.Firefox(),
             self.INTERNETEXPLORER: lambda: webdriver.Ie(),
             self.OPERA: lambda: webdriver.Opera(),
