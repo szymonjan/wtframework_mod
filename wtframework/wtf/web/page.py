@@ -15,8 +15,6 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-
-import abc
 from datetime import datetime, timedelta
 import time
 
@@ -28,6 +26,11 @@ from wtframework.wtf.utils.wait_utils import do_until
 from wtframework.wtf.web.capture import WebScreenShotUtil
 from wtframework.wtf.web.webdriver import WTF_WEBDRIVER_MANAGER
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class PageObject(object):
 
@@ -43,8 +46,6 @@ class PageObject(object):
        to the same page to disambiguate which page should take precedence.
 
     """
-    __metaclass__ = abc.ABCMeta  # needed to make this an abstract class in Python 2.7
-
     # Webdriver associated with this instance of the PageObject
 
     __names_of_classes_we_already_took_screen_caps_of__ = {}
@@ -57,24 +58,16 @@ class PageObject(object):
             webdriver (Webdriver): Selenium Webdriver instance.
 
         """
-        try:
-            config_reader = kwargs['config_reader']
-        except KeyError:
-            config_reader = WTF_CONFIG_READER
-
-        try:
-            self._validate_page(webdriver)
-        except TypeError as e:
-            _wtflog.error("PageObjects need to implement '_validate_page(self, webdriver)' method: %s", e)
-            raise e
-        except Exception as e:
-            _wtflog.debug("Unable to instantiate page: %s", e)
-            raise e
 
         # Assign webdriver to PageObject.
         # Each page object has an instance of "webdriver" referencing the webdriver
         # driving this page.
         self.webdriver = webdriver
+
+        try:
+            config_reader = kwargs['config_reader']
+        except KeyError:
+            config_reader = WTF_CONFIG_READER
 
         # Take reference screenshots if this option is enabled.
         if config_reader.get("selenium.take_reference_screenshot", False) == True:
@@ -94,8 +87,7 @@ class PageObject(object):
         else:
             pass
 
-    @abc.abstractmethod
-    def _validate_page(self, webdriver):
+    def _validate_page(self):
         """Perform checks to validate this page is the correct target page.
 
         All PageObjects must implement this method.
@@ -490,7 +482,7 @@ class PageUtils():
             # sleep till the next iteration.
             time.sleep(sleep)
 
-        print "Unable to construct page, last exception", last_exception
+        print("Unable to construct page, last exception", last_exception)
 
         # Attempt to get current URL to assist in debugging
         try:

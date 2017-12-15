@@ -262,10 +262,11 @@ class CaptureScreenShotOnErrorTestWatcher(TestWatcher):
 
         '''
         fname = unicode(type(testcase).__name__) + u"_" + \
-            unicode(testcase._testMethodName)
-        fname = re.sub(u"[^a-zA-Z_]+", u("_"), fname)
+                unicode(testcase._testMethodName)
+
+        fname = re.sub(u"[^a-zA-Z_0-9]+", u("_"), fname)
         # Trim test case name incase it's too long.
-        fname = fname[:self.max_screenshot_name_len]
+        #fname = fname[:self.max_screenshot_name_len]
         fmt = u('%y-%m-%d_%H.%M.%S_{fname}')
         return datetime.datetime.now().strftime(fmt).format(fname=fname)
 

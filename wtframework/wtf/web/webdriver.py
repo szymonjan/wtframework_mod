@@ -18,9 +18,11 @@
 import os
 from threading import current_thread
 import time
-import urllib2
+try:
+    from urllib2.request import urlopen
+except ImportError:
+    from urllib.request import urlopen
 
-from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -56,6 +58,7 @@ class WebDriverFactory(object):
     BROWSER_TYPE_CONFIG = "selenium.browser"
     DESIRED_CAPABILITIES_CONFIG = "selenium.desired_capabilities"
     CHROME_DRIVER_PATH = "selenium.chromedriver_path"
+#   FIREFOX_DRIVER_PATH = "selenium.firefoxdriver_path"
     PHANTOMEJS_EXEC_PATH = "selenium.phantomjs_path"
     SELENIUM_SERVER_LOCATION = "selenium.selenium_server_path"
     LOG_REMOTEDRIVER_PROPS = "selenium.log_remote_webdriver_props"
@@ -142,6 +145,7 @@ class WebDriverFactory(object):
         else:
             # handle as local webdriver
             self.webdriver = self.__create_driver_from_browser_config()
+
         try:
             self.webdriver.maximize_window()
         except:
@@ -172,15 +176,8 @@ class WebDriverFactory(object):
                     WebDriverFactory.BROWSER_TYPE_CONFIG)
             browser_type = WebDriverFactory.FIREFOX
 
-        # Special Chrome Sauce
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
-        options.add_argument("always-authorize-plugins")
-
         browser_type_dict = {
-            self.CHROME: lambda: webdriver.Chrome(
-                self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH),
-                chrome_options=options),
+            self.CHROME: lambda: webdriver.Chrome(self._config_reader.get(WebDriverFactory.CHROME_DRIVER_PATH)),
             self.FIREFOX: lambda: webdriver.Firefox(),
             self.INTERNETEXPLORER: lambda: webdriver.Ie(),
             self.OPERA: lambda: webdriver.Opera(),
@@ -247,7 +244,7 @@ class WebDriverFactory(object):
         if "wd/hub" in remote_url and log_driver_props:
             try:
                 grid_addr = remote_url[:remote_url.index("wd/hub")]
-                info_request_response = urllib2.urlopen(
+                info_request_response = urlopen(
                     grid_addr + "grid/api/testsession?session=" + driver.session_id, "", 5000)
                 node_info = info_request_response.read()
                 _wtflog.info(
@@ -556,7 +553,7 @@ class WebDriverManager(object):
         "Register webdriver to a channel."
 
         # Add to list of webdrivers to cleanup.
-        if not self.__registered_drivers.has_key(channel):
+        if channel not in self.__registered_drivers:
             self.__registered_drivers[channel] = []  # set to new empty array
 
         self.__registered_drivers[channel].append(webdriver)
@@ -568,7 +565,7 @@ class WebDriverManager(object):
         "Unregister webdriver"
         driver = self.__get_driver_for_channel(channel)
 
-        if self.__registered_drivers.has_key(channel) \
+        if channel in self.__registered_drivers \
                 and driver in self.__registered_drivers[channel]:
 
             self.__registered_drivers[channel].remove(driver)

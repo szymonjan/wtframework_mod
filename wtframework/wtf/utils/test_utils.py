@@ -52,7 +52,7 @@ def do_and_ignore(lambda_func):
         return lambda_func()
     except Exception as e:
         try:
-            print e
+            print(e)
         except:
             _wtflog.debug("unknown error")
         return None

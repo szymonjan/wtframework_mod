@@ -15,7 +15,7 @@
 #    along with WTFramework.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 import sys
-from unittest.case import _ExpectedFailure, _UnexpectedSuccess, SkipTest
+from unittest.case import _UnexpectedSuccess, SkipTest
 import warnings
 
 from six import u
@@ -111,7 +111,7 @@ class WatchedTestCase(unittest2.TestCase):
                 # Run test setup.
 
                 self.setUp()
-            except SkipTest, e:
+            except SkipTest as e:
                 self._addSkip(result, str(e))
             except Exception:
                 result.addError(self, sys.exc_info())
@@ -135,15 +135,6 @@ class WatchedTestCase(unittest2.TestCase):
                     for test_watcher in self.__wtf_test_watchers__:
                         test_watcher.on_test_failure(self, result, e)
 
-                except _ExpectedFailure, e:
-                    addExpectedFailure = getattr(
-                        result, 'addExpectedFailure', None)
-                    if addExpectedFailure is not None:
-                        addExpectedFailure(self, e.exc_info)
-                    else:
-                        warnings.warn(u("Use of a TestResult without an addExpectedFailure method is deprecated"),
-                                      DeprecationWarning)
-                        result.addSuccess(self)
                 except _UnexpectedSuccess:
                     addUnexpectedSuccess = getattr(
                         result, 'addUnexpectedSuccess', None)
@@ -153,7 +144,7 @@ class WatchedTestCase(unittest2.TestCase):
                         warnings.warn(u("Use of a TestResult without an addUnexpectedSuccess method is deprecated"),
                                       DeprecationWarning)
                         result.addFailure(self, sys.exc_info())
-                except SkipTest, e:
+                except SkipTest as e:
                     self._addSkip(result, str(e))
                 except Exception as e:
                     result.addError(self, sys.exc_info())
