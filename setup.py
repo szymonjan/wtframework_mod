@@ -32,7 +32,7 @@ setup(
               'wtframework.wtf._devtools_.filetemplates',
               ],
     scripts=['bin/wtf_init.py', 'bin/wtf_tools.py'],
-    url='https://github.com/wiredrive/wtframework',
+    url='https://github.com/szymonjan/wtframework_mod',
     license='LICENSE.txt',
     description='WTF - Web Test Framework',
     long_description=open('README.md').read(),
